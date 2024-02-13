@@ -1,0 +1,6 @@
+{
+    "parent":"heliopause:block/alchemy_reactor",
+    "textures": {
+        "all": "heliopause:block/alchemy_reactor_lit"
+    }
+}

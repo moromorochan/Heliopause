@@ -1,0 +1,12 @@
+{
+  "itemGroup.heliopause_main": "Heliopause",
+  "block.heliopause.alchemy_reactor": "錬金こん炉",
+  "block.heliopause.crucible": "るつぼ",
+  "block.heliopause.alchemy_biron_block": "錬金赤銅ブロック",
+  "block.heliopause.glowstone_alloy_block": "グロウストーン合金ブロック",
+
+  "item.heliopause.alchemy_biron_ingot": "錬金赤銅インゴット",
+  "item.heliopause.alchemy_biron_nugget": "錬金赤銅塊",
+  "item.heliopause.glowstone_alloy_ingot": "グロウストーン合金インゴット",
+  "item.heliopause.glowstone_alloy_nugget": "グロウストーン合金塊"
+}
