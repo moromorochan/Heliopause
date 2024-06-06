@@ -22,9 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class CrucibleBlock extends BaseEntityBlock {
 
-    public CrucibleBlock(Properties p_49224_){
-        super(p_49224_);
-    }
+    public CrucibleBlock(Properties p_49224_){super(p_49224_);}
     public static VoxelShape SHAPE = Shapes.join(
             Block.box(0,3,0,16,16,16),
             Block.box(2,6,2,14,16,14),

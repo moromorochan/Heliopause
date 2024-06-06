@@ -27,15 +27,15 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CrucibleBlockEntity extends BlockEntity implements IFluidHandler {
+public class OrbBlockEntity extends BlockEntity implements IFluidHandler {
 
     protected FluidTank mainTank;
     protected LazyOptional<IFluidHandler> holder;
     protected int lightLvl;
-    public CrucibleBlockEntity(BlockPos pos, BlockState state) {
-        super(Heliopause.CRUCIBLE_BE.get(), pos, state);
+    public OrbBlockEntity(BlockPos pos, BlockState state) {
+        super(Heliopause.ORB_BE.get(), pos, state);
         mainTank = new FluidTank(FluidType.BUCKET_VOLUME);
-        //mainTank.setFluid(new FluidStack(Fluids.WATER,1000));
+        mainTank.setFluid(new FluidStack(Fluids.LAVA,1000));
         holder = LazyOptional.of(() -> mainTank);
     }
 

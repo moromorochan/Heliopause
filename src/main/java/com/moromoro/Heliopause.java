@@ -1,9 +1,11 @@
 package com.moromoro;
 
+import com.moromoro.heliopause.block.OrbBlock;
 import com.moromoro.heliopause.block.ReactorBlock;
 import com.mojang.logging.LogUtils;
 import com.moromoro.heliopause.block.CrucibleBlock;
 import com.moromoro.heliopause.blockEntity.CrucibleBlockEntity;
+import com.moromoro.heliopause.blockEntity.OrbBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -36,6 +38,8 @@ public class Heliopause {
     // slf4j logger を参照
     private static final Logger LOGGER = LogUtils.getLogger();
 
+    //ブロック・ブロックエンティティ・アイテムの登録を あとでそれぞれ分離する
+
     // mod名前空間に登録されるブロックを保持するための遅延レジスタを作成
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
 
@@ -64,11 +68,27 @@ public class Heliopause {
             );
     public static final RegistryObject<BlockEntityType<CrucibleBlockEntity>> CRUCIBLE_BE =
             BLOCKENTITIES.register("crucible",() ->
-                    BlockEntityType.Builder.of(CrucibleBlockEntity::new,
-                            CRUCIBLE.get()).build(null)
-                    );
+                    BlockEntityType.Builder.of(
+                            CrucibleBlockEntity::new,
+                            CRUCIBLE.get()
+                    ).build(null)
+            );
     public static final RegistryObject<Item> CRUCIBLE_ITEM =
             ITEMS.register("crucible", () -> new BlockItem(CRUCIBLE.get(), new Item.Properties()));
+
+    //オーブ
+    public static final RegistryObject<Block> ORB =
+            BLOCKS.register("orb",() -> new OrbBlock(
+                    BlockBehaviour.Properties.of()
+                    .strength(1.0f)
+            ));
+    public static final RegistryObject<BlockEntityType<OrbBlockEntity>> ORB_BE =
+            BLOCKENTITIES.register("orb",() ->
+                    BlockEntityType.Builder.of(
+                            OrbBlockEntity::new,
+                            ORB.get()
+                    ).build(null)
+            );
 
     //錬金赤銅ブロック
     public static final RegistryObject<Block> ALCHEMY_BIRON_BLOCK =
