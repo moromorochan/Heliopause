@@ -80,7 +80,9 @@ public class Heliopause {
     public static final RegistryObject<Block> ORB =
             BLOCKS.register("orb",() -> new OrbBlock(
                     BlockBehaviour.Properties.of()
-                    .strength(1.0f)
+                            .strength(1.0f)
+                            .noCollission()
+                            //.noOcclusion()
             ));
     public static final RegistryObject<BlockEntityType<OrbBlockEntity>> ORB_BE =
             BLOCKENTITIES.register("orb",() ->

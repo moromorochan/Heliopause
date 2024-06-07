@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
+import org.joml.Math;
 import org.joml.Matrix4f;
 
 public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockEntity> {
@@ -27,11 +28,24 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
         FluidStack fluidStack = entity.getFluidInTank(0);
         //タンクが空なら描画処理を完了
         if (fluidStack.isEmpty())
+        {
+            entity.smoothedTankAmount=0f;
             return;
+        }
+/*
+        // 現在のフレーム時間を取得
+        long currentFrameTime = System.nanoTime();
+        // デルタ時間を計算（秒単位）
+        float deltaTime = (currentFrameTime - entity.lastFrameTime) / 1_000_000_000.0F;
+        */
+        //内容量の見た目スムージングを計算
+        entity.smoothedTankAmount = Math.lerp(entity.smoothedTankAmount,fluidStack.getAmount(),0.15f);
+
         //液面高さの上限と下限を決める
         final float fillMax = 15f, fillMin = 6f;
         //タンクの割合から液面高さを計算
-        float fillPercentage = Math.min(fillMax, fillMin + (fillMax-fillMin)*((float) fluidStack.getAmount() / entity.getTankCapacity(0)))/16f;
+        float fillPercentage = Math.min(fillMax, fillMin + (fillMax-fillMin)*((float) entity.smoothedTankAmount / entity.getTankCapacity(0)))/16f;
+
         //親モデルをスタックに保管して、子モデルの編集をはじめる
         poseStack.pushPose();
         //液体の見た目をつくる関数を呼び出す
