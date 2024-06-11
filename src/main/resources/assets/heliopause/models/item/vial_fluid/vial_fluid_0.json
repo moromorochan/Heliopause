@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "heliopause:item/vial/empty_vial",
+    "layer1": "heliopause:item/vial/vial_fluid_0",
+    "layer2": "heliopause:item/vial/vial_cap"
+  }
+}

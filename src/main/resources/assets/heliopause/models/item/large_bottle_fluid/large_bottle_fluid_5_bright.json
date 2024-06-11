@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "heliopause:item/large_bottle/empty_large_bottle",
+    "layer1": "heliopause:item/large_bottle/large_bottle_fluid_5_bright",
+    "layer2": "heliopause:item/large_bottle/large_bottle_cap"
+  }
+}

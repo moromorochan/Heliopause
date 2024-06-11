@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import org.joml.Math;
@@ -30,21 +29,27 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
         if (fluidStack.isEmpty())
         {
             entity.smoothedTankAmount=0f;
+            // 現在のフレーム時間を保存
+            entity.lastFrameTime = System.nanoTime();
+
             return;
         }
-/*
+
         // 現在のフレーム時間を取得
         long currentFrameTime = System.nanoTime();
         // デルタ時間を計算（秒単位）
         float deltaTime = (currentFrameTime - entity.lastFrameTime) / 1_000_000_000.0F;
-        */
+
         //内容量の見た目スムージングを計算
-        entity.smoothedTankAmount = Math.lerp(entity.smoothedTankAmount,fluidStack.getAmount(),0.15f);
+        entity.smoothedTankAmount = Math.lerp(entity.smoothedTankAmount,fluidStack.getAmount(),deltaTime * 15f);
 
         //液面高さの上限と下限を決める
         final float fillMax = 15f, fillMin = 6f;
         //タンクの割合から液面高さを計算
         float fillPercentage = Math.min(fillMax, fillMin + (fillMax-fillMin)*((float) entity.smoothedTankAmount / entity.getTankCapacity(0)))/16f;
+
+        // 現在のフレーム時間を保存
+        entity.lastFrameTime = currentFrameTime;
 
         //親モデルをスタックに保管して、子モデルの編集をはじめる
         poseStack.pushPose();
@@ -69,8 +74,17 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
         float green = (color >> 8 & 255) / 255f;
         float blue = (color & 255) / 255f;
 
+        //ブロックの光レベルの取得
+        int skyLight = combinedLight >> 20 & 15;
+        int blockLight = combinedLight >> 4 & 15;
+        //液体の明るさの取得
+        int fluidLight = fluidStack.getFluid().getFluidType().getLightLevel();
+        //計算
+        int maxBlockLight =Math.max(blockLight, fluidLight);
+        int newCombinedLight = (skyLight << 20| maxBlockLight << 4);
+
         //メッシュをつくる関数を呼び出す
-        renderQuads(poseStack.last().pose(), consumer, sprite, red, green, blue, heightPercentage, combinedLight);
+        renderQuads(poseStack.last().pose(), consumer, sprite, red, green, blue, heightPercentage, newCombinedLight);
     }
 
     private static void renderQuads(Matrix4f matrix, VertexConsumer buffer, TextureAtlasSprite sprite, float r, float g, float b, float heightPercentage, int light) {

@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.event;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.render.CrucibleBlockRenderer;
 import com.moromoro.heliopause.render.OrbBlockRenderer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ModEventBusClientEvents {
     @SubscribeEvent
     public static void registerBER(EntityRenderersEvent.RegisterRenderers event){
-        event.registerBlockEntityRenderer(Heliopause.CRUCIBLE_BE.get(), CrucibleBlockRenderer::new);
-        event.registerBlockEntityRenderer(Heliopause.ORB_BE.get(), OrbBlockRenderer::new);
+        event.registerBlockEntityRenderer(BlockEntityRegistry.CRUCIBLE_BE.get(), CrucibleBlockRenderer::new);
+        event.registerBlockEntityRenderer(BlockEntityRegistry.ORB_BE.get(), OrbBlockRenderer::new);
     }
 }

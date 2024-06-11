@@ -1,0 +1,81 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "heliopause:item/vial/empty_vial"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_0"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_1"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 3
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_2"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 4
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_3"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 5
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_4"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 6
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_5"
+    },
+
+    {
+      "predicate": {
+        "custom_model_data": 11
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_0_bright"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 12
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_1_bright"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 13
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_2_bright"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 14
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_3_bright"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 15
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_4_bright"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 16
+      },
+      "model": "heliopause:item/vial_fluid/vial_fluid_5_bright"
+    }
+  ]
+}

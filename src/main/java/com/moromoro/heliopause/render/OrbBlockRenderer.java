@@ -1,13 +1,9 @@
 package com.moromoro.heliopause.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.moromoro.Heliopause;
-import com.moromoro.heliopause.blockEntity.CrucibleBlockEntity;
 import com.moromoro.heliopause.blockEntity.OrbBlockEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -32,6 +28,9 @@ public class OrbBlockRenderer implements BlockEntityRenderer<OrbBlockEntity> {
         if (fluidStack.isEmpty())
         {
             entity.smoothedTankAmount=0f;
+            // 現在のフレーム時間を保存
+            entity.lastFrameTime = System.nanoTime();
+
             return;
         }
 
@@ -41,11 +40,11 @@ public class OrbBlockRenderer implements BlockEntityRenderer<OrbBlockEntity> {
         float deltaTime = (currentFrameTime - entity.lastFrameTime) / 1_000_000_000.0F;
 
         //内容量の見た目スムージングを計算
-        entity.smoothedTankAmount = Math.lerp(entity.smoothedTankAmount,fluidStack.getAmount(),0.15f);
+        entity.smoothedTankAmount = Math.lerp(entity.smoothedTankAmount,fluidStack.getAmount(),deltaTime * 15f);
 
         //タンクの割合を計算
         final float fillMax = 2f;
-        float fillPercentage = (float) entity.smoothedTankAmount / entity.getTankCapacity(0);
+        float fillPercentage = entity.smoothedTankAmount / entity.getTankCapacity(0);
 
         //タンクの割合から、オーブのサイズと密度を計算
         //オーブのサイズと密度を格納
@@ -63,15 +62,12 @@ public class OrbBlockRenderer implements BlockEntityRenderer<OrbBlockEntity> {
         // 現在のフレーム時間を保存
         entity.lastFrameTime = currentFrameTime;
 
-        //コンテナクラスにデータを格納
-        //meshContentContainer fluidMesh = new meshContentContainer(null,null,null,1,1,1,1,orbSize,orbDensity,1,poseStack,bufferSource,fluidStack);
+        //親モデルをスタックに保管して、子モデルの編集をはじめる
         poseStack.pushPose();
-        //メッシュを管理する関数を呼び出す
+        //液体の見た目をつくる関数を呼び出す
         renderFluid(poseStack, bufferSource, fluidStack, orbDensity, combinedLight,new float[] {orbSize,entity.rotationOffset,entity.waveOffset});
-        //renderOrb(fluidMesh);
+        //親モデルをスタックから取り出して、子モデルの編集をおわる
         poseStack.popPose();
-        //回転
-        //poseStack.rotateAround(new Quaternionf().fromAxisAngleRad(0.0f,rotationOffset,0.0f,0.0f),0.5f,0.5f,0.5f);
     }
     private static void renderFluid(PoseStack poseStack, MultiBufferSource bufferSource, FluidStack fluidStack, float density, int combinedLight,float[] modelProperty)//(meshContentContainer fluidMesh, Vector3f[] vertexPos, Vector2f[] vertexUV)
     {
@@ -84,11 +80,19 @@ public class OrbBlockRenderer implements BlockEntityRenderer<OrbBlockEntity> {
         //液体のtintカラーの取得
         int color = fluidTypeExtensions.getTintColor();
 
+        //ブロックの光レベルの取得
+        int skyLight = combinedLight >> 20 & 15;
+        int blockLight = combinedLight >> 4 & 15;
+        //液体の明るさの取得
+        int fluidLight = fluidStack.getFluid().getFluidType().getLightLevel();
+        //計算
+        int maxBlockLight =Math.max(blockLight, fluidLight);
+        int newCombinedLight = (skyLight << 20| maxBlockLight << 4);
+
         //コンテナクラスにデータを格納
-        fluidMatContainer matProperty = new fluidMatContainer(poseStack.last().pose(),consumer,sprite,color,combinedLight);
-        //メッシュをつくる関数を呼び出す
-        renderOrb(poseStack,modelProperty,matProperty);
-        //renderQuads(orbMesh, vertexPos, vertexUV);
+        fluidMatContainer matProperty = new fluidMatContainer(poseStack.last().pose(),consumer,sprite,color,newCombinedLight);
+        //メッシュを組み立てる関数を呼び出す
+        renderOrb(modelProperty,matProperty);
     }
     //液体のマテリアル描画に必要なものを格納しておくコンテナ
     public static class fluidMatContainer
@@ -117,13 +121,12 @@ public class OrbBlockRenderer implements BlockEntityRenderer<OrbBlockEntity> {
     private static float CreateCosWaveform(float waveOffset, float amplitude){
         return ((float) amplitude * Math.cos(Math.toRadians(waveOffset)));
     }
-    private static void renderOrb(PoseStack poseStack,float[] modelProperty,fluidMatContainer matProperty)//(meshContentContainer fluidMesh)
+    private static void renderOrb(float[] modelProperty, fluidMatContainer matProperty)
     {
         //値を取り出す
         float meshSize=modelProperty[0];
         float rotationOffset=modelProperty[1];
         float waveOffset=modelProperty[2];
-        //PoseStack poseStack=fluidMesh.poseStack;
 
         //必要な座標を用意
         final float topY = meshSize * ((float) Math.sqrt(1.5))/2, sideX = meshSize * ((float) Math.sqrt(1f/3f)), sideY = topY/3;
@@ -144,13 +147,8 @@ public class OrbBlockRenderer implements BlockEntityRenderer<OrbBlockEntity> {
                     new Vector2f(8+(meshSize*4),8),
                     new Vector2f(8,8-(meshSize*4))
             };
-            //親モデルをスタックに保管して、子モデルの編集をはじめる
-            //poseStack.pushPose();
-            //液体の見た目をつくる関数を呼び出す
-            //renderQuads(fluidMesh,vertPos0,vertUV0);
+            //メッシュを定義する関数を呼び出す
             renderQuads(matProperty,vertPos0,vertUV0);
-            //親モデルをスタックから取り出して、子モデルの編集をおわる
-            //poseStack.popPose();
 
             //下面
             Vector3f[] vertPos1 = {
@@ -166,16 +164,12 @@ public class OrbBlockRenderer implements BlockEntityRenderer<OrbBlockEntity> {
                     new Vector2f(8+(meshSize*4),8),
                     new Vector2f(8,8-(meshSize*4))
             };
-            //親モデルをスタックに保管して、子モデルの編集をはじめる
-            //poseStack.pushPose();
-            //液体の見た目をつくる関数を呼び出す
+            //メッシュを定義する関数を呼び出す
             renderQuads(matProperty,vertPos1,vertUV1);
-            //親モデルをスタックから取り出して、子モデルの編集をおわる
-            //poseStack.popPose();
         }
     }
 
-    private static void renderQuads(fluidMatContainer matProperty,Vector3f[] vertexPos, Vector2f[] vertexUV)//(meshContentContainer orbMesh, Vector3f[] vertexPos, Vector2f[] vertexUV)
+    private static void renderQuads(fluidMatContainer matProperty,Vector3f[] vertexPos, Vector2f[] vertexUV)
     {
         //コンテナから値を取り出す
         Matrix4f matrix=matProperty.matrix;
