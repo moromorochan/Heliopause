@@ -1,15 +1,12 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "A"
-  ],
-  "key": {
-    "A": {
-      "item": "minecraft:tinted_glass"
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/alchemy_biron"
     }
-  },
+  ],
   "result": {
-    "item": "heliopause:vial",
-    "count": 3
+    "item": "heliopause:alchemy_biron_nugget",
+    "count": 9
   }
 }

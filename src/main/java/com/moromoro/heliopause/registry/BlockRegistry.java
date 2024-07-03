@@ -14,8 +14,8 @@ public class BlockRegistry {
 
     // ブロックの作成
     //錬金こん炉
-    public static final RegistryObject<Block> ALCHEMY_REACTOR =
-            BLOCKS.register("alchemy_reactor", () -> new ReactorBlock());
+    public static final RegistryObject<Block> ALCHEMY_STOVE =
+            BLOCKS.register("alchemy_stove", AlchemyStoveBlock::new);
     //るつぼ
     public static final RegistryObject<Block> CRUCIBLE =
             BLOCKS.register("crucible", () -> new CrucibleBlock(
@@ -30,8 +30,20 @@ public class BlockRegistry {
                     BlockBehaviour.Properties.of()
                             .strength(1.0f)
                             .noCollission()
-                    //.noOcclusion()
+                            .noOcclusion()
+                            .noParticlesOnBreak()
             ));
+    //流体ケージ
+    public static final RegistryObject<Block> FLUID_CAGE =
+            BLOCKS.register("fluid_cage",() -> new FluidCageBlock(
+                    BlockBehaviour.Properties.of()
+                            .strength(1.0f)
+                            .sound(SoundType.WOOD)
+            ));
+
+    //錬金焙炉
+    public static final RegistryObject<Block> ROASTING_TABLE =
+            BLOCKS.register("alchemy_roasting_table", RoastingTableBlock::new);
     //錬金赤銅ブロック
     public static final RegistryObject<Block> ALCHEMY_BIRON_BLOCK =
             BLOCKS.register("alchemy_biron_block", () -> new Block(

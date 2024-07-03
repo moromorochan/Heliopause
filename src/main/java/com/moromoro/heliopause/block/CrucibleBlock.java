@@ -1,15 +1,20 @@
 package com.moromoro.heliopause.block;
 
 import com.moromoro.heliopause.blockEntity.CrucibleBlockEntity;
+import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CrucibleBlock extends AbstractFluidTankBlock {
@@ -18,20 +23,26 @@ public class CrucibleBlock extends AbstractFluidTankBlock {
         super(p_49224_);
     }
 
-    public static VoxelShape SHAPE = Shapes.join(
-            Block.box(0, 3, 0, 16, 16, 16),
-            Block.box(2, 6, 2, 14, 16, 14),
-            BooleanOp.ONLY_FIRST
-    );
+    public static VoxelShape SHAPE =
+            Shapes.join(
+                    Shapes.join(
+                            Block.box(0, 4, 0, 16, 16, 16),
+                            Block.box(2, 5, 2, 14, 16, 14),
+                            BooleanOp.ONLY_FIRST
+                    ),
+                    Block.box(2,2,2,14,4,14),
+                    BooleanOp.OR
+            );
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return SHAPE;
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return new CrucibleBlockEntity(pos, state);
     }
+
 }

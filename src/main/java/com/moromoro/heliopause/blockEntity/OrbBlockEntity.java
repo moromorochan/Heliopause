@@ -1,132 +1,20 @@
 package com.moromoro.heliopause.blockEntity;
 
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
+import com.moromoro.heliopause.render.OrbBlockRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class OrbBlockEntity extends BlockEntity implements IFluidHandler {
-
-    protected FluidTank mainTank;
-    protected LazyOptional<IFluidHandler> holder;
-    protected int lightLvl;
-
-    //直前のフレーム描画時刻を格納
-    public long lastFrameTime;
-    //回転の進捗を格納
-    public float rotationOffset;
-    //浮き沈みの進捗を格納
-    public float waveOffset;
-    //タンクの滑らかに変化する貯蔵量を格納
-    public float smoothedTankAmount;
+public class OrbBlockEntity extends AbstractFluidOrbBlockEntity {
     public OrbBlockEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityRegistry.ORB_BE.get(), pos, state);
-        mainTank = new FluidTank(8000);
-        //mainTank.setFluid(new FluidStack(Fluids.WATER,16000));
-        holder = LazyOptional.of(() -> mainTank);
-    }
-
-    @Override
-    public void load(CompoundTag tag){
-        super.load(tag);
-        this.mainTank.setFluid(FluidStack.loadFluidStackFromNBT(tag.getCompound("FluidStack")));
-
-        //初期化
-        lastFrameTime = System.nanoTime();
-        rotationOffset = 0.0f;
-        waveOffset = 0.0f;
-        smoothedTankAmount = mainTank.getFluidAmount();
+        super(BlockEntityRegistry.ORB_BE.get(), pos, state,8000);
     }
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.put("FluidStack", mainTank.getFluid().writeToNBT(new CompoundTag()));
+    protected void updateRenderData() {
+        OrbBlockRenderer.updateData(this.getBlockPos(), mainTank.getFluid());
     }
-
     @Override
-    public int getTanks() {
-        return mainTank.getTanks();
-    }
-
-    @Override
-    public @NotNull FluidStack getFluidInTank(int tank) {
-        return mainTank.getFluidInTank(tank);
-    }
-
-    @Override
-    public int getTankCapacity(int tank) {
-        return mainTank.getTankCapacity(tank);
-    }
-
-    @Override
-    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-        return mainTank.isFluidValid(tank,stack);
-    }
-
-    @Override
-    public int fill(FluidStack resource, FluidAction action) {
-        int result =mainTank.fill(resource,action);
-        if(action.execute())
-        {setChanged();}
-        return result;
-    }
-
-    @NotNull
-    @Override
-    public FluidStack drain(FluidStack resource, FluidAction action) {
-        FluidStack result=mainTank.drain(resource,action);
-        if(action.execute())
-        {setChanged();}
-        return result;
-    }
-
-    @NotNull
-    @Override
-    public FluidStack drain(int maxDrain, FluidAction action) {
-        FluidStack result=mainTank.drain(maxDrain,action);
-        if(action.execute())
-        {setChanged();}
-        return result;
-    }
-
-    public void send2Client(){
-        if(!level.isClientSide()){
-            level.sendBlockUpdated(getBlockPos(),getBlockState(),getBlockState(),3);
-        }
-    }
-
-    @Nullable
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket(){
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @NotNull
-    @Override
-    public CompoundTag getUpdateTag(){
-        CompoundTag tag = new CompoundTag();
-        this.saveAdditional(tag);
-        return tag;
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        super.onDataPacket(net, pkt);
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    protected void removeRenderData() {
+        OrbBlockRenderer.removeData(this.getBlockPos());
     }
 }

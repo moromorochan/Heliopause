@@ -13,10 +13,15 @@ public class ItemRegistry {
 
     //ブロックアイテムの作成
         //機械
-    public static final RegistryObject<Item> ALCHEMY_REACTOR_ITEM =
-            ITEMS.register("alchemy_reactor", () -> new BlockItem(BlockRegistry.ALCHEMY_REACTOR.get(), new Item.Properties()));
+    public static final RegistryObject<Item> ALCHEMY_STOVE_ITEM =
+            ITEMS.register("alchemy_stove", () -> new BlockItem(BlockRegistry.ALCHEMY_STOVE.get(), new Item.Properties()));
     public static final RegistryObject<Item> CRUCIBLE_ITEM =
             ITEMS.register("crucible", () -> new BlockItem(BlockRegistry.CRUCIBLE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> ROASTING_TABLE_ITEM =
+            ITEMS.register("alchemy_roasting_table", () -> new BlockItem(BlockRegistry.ROASTING_TABLE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> FLUID_CAGE_ITEM =
+            ITEMS.register("fluid_cage", () -> new BlockItem(BlockRegistry.FLUID_CAGE.get(), new Item.Properties()));
+
         //金属ブロック
     public static final RegistryObject<Item> ALCHEMY_BIRON_BLOCK_ITEM =
             ITEMS.register("alchemy_biron_block", () -> new BlockItem(BlockRegistry.ALCHEMY_BIRON_BLOCK.get(), new Item.Properties()));

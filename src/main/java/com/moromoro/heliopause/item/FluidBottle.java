@@ -1,8 +1,13 @@
 package com.moromoro.heliopause.item;
 
 import com.moromoro.ConfigHolder;
+import com.moromoro.Heliopause;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -12,13 +17,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-public class FluidBottle extends Item {
+public class FluidBottle extends Item implements IFluidHandlerItem {
 
     private static final String FLUID_NBT_KEY = "FluidStack";
     public static final String COLOR_NBT_KEY = "color";
@@ -32,15 +42,30 @@ public class FluidBottle extends Item {
         USE_AMOUNT = useAmount;
     }
 
-    //液体の色をconfigから取得
-    private int getFluidColor(FluidStack stack){
+    //液体の色をconfigまたはテクスチャから取得
+    private int getFluidColor(FluidStack fluidStack){
         //液体のidを取得
-        String fluidName = ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString();
+        String fluidName = ForgeRegistries.FLUIDS.getKey(fluidStack.getFluid()).toString();
         if(ConfigHolder.FLUID_COLORS.containsKey(fluidName)){
             return ConfigHolder.FLUID_COLORS.get(fluidName).get();
         }
+        //configに無ければ、テクスチャから生成
+        //液体の種類を取り出す
+        IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());
+        //(とどまる)液体テクスチャの取得
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidTypeExtensions.getStillTexture(fluidStack));
+
+        int color = sprite.getPixelRGBA(0, 7, 7);
+        //float alpha = (color >> 24 & 255) / 255f;
+        float blue = (color >> 16 & 255) / 255f;
+        float green = (color >> 8 & 255) / 255f;
+        float red = (color & 255) / 255f;
+        int combinedColor = ((int)(red * 255) << 16) | ((int)(green * 255) << 8) | (int)(blue * 255);
+        Heliopause.LOGGER.debug("got pixel color:"+ combinedColor);
+        return combinedColor;
+
         //idが無ければ、デフォルトカラーを返す
-        return 0xFF00FF;
+        //return 0xFF00FF;
     }
 
     //アイテムの色を取得
@@ -51,7 +76,7 @@ public class FluidBottle extends Item {
             return 0xFF00FF;
         }
         CompoundTag nbt = stack.getTag();
-        //nbtに色情報がないなら、紫色(0xFF00FF)を返す(デバッグ用の緑色→0x50BC5F)
+        //nbtに色情報がないなら、紫色(0xFF00FF)を返す
         if(!nbt.contains(COLOR_NBT_KEY)){
             return 0xFF00FF;
         }
@@ -157,283 +182,267 @@ public class FluidBottle extends Item {
         nbt.put(FLUID_NBT_KEY,fluid.writeToNBT(new CompoundTag()));
     }
 
+    //液体の移動
+    private FluidStack transferFluid(IFluidHandler fillStack,IFluidHandler drainStack, int maxTransfer){
+        // fillStackにどれだけ流し入れられるか確認 0なら動作を終わる
+        int fillAllowance = fillStack.fill(drainStack.drain(maxTransfer,FluidAction.SIMULATE),FluidAction.SIMULATE);
+        if (fillAllowance > 0) {
+            // drainStackから液体を取り出す
+            FluidStack drainAllowance = drainStack.drain(fillAllowance,FluidAction.EXECUTE);
+            if (!drainAllowance.isEmpty()) {
+                // fillStackの液体を増やす
+                fillStack.fill(drainAllowance, FluidAction.EXECUTE);
+            }
+            return drainAllowance;
+        }
+        return FluidStack.EMPTY;
+    }
+
+    //アイテムを渡す 渡せないならドロップ
+    private void addOrDrop(Player player, Level level, BlockPos pos, ItemStack resultItem) {
+        boolean addSucceed = player.addItem(resultItem);
+        if (!addSucceed) {
+            ItemEntity itemEntity = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), resultItem);
+            level.addFreshEntity(itemEntity);
+        }
+    }
+
+    //液体効果音を再生
+    private void playFluidSound(Level level, BlockPos pos, Fluid fluid){
+        // 液体の効果音を再生
+        if(fluid.getPickupSound().isPresent())
+        {
+            level.playSound(null, pos, fluid.getPickupSound().get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        }else{ // 液体に効果音設定が無い場合、代わりに水の音で代用
+            level.playSound(null,pos, Fluids.WATER.getPickupSound().get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
+        // 瓶の効果音を再生
+        level.playSound(null,pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+    }
+
     //液体の出し入れ
     @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        //ブロックエンティティのデータを取得
+        //干渉するブロックエンティティのデータを取得
         BlockPos pos = context.getClickedPos();
         BlockEntity blockEntity = context.getLevel().getBlockEntity(pos);
+        if(blockEntity == null){return InteractionResult.PASS;}
 
         //ブロックエンティティ側が対応しているか確認
-        if (blockEntity instanceof IFluidHandler blockFluidHandler) {
+        if (blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()) {
+            IFluidHandler blockFluidHandler =
+                    blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER)
+                    .orElseThrow(() -> new RuntimeException("blockEntityCapacity is null. pos:"+ pos));
             //その他のデータを取得
             Player player = context.getPlayer();
+            //プレイヤー以外の操作はパス
+            if(player==null){return InteractionResult.PASS;}
+            //ワールドとアイテムを取得
             Level level = context.getLevel();
             ItemStack heldItem = player.getItemInHand(context.getHand());
 
-            //効果音を鳴らしたかどうかを格納 一度だけ鳴らす
-            boolean soundPlayed = false;
-            //プレイヤー以外の操作はパス
-            if(player==null){return InteractionResult.PASS;}
             //nbtを取り出す
-            this.mainTank.setFluid(getNbtFluid(heldItem));
+            mainTank.setFluid(getNbtFluid(heldItem));
+            //アイテムの数を取得
+            final int itemCount = heldItem.getCount();
             //アイテムがひとつのときは、USE_AMOUNTずつ出し入れ
-            if (heldItem.getCount()==1)
+            if (itemCount==1)
             {
                 if (player.isShiftKeyDown()) {
                     // シフト右クリック: アイテムからブロックへ移す
-                    // ブロックにどれだけ流し入れられるか確認 0なら動作を終わる
-                    int fillAllowance = blockFluidHandler.getTankCapacity(0) - blockFluidHandler.getFluidInTank(0).getAmount();
-                    if (fillAllowance > 0) {
-                        // アイテムの液体をどれだけ取り出せるか確認
-                        FluidStack drainAllowance = this.mainTank.drain(Math.min(USE_AMOUNT, fillAllowance), IFluidHandler.FluidAction.SIMULATE);
-                        if (!drainAllowance.isEmpty()) {
-                            // ブロックの液体を増やす
-                            int filledAmount = blockFluidHandler.fill(drainAllowance, IFluidHandler.FluidAction.EXECUTE);
-                            // 実際にブロックに追加された液体の量だけ、アイテムから液体を取り出す
-                            this.mainTank.drain(filledAmount, IFluidHandler.FluidAction.EXECUTE);
-
-                            // 効果音を再生
-                            level.playSound(null, pos, drainAllowance.getFluid().getPickupSound().get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                            //ブロックエンティティの更新を保存
-                            blockEntity.setChanged();
-                            //容量が0になった場合、nbtを削除
-                            if(this.mainTank.getFluidInTank(0).isEmpty()){
-                                ItemStack resultItem = new ItemStack(heldItem.getItem());
-                                resultItem.setTag(null);
-                                player.setItemInHand(context.getHand(),resultItem);
-                            }else{
-                                //アイテムのnbtを更新
-                                setNbtFluid(heldItem, this.mainTank.getFluidInTank(0));
-                                setCustomModelDataValue(heldItem,this.mainTank.getFluid(),this.mainTank.getCapacity());
-                            }
-                            return InteractionResult.SUCCESS;
+                    FluidStack transferred = transferFluid(blockFluidHandler,this,USE_AMOUNT);
+                    if (!transferred.isEmpty()) {
+                        // 効果音を再生
+                        playFluidSound(level,pos, transferred.getFluid());
+                        //ブロックエンティティの更新を保存
+                        blockEntity.setChanged();
+                        //容量が0になった場合、nbtを削除
+                        if(this.mainTank.isEmpty()){
+                            ItemStack resultItem = new ItemStack(heldItem.getItem());
+                            resultItem.setTag(null);
+                            player.setItemInHand(context.getHand(),resultItem);
+                        }else{
+                            //アイテムのnbtを更新
+                            setNbtFluid(heldItem, this.mainTank.getFluidInTank(0));
+                            setCustomModelDataValue(heldItem,this.mainTank.getFluid(),this.mainTank.getCapacity());
                         }
+                        return InteractionResult.SUCCESS;
                     }
                 } else {
                     // 右クリック: ブロックからアイテムへ移す
-                    // アイテムにどれだけ流し入れられるか確認 0なら動作を終わる
-                    int fillAllowance = this.mainTank.getCapacity() - this.mainTank.getFluidAmount();
-                    if (fillAllowance > 0) {
-                        // ブロックの液体をどれだけ取り出せるか確認
-                        FluidStack drainAllowance = blockFluidHandler.drain(Math.min(USE_AMOUNT, fillAllowance), IFluidHandler.FluidAction.SIMULATE);
-                        if (!drainAllowance.isEmpty()) {
-                            // アイテムの液体を増やす
-                            int filledAmount = this.mainTank.fill(drainAllowance, IFluidHandler.FluidAction.EXECUTE);
-                            // 実際にアイテムに追加された液体の量だけ、ブロックから液体を取り出す
-                            blockFluidHandler.drain(filledAmount, IFluidHandler.FluidAction.EXECUTE);
+                    FluidStack transferred = transferFluid(this,blockFluidHandler,USE_AMOUNT);
+                    if (!transferred.isEmpty()) {
+                        // 効果音を再生
+                        playFluidSound(level,pos, transferred.getFluid());
+                        //ブロックエンティティの更新を保存
+                        blockEntity.setChanged();
+                        //アイテムのnbtを更新
+                        setNbtFluid(heldItem, this.mainTank.getFluidInTank(0));
+                        setNbtColor(heldItem, getFluidColor(this.mainTank.getFluidInTank(0)));
+                        setCustomModelDataValue(heldItem,this.mainTank.getFluid(),this.mainTank.getCapacity());
 
-                            // 効果音を再生
-                            level.playSound(null, pos, drainAllowance.getFluid().getPickupSound().get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                            //ブロックエンティティの更新を保存
-                            blockEntity.setChanged();
-                            //アイテムのnbtを更新
-                            setNbtFluid(heldItem, this.mainTank.getFluidInTank(0));
-                            setNbtColor(heldItem, getFluidColor(this.mainTank.getFluidInTank(0)));
-                            setCustomModelDataValue(heldItem,this.mainTank.getFluid(),this.mainTank.getCapacity());
-
-                            return InteractionResult.SUCCESS;
-                        }
+                        return InteractionResult.SUCCESS;
                     }
                 }
                 return InteractionResult.PASS;
             }
             else//アイテムがスタックされているときは、一度に移せるだけ移す
             {
-                //アイテムの数を取得
-                final int itemCount = heldItem.getCount();
-                /*
-                //アイテムの種類を取得
-                final ItemLike itemLike = heldItem.getItemHolder().get();
-                //扱う液体の種類を取得
-                final Fluid handlingFluid = getNbtFluid(heldItem).getFluid();
-                //ブロックからどれだけ取り出せるか取得
-                int blockDrainAllowance = blockFluidHandler.getFluidInTank(0).getAmount();
-                // ブロックにどれだけ流し入れられるか取得
-                int blockFillAllowance = blockFluidHandler.getTankCapacity(0) - blockDrainAllowance;
-                if(player.isShiftKeyDown()){
-                    //シフト右:アイテムからブロックへ
-                    //流し入れられる量が0なら動作を終わる
-                    if (blockFillAllowance > 0) {
-                        //アイテムの液体をどれだけ取り出せるか確認 空なら動作を終わる
-                        int drainAllowance = this.mainTank.drain(this.mainTank.getCapacity(), IFluidHandler.FluidAction.SIMULATE).getAmount();
-                        if(drainAllowance > 0){
-                            //空になる瓶の数と端数の瓶の内容量、ブロックに残る量を計算
-                            int emptyingAmount = (int) Math.min(itemCount,Math.floor(blockFillAllowance/drainAllowance));
-                            int itemRemainingVolume = blockFillAllowance % drainAllowance;
-                            int blockRemainingVolume = blockDrainAllowance + emptyingAmount * drainAllowance + itemRemainingVolume;
-                            //空になったアイテムを与える
-                            ItemStack resultEmptiedBottle = new ItemStack(itemLike,emptyingAmount);
-                            player.addItem(resultEmptiedBottle);
-                            //元のアイテムスタックの数を変更
-                            heldItem.shrink(emptyingAmount);
-                            //端数が残ったアイテムを与える 端数が無い場合スキップ
-                            if(itemRemainingVolume >0)
-                            {
-                                ItemStack resultRemainingBottle = new ItemStack(itemLike);
-                                //液体を用意
-                                FluidStack resultRemainingFluid = new FluidStack(handlingFluid,itemRemainingVolume);
-                                //アイテムのnbtを更新
-                                setNbtFluid(resultRemainingBottle, resultRemainingFluid);
-                                setNbtColor(resultRemainingBottle, getFluidColor(resultRemainingFluid));
-                                setCustomModelDataValue(resultRemainingBottle,resultRemainingFluid.getAmount(),this.mainTank.getCapacity());
-                                //元のアイテムスタックの数を変更
-                                heldItem.shrink(1);
-                            }
-                            // 効果音を再生
-                            level.playSound(null, pos, handlingFluid.getPickupSound().get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-
-                            //ブロックエンティティの更新
-                            blockFluidHandler.getFluidInTank(0).setAmount(blockRemainingVolume);
-                            //ブロックエンティティの更新を保存
-                            blockEntity.setChanged();
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                    return InteractionResult.PASS;
-                }else{
-
-                    //右: ブロックからアイテムへ
-                    //取り出せる量が0なら動作を終わる
-                    if (blockDrainAllowance > 0) {
-                        //アイテムに液体をどれだけ入れられるか確認 空なら動作を終わる
-                        int fillAllowance = this.mainTank.fill(this.mainTank.getFluid(), IFluidHandler.FluidAction.SIMULATE);
-                        if (fillAllowance>0) {
-                            //満タンになる瓶の数と端数の瓶の内容量、ブロックに残る量を計算
-                            int fulfillingAmount = (int) Math.min(itemCount, Math.floor(blockDrainAllowance / fillAllowance));
-                            int itemRemainingVolume = blockDrainAllowance % fillAllowance;
-                            int blockRemainingVolume = blockDrainAllowance - ( fulfillingAmount * fillAllowance + itemRemainingVolume);
-                            //満タンになったアイテムを与える
-                            ItemStack resultFulfilledBottle = new ItemStack(itemLike, fulfillingAmount);
-                            //液体を用意
-                            FluidStack resultFulfilledFluid = new FluidStack(handlingFluid, this.mainTank.getCapacity());
-                            //アイテムのnbtを更新
-                            setNbtFluid(resultFulfilledBottle, resultFulfilledFluid);
-                            setNbtColor(resultFulfilledBottle, getFluidColor(resultFulfilledFluid));
-                            setCustomModelDataValue(resultFulfilledBottle, resultFulfilledFluid.getAmount(), this.mainTank.getCapacity());
-                            player.addItem(resultFulfilledBottle);
-                            //元のアイテムスタックの数を変更
-                            heldItem.shrink(fulfillingAmount);
-                            //端数が残ったアイテムを与える 端数が無い場合スキップ
-                            if (itemRemainingVolume > 0) {
-                                ItemStack resultRemainingBottle = new ItemStack(itemLike);
-                                //液体を用意
-                                FluidStack resultRemainingFluid = new FluidStack(handlingFluid,itemRemainingVolume);
-                                //アイテムのnbtを更新
-                                setNbtFluid(resultRemainingBottle, resultRemainingFluid);
-                                setNbtColor(resultRemainingBottle, getFluidColor(resultRemainingFluid));
-                                setCustomModelDataValue(resultRemainingBottle,resultRemainingFluid.getAmount(),this.mainTank.getCapacity());
-                                //元のアイテムスタックの数を変更
-                                heldItem.shrink(1);
-                            }
-                            // 効果音を再生
-                            level.playSound(null, pos, handlingFluid.getPickupSound().get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-
-                            //ブロックエンティティの更新
-                            blockFluidHandler.getFluidInTank(0).setAmount(blockRemainingVolume);
-                            //ブロックエンティティの更新を保存
-                            blockEntity.setChanged();
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                }
-                */
+                //スタック内の液体をいったん統合
+                FluidStack wholeStack = new FluidStack(this.mainTank.getFluid().getFluid(), itemCount * this.mainTank.getFluidAmount());
+                FluidTank wholeTank = new FluidTank(itemCount * mainTank.getCapacity());
+                wholeTank.setFluid(wholeStack);
 
                 if(player.isShiftKeyDown()){
-                    //シフト右:アイテムからブロックへ
-                    for (int i = 0; i < itemCount; i++) {
-                        // ブロックにどれだけ流し入れられるか確認 0なら動作を終わる
-                        int fillAllowance = blockFluidHandler.getTankCapacity(0) - blockFluidHandler.getFluidInTank(0).getAmount();
-                        if (fillAllowance <= 0) {break;}
-                        // アイテムの液体をどれだけ取り出せるか確認 0なら動作を終わる
-                        FluidStack drainAllowance = this.mainTank.drain(fillAllowance, IFluidHandler.FluidAction.SIMULATE);
-                        if(drainAllowance.isEmpty()){break;}
-                        //ブロックの液体を増やす
-                        int filledAmount = blockFluidHandler.fill(drainAllowance, IFluidHandler.FluidAction.EXECUTE);
+                    // シフト右クリック: アイテムスタックからブロックへ移す
+                    FluidStack transferred = transferFluid(blockFluidHandler,wholeTank, wholeTank.getCapacity());
+                    if(!transferred.isEmpty()){
+                        // 効果音を再生
+                        playFluidSound(level,pos, transferred.getFluid());
+                        //ブロックエンティティの更新を保存
+                        blockEntity.setChanged();
 
-                        //アイテムを渡す
-                        //アイテムを用意する
-                        ItemStack resultBottle = new ItemStack(heldItem.getItem());
-                        //液体の結果を用意する
-                        FluidStack resultFluid = drainAllowance;
-                        //容量が0になった場合、nbtは書き込まない
-                        int resultAmount = this.mainTank.getFluidAmount()-filledAmount;
-                        if(resultAmount!=0)
+                        //transferredがアイテム幾つ分か計算
+                        //一つ一つのアイテムの操作可能量
+                        int itemFluidTransferAllowance = this.mainTank.getFluidAmount();
+                        //完全に移送しうるアイテムの数
+                        int fullTransferredItemCount = transferred.getAmount()/itemFluidTransferAllowance;
+                        //端数の液体の量
+                        int fractionalTransferredFluidAmount = transferred.getAmount() % itemFluidTransferAllowance;
+
+                        //空瓶を用意
+                        ItemStack resultItem = new ItemStack(heldItem.getItem(),fullTransferredItemCount);
+
+                        //手持ちを全部消費する場合、操作後のスタックに置き換え
+                        if(
+                                itemCount == fullTransferredItemCount || //アイテムを全部完全に移送可能か あるいは
+                                (itemCount == fullTransferredItemCount-1 && fractionalTransferredFluidAmount>0)//ひとつだけ端数で、ほかは完全に移送可能な場合
+                        ){
+                            player.setItemInHand(context.getHand(),resultItem);
+                        }else
                         {
-                            //もとの液体の量-ブロックに渡した液体の量
-                            resultFluid.setAmount(resultAmount);
-                            //アイテムのnbtを更新
-                            setNbtFluid(resultBottle, resultFluid);
-                            setNbtColor(resultBottle, getFluidColor(resultFluid));
-                            setCustomModelDataValue(resultBottle,resultFluid,this.mainTank.getCapacity());
+                            //手持ちを消費
+                            heldItem.shrink(fullTransferredItemCount);
+                            //操作後のスタックを渡す
+                            addOrDrop(player,level,pos,resultItem);
                         }
-
-                        //プレイヤーに渡す 渡せなかった場合ドロップ
-                        boolean addSucceed = player.addItem(resultBottle);
-                        if (!addSucceed) {
-                            ItemEntity itemEntity = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), resultBottle);
-                            level.addFreshEntity(itemEntity);
+                        //端数がある場合アイテムを渡す
+                        if(fractionalTransferredFluidAmount>0){
+                            //手持ちを消費
+                            heldItem.shrink(1);
+                            //端数の液体スタックを用意
+                            FluidStack fractionalFluid = new FluidStack(transferred.getFluid(),fractionalTransferredFluidAmount);
+                            //アイテムを用意
+                            ItemStack fractionalItem = new ItemStack(heldItem.getItem());
+                            //アイテムのnbtを設定
+                            setNbtFluid(fractionalItem, fractionalFluid);
+                            setCustomModelDataValue(fractionalItem,fractionalFluid,this.mainTank.getCapacity());
+                            //渡す
+                            addOrDrop(player,level,pos,fractionalItem);
                         }
-                        //アイテムを1減らす
-                        heldItem.shrink(1);
-
-                        // 効果音を再生
-                        if(!soundPlayed){
-                            level.playSound(null, pos, drainAllowance.getFluid().getPickupSound().get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                            soundPlayed=true;
-                        }
+                        return InteractionResult.SUCCESS;
                     }
                 }else{
-                    //右: ブロックからアイテムへ
-                    for (int i = 0; i < itemCount; i++) {
-                        // アイテムにどれだけ流し入れられるか確認 0なら動作を終わる
-                        int fillAllowance = this.mainTank.getTankCapacity(0) - this.mainTank.getFluidInTank(0).getAmount();
-                        if (fillAllowance <= 0) {break;}
-                        // ブロックの液体をどれだけ取り出せるか確認 0なら動作を終わる
-                        FluidStack drainAllowance = blockFluidHandler.drain(fillAllowance, IFluidHandler.FluidAction.SIMULATE);
-                        if(drainAllowance.isEmpty()){break;}
-                        //アイテムの液体を増やす
-                        int filledAmount = this.mainTank.fill(drainAllowance, IFluidHandler.FluidAction.SIMULATE);
-
-                        // 実際にアイテムに追加された液体の量だけ、ブロックから液体を取り出す
-                        blockFluidHandler.drain(filledAmount, IFluidHandler.FluidAction.EXECUTE);
-
-
-                        //アイテムを渡す
-                        //液体の結果を用意する
-                        FluidStack resultFluid = drainAllowance;
-                        //もとの液体の量+増やした液体の量
-                        resultFluid.setAmount(this.mainTank.getFluidAmount()+filledAmount);
-
-                        //アイテムを用意する
-                        ItemStack resultBottle = new ItemStack(heldItem.getItem());
-                        //アイテムのnbtを更新
-                        setNbtFluid(resultBottle, resultFluid);
-                        setNbtColor(resultBottle, getFluidColor(resultFluid));
-                        setCustomModelDataValue(resultBottle,resultFluid,this.mainTank.getCapacity());
-
-                        //プレイヤーに渡す 渡せなかった場合ドロップ
-                        boolean addSucceed = player.addItem(resultBottle);
-                        if (!addSucceed) {
-                            ItemEntity itemEntity = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), resultBottle);
-                            level.addFreshEntity(itemEntity);
-                        }
-                        //アイテムを1減らす
-                        heldItem.shrink(1);
-
+                    // 右クリック: ブロックからアイテムスタックへ移す
+                    FluidStack transferred = transferFluid(wholeTank,blockFluidHandler,blockFluidHandler.getTankCapacity(0));
+                    if(!transferred.isEmpty()){
                         // 効果音を再生
-                        if(!soundPlayed){
-                            level.playSound(null, pos, drainAllowance.getFluid().getPickupSound().get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                            soundPlayed=true;
+                        playFluidSound(level,pos, transferred.getFluid());
+                        //ブロックエンティティの更新を保存
+                        blockEntity.setChanged();
+
+                        //transferredがアイテム幾つ分か計算
+                        //一つ一つのアイテムの操作可能量
+                        int itemFluidTransferAllowance = this.mainTank.getCapacity()-this.mainTank.getFluidAmount();
+                        //完全に移送しうるアイテムの数
+                        int fullTransferredItemCount = transferred.getAmount()/itemFluidTransferAllowance;
+                        //端数の液体の量
+                        int fractionalTransferredFluidAmount = transferred.getAmount() % itemFluidTransferAllowance;
+
+                        //満タンの液体を用意
+                        FluidStack resultFluid = new FluidStack(transferred.getFluid(),this.mainTank.getCapacity());
+                        //満タンの瓶を用意
+                        ItemStack resultItem = new ItemStack(heldItem.getItem(),fullTransferredItemCount);
+                        //アイテムのnbtを設定
+                        setNbtFluid(resultItem, resultFluid);
+                        setNbtColor(resultItem, getFluidColor(resultFluid));
+                        setCustomModelDataValue(resultItem,resultFluid,this.mainTank.getCapacity());
+
+                        //手持ちを全部消費する場合、操作後のスタックに置き換え
+                        if(
+                                itemCount == fullTransferredItemCount || //アイテムを全部完全に移送可能か あるいは
+                                (itemCount == fullTransferredItemCount-1 && fractionalTransferredFluidAmount>0)//ひとつだけ端数で、ほかは完全に移送可能な場合
+                        ){
+                            player.setItemInHand(context.getHand(),resultItem);
+                        }else
+                        {
+                            //手持ちを消費
+                            heldItem.shrink(fullTransferredItemCount);
+                            //操作後のスタックを渡す
+                            addOrDrop(player,level,pos,resultItem);
                         }
+                        //端数がある場合アイテムを渡す
+                        if(fractionalTransferredFluidAmount>0){
+                            //手持ちを消費
+                            heldItem.shrink(1);
+                            //端数の液体スタックを用意
+                            FluidStack fractionalFluid = new FluidStack(transferred.getFluid(),fractionalTransferredFluidAmount);
+                            //アイテムを用意
+                            ItemStack fractionalItem = new ItemStack(heldItem.getItem());
+                            //アイテムのnbtを設定
+                            setNbtFluid(fractionalItem, fractionalFluid);
+                            setNbtColor(fractionalItem, getFluidColor(resultFluid));
+                            setCustomModelDataValue(fractionalItem,fractionalFluid,this.mainTank.getCapacity());
+                            //渡す
+                            addOrDrop(player,level,pos,fractionalItem);
+                        }
+                        return InteractionResult.SUCCESS;
                     }
                 }
-                //ブロックエンティティの更新を保存
-                blockEntity.setChanged();
-                return InteractionResult.SUCCESS;
+                return InteractionResult.PASS;
             }
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public @NotNull ItemStack getContainer() {
+        return new ItemStack(this);
+    }
+
+    @Override
+    public int getTanks() {
+        return this.mainTank.getTanks();
+    }
+
+    @Override
+    public @NotNull FluidStack getFluidInTank(int tank) {
+        return this.mainTank.getFluidInTank(tank);
+    }
+
+    @Override
+    public int getTankCapacity(int tank) {
+        return this.mainTank.getTankCapacity(tank);
+    }
+
+    @Override
+    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        return this.mainTank.isFluidValid(tank,stack);
+    }
+
+    @Override
+    public int fill(FluidStack resource, FluidAction action) {
+        return this.mainTank.fill(resource,action);
+    }
+
+    @Override
+    public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        return this.mainTank.drain(resource,action);
+    }
+
+    @Override
+    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        return this.mainTank.drain(maxDrain,action);
     }
 }

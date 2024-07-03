@@ -1,8 +1,10 @@
 {
   "itemGroup.heliopause_main": "Heliopause",
-  "block.heliopause.alchemy_reactor": "Alchemy Reactor",
+  "block.heliopause.alchemy_stove": "Alchemy Stove",
+  "block.heliopause.alchemy_roasting_table": "Alchemy Roasting Table",
   "block.heliopause.crucible": "Crucible",
   "block.heliopause.orb": "Fluid Sphere",
+  "block.heliopause.fluid_cage": "Fluid Cage",
   "block.heliopause.alchemy_biron_block": "Alchemy Biron Block",
   "block.heliopause.glowstone_alloy_block": "Glowstone Alloy Block",
 
@@ -12,5 +14,8 @@
   "item.heliopause.glowstone_alloy_nugget": "Glowstone Alloy Nugget",
 
   "item.heliopause.vial": "Vial",
-  "item.heliopause.large_bottle": "Large Bottle"
+  "item.heliopause.large_bottle": "Large Bottle",
+
+  "recipe.heliopause.roasting": "Roasting",
+  "recipe.heliopause.orrery": "Orrery Whirling"
 }

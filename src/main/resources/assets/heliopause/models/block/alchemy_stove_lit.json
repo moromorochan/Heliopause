@@ -1,0 +1,6 @@
+{
+    "parent":"heliopause:block/alchemy_stove",
+    "textures": {
+        "main": "heliopause:block/alchemy_stove_lit"
+    }
+}

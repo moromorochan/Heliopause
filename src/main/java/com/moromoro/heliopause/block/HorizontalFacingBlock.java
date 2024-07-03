@@ -10,29 +10,33 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public abstract class HorizontalFacingBlock extends Block {
 
     public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
 
-    public HorizontalFacingBlock(Properties props)
+    public HorizontalFacingBlock(Properties properties)
     {
-        super(props);
+        super(properties);
     }
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context)
+    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context)
     {
-        return super.getStateForPlacement(context).setValue(DIRECTION, context.getHorizontalDirection().getOpposite());
+        return Objects.requireNonNull(super.getStateForPlacement(context)).setValue(DIRECTION, context.getHorizontalDirection().getOpposite());
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder)
     {
         super.createBlockStateDefinition(builder);
         builder.add(DIRECTION);
     }
+    /*
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+    public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean isMoving)
     {
         if(state.getBlock() != newState.getBlock())
         {
@@ -44,4 +48,6 @@ public abstract class HorizontalFacingBlock extends Block {
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }
+
+     */
 }

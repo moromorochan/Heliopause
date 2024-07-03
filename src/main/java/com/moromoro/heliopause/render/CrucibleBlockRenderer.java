@@ -10,21 +10,38 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Math;
 import org.joml.Matrix4f;
 
+import java.util.HashMap;
+
 public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockEntity> {
     public CrucibleBlockRenderer(BlockEntityRendererProvider.Context context){
-
     }
     //ブロックの端から液面の端までの距離
     private static final float MARGIN = 2/16f;
+
+    private static HashMap<BlockPos,FluidStack> fluidList = new HashMap<>();
+
+    public static void updateData(BlockPos pos, FluidStack updateStack) {
+        if(updateStack.getAmount() == 0){removeData(pos); return;}
+        if (fluidList.containsKey(pos)){
+            fluidList.replace(pos,updateStack);
+        }else{
+            fluidList.put(pos,updateStack);
+        }
+    }
+    public static void removeData(BlockPos pos){
+        fluidList.remove(pos);
+    }
+
     @Override
-    public void render(CrucibleBlockEntity entity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-        //タンクの液体を取得
-        FluidStack fluidStack = entity.getFluidInTank(0);
+    public void render(CrucibleBlockEntity entity, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
+        FluidStack fluidStack = fluidList.getOrDefault(entity.getBlockPos(), FluidStack.EMPTY);
         //タンクが空なら描画処理を完了
         if (fluidStack.isEmpty())
         {
@@ -41,15 +58,14 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
         float deltaTime = (currentFrameTime - entity.lastFrameTime) / 1_000_000_000.0F;
 
         //内容量の見た目スムージングを計算
-        entity.smoothedTankAmount = Math.lerp(entity.smoothedTankAmount,fluidStack.getAmount(),deltaTime * 15f);
+        entity.smoothedTankAmount = Math.lerp(entity.smoothedTankAmount, fluidStack.getAmount(),deltaTime * 15f);
+        entity.smoothedTankAmount = Math.clamp(0,entity.getTankCapacity(0),entity.smoothedTankAmount);
+        //entity.smoothedTankAmount= fluidStack.getAmount();
 
         //液面高さの上限と下限を決める
-        final float fillMax = 15f, fillMin = 6f;
+        final float fillMax = 15f, fillMin = 5f;
         //タンクの割合から液面高さを計算
-        float fillPercentage = Math.min(fillMax, fillMin + (fillMax-fillMin)*((float) entity.smoothedTankAmount / entity.getTankCapacity(0)))/16f;
-
-        // 現在のフレーム時間を保存
-        entity.lastFrameTime = currentFrameTime;
+        float fillPercentage = Math.clamp(fillMin, fillMax, fillMin + (fillMax-fillMin)*(entity.smoothedTankAmount / entity.getTankCapacity(0)))/16f;
 
         //親モデルをスタックに保管して、子モデルの編集をはじめる
         poseStack.pushPose();
@@ -57,6 +73,9 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
         renderFluid(poseStack, bufferSource, fluidStack, fillPercentage, combinedLight);
         //親モデルをスタックから取り出して、子モデルの編集をおわる
         poseStack.popPose();
+
+        // 現在のフレーム時間を保存
+        entity.lastFrameTime = currentFrameTime;
     }
 
     private static void renderFluid(PoseStack poseStack, MultiBufferSource bufferSource, FluidStack fluidStack, float heightPercentage, int combinedLight) {

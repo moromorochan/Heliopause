@@ -11,36 +11,40 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.*;
+import org.jetbrains.annotations.NotNull;
 
-public class ReactorBlock extends HorizontalFacingBlock implements EntityBlock {
+public class AlchemyStoveBlock extends HorizontalFacingEntityBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    public ReactorBlock() {
+    public AlchemyStoveBlock() {
         super(BlockBehaviour.Properties.of()
                 .strength(2.0F)
                 .sound(SoundType.LANTERN)
-                .lightLevel(state -> state.getValue(LIT) ? 15 : 9)
+                .lightLevel(blockState -> blockState.getValue(LIT) ? 15 : 9)
         );
         this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(DIRECTION, Direction.NORTH));
     }
 
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context){
-        return Shapes.join(
-                Block.box(0,0,0,16,3,16),
-                Block.box(1,3,1,15,13,15),
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context){
+        return Shapes.join(Shapes.join(
+                        Block.box(0,0,0,16,3,16),
+                        Block.box(1,3,1,15,9,15),
+                        BooleanOp.OR
+                ),
+                Block.box(0,9,0,16,13,16),
                 BooleanOp.OR
         );
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder)
     {
         super.createBlockStateDefinition(builder);
         builder.add(LIT);
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos p_153215_, @NotNull BlockState p_153216_) {
         return null;
     }
 }

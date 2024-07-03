@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=east,half=upper": {
+      "model": "heliopause:block/fluid_cage_beam",
+      "y": 90
+    },
+    "facing=north,half=upper": {
+      "model": "heliopause:block/fluid_cage_beam"
+    },
+    "facing=south,half=upper": {
+      "model": "heliopause:block/fluid_cage_beam",
+      "y": 180
+    },
+    "facing=west,half=upper": {
+      "model": "heliopause:block/fluid_cage_beam",
+      "y": 270
+    },
+    "half=lower": {
+      "model": "heliopause:block/fluid_cage_base"
+    }
+  }
+}

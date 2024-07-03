@@ -2,11 +2,11 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "forge:ingots/alchemy_biron"
+      "tag": "forge:storage_blocks/alchemy_biron"
     }
   ],
   "result": {
-    "item": "heliopause:alchemy_biron_nugget",
+    "item": "heliopause:alchemy_biron_ingot",
     "count": 9
   }
 }

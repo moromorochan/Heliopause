@@ -1,0 +1,23 @@
+{
+	"credit": "Made by moromorochan with Blockbench",
+	"textures": {
+		"particle": "minecraft:block/dark_oak_planks",
+		"all": "minecraft:block/dark_oak_planks"
+	},
+	"elements": [
+		{
+			"name": "base",
+			"from": [2, 0, 2],
+			"to": [14, 4, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [2, 12, 14, 16], "texture": "#all"},
+				"east": {"uv": [2, 12, 14, 16], "texture": "#all"},
+				"south": {"uv": [2, 12, 14, 16], "texture": "#all"},
+				"west": {"uv": [2, 12, 14, 16], "texture": "#all"},
+				"up": {"uv": [14, 14, 2, 2], "texture": "#all"},
+				"down": {"uv": [14, 2, 2, 14], "texture": "#all", "cullface": "down"}
+			}
+		}
+	]
+}

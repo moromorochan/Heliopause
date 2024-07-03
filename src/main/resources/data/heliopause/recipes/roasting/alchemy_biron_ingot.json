@@ -1,0 +1,20 @@
+{
+  "type": "heliopause:roasting",
+  "ingredients": [
+    {
+      "tag":"forge:ingots/copper"
+    },
+    {
+      "tag":"forge:ingots/copper"
+    },
+    {
+      "tag":"forge:nuggets/gold"
+    },
+    {
+      "tag":"minecraft:leaves"
+    }
+  ],
+  "result": {
+    "item":"heliopause:alchemy_biron_ingot","count": 2
+  }
+}
