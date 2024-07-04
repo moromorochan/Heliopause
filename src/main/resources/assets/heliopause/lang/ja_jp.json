@@ -14,7 +14,15 @@
   "item.heliopause.glowstone_alloy_nugget": "グロウストーン合金塊",
 
   "item.heliopause.vial": "バイアル瓶",
+  "item.heliopause.vial.filled": "%1$s入りバイアル瓶",
   "item.heliopause.large_bottle": "大瓶",
+  "item.heliopause.large_bottle.filled": "%1$s入り大瓶",
+
+  "item.heliopause.bottle.tooltip.amount": "充填量: %s/%smb",
+  "item.heliopause.bottle.tooltip.description1": "右クリックで瓶に充填",
+  "item.heliopause.bottle.tooltip.description2": "シフト右クリックで瓶から排出",
+  "item.heliopause.bottleStack.tooltip.description1": "右クリックでスタックされた瓶に一括充填",
+  "item.heliopause.bottleStack.tooltip.description2": "シフト右クリックでスタックされた瓶から一括排出",
 
   "recipe.heliopause.roasting": "焙煎",
   "recipe.heliopause.orrery": "旋天模倣"

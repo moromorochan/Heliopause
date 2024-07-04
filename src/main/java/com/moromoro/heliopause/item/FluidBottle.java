@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,6 +30,9 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class FluidBottle extends Item implements IFluidHandlerItem {
 
@@ -182,6 +188,42 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
         nbt.put(FLUID_NBT_KEY,fluid.writeToNBT(new CompoundTag()));
     }
 
+    //瓶の名前を用意
+    private void setBottleName(ItemStack itemStack, FluidStack fluidStack) {
+        //カスタムされた名称がある場合はスキップ
+        if(itemStack.hasCustomHoverName()){return;}
+
+        // 液体の翻訳名を取得
+        String fluidName = fluidStack.getTranslationKey();
+        // 瓶の名前を設定
+        String bottleName = getDescriptionId(itemStack)+".filled";
+        //スタイルを設定
+        Style style = Style.EMPTY.withItalic(false);
+        // 翻訳キーを設定
+        itemStack.setHoverName(Component.translatable(bottleName,Component.translatable(fluidName)).withStyle(style));
+    }
+
+    //ツールチップを用意
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(itemStack, level, tooltip, flag);
+
+        //数値を取得
+        int fluidAmount = getNbtFluid(itemStack).getAmount();
+        int tankCapacity = this.mainTank.getCapacity();
+        // 液体の量を表示
+        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.amount", fluidAmount,tankCapacity));
+
+        //ボトルのスタック数に応じた操作説明を表示
+        if (itemStack.getCount() == 1) {
+            tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));
+            tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2"));
+        } else {
+            tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));
+            tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
+        }
+    }
+
     //液体の移動
     private FluidStack transferFluid(IFluidHandler fillStack,IFluidHandler drainStack, int maxTransfer){
         // fillStackにどれだけ流し入れられるか確認 0なら動作を終わる
@@ -279,6 +321,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
                         blockEntity.setChanged();
                         //アイテムのnbtを更新
                         setNbtFluid(heldItem, this.mainTank.getFluidInTank(0));
+                        setBottleName(heldItem,this.mainTank.getFluidInTank(0));
                         setNbtColor(heldItem, getFluidColor(this.mainTank.getFluidInTank(0)));
                         setCustomModelDataValue(heldItem,this.mainTank.getFluid(),this.mainTank.getCapacity());
 
@@ -366,6 +409,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
                         ItemStack resultItem = new ItemStack(heldItem.getItem(),fullTransferredItemCount);
                         //アイテムのnbtを設定
                         setNbtFluid(resultItem, resultFluid);
+                        setBottleName(resultItem, resultFluid);
                         setNbtColor(resultItem, getFluidColor(resultFluid));
                         setCustomModelDataValue(resultItem,resultFluid,this.mainTank.getCapacity());
 
@@ -392,6 +436,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
                             ItemStack fractionalItem = new ItemStack(heldItem.getItem());
                             //アイテムのnbtを設定
                             setNbtFluid(fractionalItem, fractionalFluid);
+                            setBottleName(fractionalItem, resultFluid);
                             setNbtColor(fractionalItem, getFluidColor(resultFluid));
                             setCustomModelDataValue(fractionalItem,fractionalFluid,this.mainTank.getCapacity());
                             //渡す
