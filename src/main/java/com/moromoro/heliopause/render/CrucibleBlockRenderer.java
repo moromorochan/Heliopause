@@ -2,6 +2,7 @@ package com.moromoro.heliopause.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.CrucibleBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -45,9 +47,9 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
         //タンクが空なら描画処理を完了
         if (fluidStack.isEmpty())
         {
-            entity.smoothedTankAmount=0f;
+            entity.setSmoothedTankAmount(0f);
             // 現在のフレーム時間を保存
-            entity.lastFrameTime = System.nanoTime();
+            entity.setLastFrameTime(System.nanoTime());
 
             return;
         }
@@ -55,58 +57,85 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
         // 現在のフレーム時間を取得
         long currentFrameTime = System.nanoTime();
         // デルタ時間を計算（秒単位）
-        float deltaTime = (currentFrameTime - entity.lastFrameTime) / 1_000_000_000.0F;
+        float deltaTime = (currentFrameTime - entity.getLastFrameTime()) / 1_000_000_000.0F;
 
         //内容量の見た目スムージングを計算
-        entity.smoothedTankAmount = Math.lerp(entity.smoothedTankAmount, fluidStack.getAmount(),deltaTime * 15f);
-        entity.smoothedTankAmount = Math.clamp(0,entity.getTankCapacity(0),entity.smoothedTankAmount);
-        //entity.smoothedTankAmount= fluidStack.getAmount();
+        entity.setSmoothedTankAmount(Math.lerp(entity.getSmoothedTankAmount(), fluidStack.getAmount(), deltaTime * 15f));
+        //entity.setSmoothedTankAmount(Math.clamp(0, entity.getTankCapacity(0), entity.getSmoothedTankAmount()));
 
         //液面高さの上限と下限を決める
         final float fillMax = 15f, fillMin = 5f;
         //タンクの割合から液面高さを計算
-        float fillPercentage = Math.clamp(fillMin, fillMax, fillMin + (fillMax-fillMin)*(entity.smoothedTankAmount / entity.getTankCapacity(0)))/16f;
+        float fillPercentage = Math.clamp(fillMin, fillMax, fillMin + (fillMax-fillMin)*(entity.getSmoothedTankAmount() / entity.getTankCapacity(0)))/16f;
 
         //親モデルをスタックに保管して、子モデルの編集をはじめる
         poseStack.pushPose();
-        //液体の見た目をつくる関数を呼び出す
+        //液体の見た目をつくるメソッドを呼び出す
         renderFluid(poseStack, bufferSource, fluidStack, fillPercentage, combinedLight);
         //親モデルをスタックから取り出して、子モデルの編集をおわる
         poseStack.popPose();
 
         // 現在のフレーム時間を保存
-        entity.lastFrameTime = currentFrameTime;
+        entity.setLastFrameTime(currentFrameTime);
     }
 
     private static void renderFluid(PoseStack poseStack, MultiBufferSource bufferSource, FluidStack fluidStack, float heightPercentage, int combinedLight) {
         //レンダリング形式を決める
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.translucent());
-        //液体の種類を取り出す
-        IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());
+
         //(とどまる)液体テクスチャの取得
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidTypeExtensions.getStillTexture(fluidStack));
+        TextureAtlasSprite sprite = getFluidSprite(fluidStack);
         //液体のtintカラーの取得
-        int color = fluidTypeExtensions.getTintColor();
+        float[] color = getFluidColor(fluidStack);
+
+        //ブロックの光レベルの取得
+        int light = calcLight(combinedLight,fluidStack);
+        //メッシュを定義するメソッドを呼び出す
+        renderQuads(poseStack.last().pose(), consumer, sprite, color, heightPercentage, light);
+    }
+
+    //(とどまる)液体テクスチャの取得
+    private static TextureAtlasSprite getFluidSprite(FluidStack fluidStack){
+        ResourceLocation fluidTexture = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getStillTexture(fluidStack);
+        //例外処理
+        if (fluidTexture == null) {
+            Heliopause.LOGGER.debug("Rendering failure on getting Fluid Sprite.");
+            // テクスチャが存在しない場合はエラーテクスチャを返す
+            return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                    .apply(new ResourceLocation("minecraft", "missing_texture"));
+        }
+        return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidTexture);
+    }
+
+    //液体のtintカラーの取得
+    private static float[] getFluidColor(FluidStack fluidStack) {
+        int color = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor();
         //カラーデータを変換
         //alpha *= (color >> 24 & 255) / 255f;
         float red = (color >> 16 & 255) / 255f;
         float green = (color >> 8 & 255) / 255f;
         float blue = (color & 255) / 255f;
+        return new float[] {red,green,blue};
+    }
 
-        //ブロックの光レベルの取得
+    //ブロックの光レベルの取得
+    private static int calcLight(int combinedLight, FluidStack fluidStack){
         int skyLight = combinedLight >> 20 & 15;
         int blockLight = combinedLight >> 4 & 15;
         //液体の明るさの取得
         int fluidLight = fluidStack.getFluid().getFluidType().getLightLevel();
         //計算
         int maxBlockLight =Math.max(blockLight, fluidLight);
-        int newCombinedLight = (skyLight << 20| maxBlockLight << 4);
-
-        //メッシュをつくる関数を呼び出す
-        renderQuads(poseStack.last().pose(), consumer, sprite, red, green, blue, heightPercentage, newCombinedLight);
+        return (skyLight << 20| maxBlockLight << 4);
     }
 
-    private static void renderQuads(Matrix4f matrix, VertexConsumer buffer, TextureAtlasSprite sprite, float r, float g, float b, float heightPercentage, int light) {
+    private static void renderQuads(Matrix4f matrix, VertexConsumer buffer, TextureAtlasSprite sprite, float[] color, float heightPercentage, int light) {
+
+        //色を取り出す
+        float r = color[0];
+        float g = color[1];
+        float b = color[2];
+
         //液面高さを取り出す
         float height = heightPercentage;
         //スプライトからuv座標の四隅を取得

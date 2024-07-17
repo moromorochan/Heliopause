@@ -20,28 +20,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
-    //public FluidCageBlockEntity pairBlockEntity; //対になるブロックエンティティ
-    public BlockPos pairBlockPos;
-    //public boolean isUpperPart; //このブロックエンティティが上側かどうか
 
     public FluidCageBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.FLUID_CAGE_BE.get(), pos, state,32000);
-
-        this.pairBlockPos=getPairBlockPos();
     }
     //このブロックエンティティが上側かどうか取得
     private boolean isUpperPart(){
         return getBlockState().getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER;
     }
 
-    public void setPairBlockPos(BlockPos pos) {
-        this.pairBlockPos= pos;
+    //ブロックの設置向きが天井かどうか取得
+    private boolean isOnCeiling(){
+        return getBlockState().getValue(BlockStateProperties.VERTICAL_DIRECTION) == Direction.DOWN;
     }
 
     //対になるブロックの位置を取得
-    private BlockPos getPairBlockPos(){
+    public BlockPos getPairBlockPos(){
         BlockPos pos = this.getBlockPos();
-        return this.getBlockState().getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos.above();
+        if(isOnCeiling() ^ isUpperPart()){
+            return pos.below();
+        }else{
+            return pos.above();
+        }
     }
 
     //対になるブロックエンティティを取得
@@ -56,36 +56,31 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
         return null;
     }
 
-    @Override
     protected void updateRenderData() {
-        FluidCageBlockRenderer.updateData(this.getBlockPos(),this.mainTank.getFluid());
+        FluidCageBlockRenderer.updateData(this.getBlockPos(), this.mainTank.getFluid());
     }
-    @Override
+
     protected void removeRenderData() {
         FluidCageBlockRenderer.removeData(this.getBlockPos());
     }
 
     @Override
-    public void setRemoved() {
-        if (level != null && !level.isClientSide) {
-            Heliopause.LOGGER.debug("removed_cage");
-        }
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        if (level != null && !level.isClientSide) {
-            Heliopause.LOGGER.debug("unloaded_cage");
-        }
-    }
-
-    @Override
     //レンダリング時のオフセットを設定
     public Vec3 centerOffset() {
-        return new Vec3(0,(18.5f-8f)/16f,0);
+        if(isOnCeiling()){
+            return new Vec3(0,-(18.5f-8f)/16f,0);
+        }else{
+            return new Vec3(0,(18.5f-8f)/16f,0);
+        }
     }
+
+    //タンクへの操作を担う側のブロックエンティティを取得
     private FluidCageBlockEntity getOperationBlockEntity(){
-        return this.isUpperPart() ? this.getPairBlockEntity() : this;
+        FluidCageBlockEntity entity = getPairBlockEntity();
+        if(entity!=null) {
+        return this.isUpperPart() ? entity : this;
+        }
+        return null;
     }
 
     /*----------------動作系 上下で分岐*/
@@ -158,21 +153,14 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
     /*----------------通信系 上下で分岐*/
 
     //データの読み込み
+
     @Override
-    public void load(@NonNull CompoundTag nbt){
-        this.pairBlockPos=getPairBlockPos();
+    public void load(@NonNull CompoundTag nbt) {
+        //Heliopause.LOGGER.debug("load");
         super.load(nbt);
     }
 
     //Capability関連
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        FluidCageBlockEntity entity = getOperationBlockEntity();
-        if(entity!=null) {
-            entity.fluidCapability.invalidate();
-        }
-    }
     @NonNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
@@ -184,4 +172,5 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
         }
         return super.getCapability(cap, side);
     }
+
 }

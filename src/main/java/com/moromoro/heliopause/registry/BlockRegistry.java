@@ -40,6 +40,19 @@ public class BlockRegistry {
                             .strength(1.0f)
                             .sound(SoundType.WOOD)
             ));
+    //液体散布器
+    public static final RegistryObject<Block> FLUID_SPREADER =
+            BLOCKS.register("fluid_spreader",() -> new FluidSpreaderBlock(
+                    BlockBehaviour.Properties.of()
+                            .strength(1.0f)
+                            .sound(SoundType.COPPER)
+            ));
+    //銅パイプ
+    public static final RegistryObject<Block> COPPER_PIPE =
+            BLOCKS.register("copper_pipe",() -> new CopperPipeBlock(
+                    BlockBehaviour.Properties.of()
+                            .sound(SoundType.COPPER)
+            ));
 
     //錬金焙炉
     public static final RegistryObject<Block> ROASTING_TABLE =
@@ -59,6 +72,17 @@ public class BlockRegistry {
                                     .strength(2.0F)
                                     .sound(SoundType.COPPER)
                                     .lightLevel(state -> 9)
+                    )
+            );
+    //ミツマタの苗木と葉
+    public static final RegistryObject<Block> PAPERBUSH_BLOCK =
+            BLOCKS.register("paperbush", () -> new PaperBushPlantBlock(
+                            BlockBehaviour.Properties.of().sound(SoundType.AZALEA)
+                    )
+            );
+    public static final RegistryObject<Block> PAPERBUSH_LEAVES_BLOCK =
+            BLOCKS.register("paperbush_leaves", () -> new Block(
+                            BlockBehaviour.Properties.of().sound(SoundType.AZALEA_LEAVES)
                     )
             );
 }

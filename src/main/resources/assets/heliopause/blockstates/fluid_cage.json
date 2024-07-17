@@ -1,22 +1,47 @@
 {
   "variants": {
-    "facing=east,half=upper": {
+    "facing=east,half=upper,vertical_direction=up": {
       "model": "heliopause:block/fluid_cage_beam",
       "y": 90
     },
-    "facing=north,half=upper": {
+    "facing=north,half=upper,vertical_direction=up": {
       "model": "heliopause:block/fluid_cage_beam"
     },
-    "facing=south,half=upper": {
+    "facing=south,half=upper,vertical_direction=up": {
       "model": "heliopause:block/fluid_cage_beam",
       "y": 180
     },
-    "facing=west,half=upper": {
+    "facing=west,half=upper,vertical_direction=up": {
       "model": "heliopause:block/fluid_cage_beam",
       "y": 270
     },
-    "half=lower": {
+    "half=lower,vertical_direction=up": {
       "model": "heliopause:block/fluid_cage_base"
+    },
+
+
+    "facing=east,half=upper,vertical_direction=down": {
+      "model": "heliopause:block/fluid_cage_beam",
+      "x": 180
+    },
+    "facing=north,half=upper,vertical_direction=down": {
+      "model": "heliopause:block/fluid_cage_beam",
+      "y": 270,
+      "x": 180
+    },
+    "facing=south,half=upper,vertical_direction=down": {
+      "model": "heliopause:block/fluid_cage_beam",
+      "y": 90,
+      "x": 180
+    },
+    "facing=west,half=upper,vertical_direction=down": {
+      "model": "heliopause:block/fluid_cage_beam",
+      "y": 180,
+      "x": 180
+    },
+    "half=lower,vertical_direction=down": {
+      "model": "heliopause:block/fluid_cage_base",
+      "x": 180
     }
   }
 }

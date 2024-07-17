@@ -1,6 +1,7 @@
 package com.moromoro;
 
 import com.mojang.logging.LogUtils;
+import com.moromoro.heliopause.event.TooltipEventHandler;
 import com.moromoro.heliopause.item.FluidBottle;
 import com.moromoro.heliopause.registry.*;
 import com.moromoro.heliopause.screen.RoastingTableScreen;
@@ -36,6 +37,7 @@ public class Heliopause {
 
     // 参照するmodIDを定義
     public static final String MODID = "heliopause";
+    public static final String MODNAME = "Heliopause";
 
     // slf4j logger を参照
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -72,14 +74,22 @@ public class Heliopause {
                 output.accept(ItemRegistry.ROASTING_TABLE_ITEM.get());
                 output.accept(ItemRegistry.CRUCIBLE_ITEM.get());
                 output.accept(ItemRegistry.FLUID_CAGE_ITEM.get());
+                output.accept(ItemRegistry.FLUID_SPREADER_ITEM.get());
+                output.accept(ItemRegistry.LOW_COPPER_PIPE_ITEM.get());
+                output.accept(ItemRegistry.MEDIUM_COPPER_PIPE_ITEM.get());
+                output.accept(ItemRegistry.HIGH_COPPER_PIPE_ITEM.get());
                 output.accept(ItemRegistry.ALCHEMY_BIRON_BLOCK_ITEM.get());
                 output.accept(ItemRegistry.ALCHEMY_BIRON_INGOT_ITEM.get());
                 output.accept(ItemRegistry.ALCHEMY_BIRON_NUGGET_ITEM.get());
                 output.accept(ItemRegistry.GLOWSTONE_ALLOY_BLOCK_ITEM.get());
                 output.accept(ItemRegistry.GLOWSTONE_ALLOY_INGOT_ITEM.get());
                 output.accept(ItemRegistry.GLOWSTONE_ALLOY_NUGGET_ITEM.get());
+                output.accept(ItemRegistry.IMITATION_CORE_ITEM.get());
                 output.accept(ItemRegistry.VIAL_ITEM.get());
                 output.accept(ItemRegistry.LARGE_BOTTLE_ITEM.get());
+                output.accept(ItemRegistry.PAPERBUSH_BLOCK_ITEM.get());
+                output.accept(ItemRegistry.PAPERBUSH_LEAVES_BLOCK_ITEM.get());
+                output.accept(ItemRegistry.PAPERBUSH_TWIGS_ITEM.get());
             }).build());
 
     public Heliopause()
@@ -99,6 +109,9 @@ public class Heliopause {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
+        //ブロックへのホバーでツールチップを表示する
+        MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
     }
 
     // SubscribeEvent を使用することで、イベントバスが呼び出すメソッドを検出できるようになる
@@ -123,13 +136,16 @@ public class Heliopause {
             //メニューとスクリーンを紐づけ
             MenuScreens.register(MenuTypeRegistry.ROASTING_TABLE_MENU.get(), RoastingTableScreen::new);
 
+            //キーコンフィグの追加
+
+
             // アイテムの色を登録
             registerItemColors(ItemRegistry.VIAL_ITEM.get(),1);
             registerItemColors(ItemRegistry.LARGE_BOTTLE_ITEM.get(),1);
         }
 
         private static void registerItemColors(ItemLike itemLike,int targetIndex) {
-            // MinecraftのItemColorsインスタンスを取得
+            // MinecraftのインスタンスからItemColorsを取得
             ItemColors itemColors = Minecraft.getInstance().getItemColors();
 
             // アイテムと色を関連させる

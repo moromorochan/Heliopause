@@ -1,0 +1,22 @@
+{
+	"credit": "Made by moromorochan with Blockbench",
+	"textures": {
+		"all": "heliopause:block/pipe/copper_pipe/copper_pipe_thick_curve",
+		"particle": "heliopause:block/pipe/copper_pipe/copper_pipe_thick_curve"
+	},
+	"elements": [
+		{
+			"from": [4.005, 4.005, 4.005],
+			"to": [11.995, 11.995, 11.995],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [4, 4, 12, 12], "texture": "#all"},
+				"east": {"uv": [4, 4, 12, 12], "texture": "#all"},
+				"south": {"uv": [4, 4, 12, 12], "texture": "#all"},
+				"west": {"uv": [4, 4, 12, 12], "texture": "#all"},
+				"up": {"uv": [4, 4, 12, 12], "texture": "#all"},
+				"down": {"uv": [4, 4, 12, 12], "texture": "#all"}
+			}
+		}
+	]
+}

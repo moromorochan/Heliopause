@@ -21,7 +21,7 @@ public abstract class HorizontalAxisBlock extends Block {
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context)
     {
-        return Objects.requireNonNull(super.getStateForPlacement(context)).setValue(AXIS, context.getHorizontalDirection().getClockWise().getAxis());
+        return Objects.requireNonNull(super.getStateForPlacement(context)).setValue(AXIS, context.getHorizontalDirection().getAxis());
     }
 
     @Override

@@ -7,4 +7,9 @@ public class OrbBlockRenderer extends AbstractFluidOrbBlockRenderer<OrbBlockEnti
     public OrbBlockRenderer(BlockEntityRendererProvider.Context context){
         super(context);
     }
+
+    @Override
+    public float calcOffsetY(float orbSize) {
+        return orbSize * 0.5f;
+    }
 }

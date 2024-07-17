@@ -1,6 +1,6 @@
 {
     "parent":"heliopause:block/alchemy_roasting_table",
     "textures": {
-        "side": "heliopause:block/alchemy_roasting_table_side_lit"
+        "side": "heliopause:block/alchemy_roasting_table/alchemy_roasting_table_side_lit"
     }
 }

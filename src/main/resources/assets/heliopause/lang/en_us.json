@@ -1,12 +1,22 @@
 {
   "itemGroup.heliopause_main": "Heliopause",
+
   "block.heliopause.alchemy_stove": "Alchemy Stove",
   "block.heliopause.alchemy_roasting_table": "Alchemy Roasting Table",
   "block.heliopause.crucible": "Crucible",
-  "block.heliopause.orb": "Fluid Sphere",
+  "block.heliopause.orb": "Fluid Globe",
   "block.heliopause.fluid_cage": "Fluid Cage",
+  "block.heliopause.fluid_spreader": "Fluid Spreader",
   "block.heliopause.alchemy_biron_block": "Alchemy Biron Block",
   "block.heliopause.glowstone_alloy_block": "Glowstone Alloy Block",
+
+  "block.heliopause.copper_pipe": "Copper Pipe",
+  "item.heliopause.low_copper_pipe": "Copper Low Pressure Pipe",
+  "item.heliopause.medium_copper_pipe": "Copper Medium Pressure Pipe",
+  "item.heliopause.high_copper_pipe": "Copper High Pressure Pipe",
+
+  "block.heliopause.paperbush": "Paperbush",
+  "block.heliopause.paperbush_leaves": "Paperbush Leaves",
 
   "item.heliopause.alchemy_biron_ingot": "Alchemy Biron Ingot",
   "item.heliopause.alchemy_biron_nugget": "Alchemy Biron Nugget",
@@ -19,11 +29,19 @@
   "item.heliopause.large_bottle.filled": "%1$s Large Bottle",
 
   "item.heliopause.bottle.tooltip.amount": "Amount: %s/%smb",
-  "item.heliopause.bottle.tooltip.description1": "Right-click to fill bottle",
-  "item.heliopause.bottle.tooltip.description2": "Shift-Right-click to drain bottle",
-  "item.heliopause.bottleStack.tooltip.description1": "Right-click to fill stacked bottles in bulk",
-  "item.heliopause.bottleStack.tooltip.description2": "Shift-Right-click to drain stacked bottles in bulk",
+  "item.heliopause.bottle.tooltip.description1": "fill item",
+  "item.heliopause.bottle.tooltip.description2": "drain item",
+  "item.heliopause.bottleStack.tooltip.description1": "fill stack in bulk",
+  "item.heliopause.bottleStack.tooltip.description2": "drain stack in bulk",
+
+  "item.heliopause.paperbush_twigs": "Paperbush Twigs",
+  "item.heliopause.sorcery paper": "Sorcery Paper",
+
+  "item.heliopause.imitation_core": "Imitation Celestial Core",
 
   "recipe.heliopause.roasting": "Roasting",
-  "recipe.heliopause.orrery": "Orrery Whirling"
+  "recipe.heliopause.transmutation": "Transmutation",
+  "recipe.heliopause.orrery": "Orrery Whirling",
+
+  "keybinding.heliopause.bottle_drain": "Drain item"
 }

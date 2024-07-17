@@ -1,8 +1,10 @@
 package com.moromoro.heliopause.item;
 
 import com.moromoro.ConfigHolder;
-import com.moromoro.Heliopause;
+import com.moromoro.heliopause.registry.KeyMapRegistry;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -32,9 +34,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class FluidBottle extends Item implements IFluidHandlerItem {
+public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHoverTexts {
 
     private static final String FLUID_NBT_KEY = "FluidStack";
     public static final String COLOR_NBT_KEY = "color";
@@ -59,7 +62,8 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
         //液体の種類を取り出す
         IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());
         //(とどまる)液体テクスチャの取得
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidTypeExtensions.getStillTexture(fluidStack));
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                .apply(fluidTypeExtensions.getStillTexture(fluidStack));
 
         int color = sprite.getPixelRGBA(0, 7, 7);
         //float alpha = (color >> 24 & 255) / 255f;
@@ -67,7 +71,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
         float green = (color >> 8 & 255) / 255f;
         float red = (color & 255) / 255f;
         int combinedColor = ((int)(red * 255) << 16) | ((int)(green * 255) << 8) | (int)(blue * 255);
-        Heliopause.LOGGER.debug("got pixel color:"+ combinedColor);
+        //Heliopause.LOGGER.debug("got pixel color:"+ combinedColor);
         return combinedColor;
 
         //idが無ければ、デフォルトカラーを返す
@@ -213,7 +217,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
         int tankCapacity = this.mainTank.getCapacity();
         // 液体の量を表示
         tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.amount", fluidAmount,tankCapacity));
-
+        /*
         //ボトルのスタック数に応じた操作説明を表示
         if (itemStack.getCount() == 1) {
             tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));
@@ -221,7 +225,47 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
         } else {
             tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));
             tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
+        }*/
+    }
+    //ツールチップをクロスヘアの右側に表示
+    public @NotNull List<Component> getBlockHoverTexts(ClientLevel clientLevel, ItemStack itemStack, BlockPos pos){
+        List<Component> tooltip = new ArrayList<>();
+        Minecraft instance = Minecraft.getInstance();
+        BlockEntity blockEntity = clientLevel.getBlockEntity(pos);
+        if(blockEntity==null){return tooltip;}
+        if(blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()){
+            //操作キーを取得
+            Component useKey = instance.options.keyUse.getTranslatedKeyMessage();
+            Component drainKey = KeyMapRegistry.BOTTLE_DRAIN.getKeyMapping().getTranslatedKeyMessage();
+        if (itemStack.getCount() == 1) {
+            //シフトを押している間は行を反転
+            if(!instance.player.isShiftKeyDown()){
+                tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));
+                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2").withStyle(ChatFormatting.GRAY));
+            }else{
+                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
+                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2"));
+                tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1").withStyle(ChatFormatting.GRAY));
+            }
+        } else {
+            //シフトを押している間は行を反転
+            if(!instance.player.isShiftKeyDown()){
+                tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));
+                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2").withStyle(ChatFormatting.GRAY));
+            }else{
+                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
+                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
+                tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1").withStyle(ChatFormatting.GRAY));
+            }
         }
+        }
+        return tooltip;
     }
 
     //液体の移動
@@ -328,7 +372,6 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
                         return InteractionResult.SUCCESS;
                     }
                 }
-                return InteractionResult.PASS;
             }
             else//アイテムがスタックされているときは、一度に移せるだけ移す
             {
@@ -380,6 +423,8 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
                             ItemStack fractionalItem = new ItemStack(heldItem.getItem());
                             //アイテムのnbtを設定
                             setNbtFluid(fractionalItem, fractionalFluid);
+                            setBottleName(fractionalItem, fractionalFluid);
+                            setNbtColor(fractionalItem, getFluidColor(fractionalFluid));
                             setCustomModelDataValue(fractionalItem,fractionalFluid,this.mainTank.getCapacity());
                             //渡す
                             addOrDrop(player,level,pos,fractionalItem);
@@ -436,8 +481,8 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
                             ItemStack fractionalItem = new ItemStack(heldItem.getItem());
                             //アイテムのnbtを設定
                             setNbtFluid(fractionalItem, fractionalFluid);
-                            setBottleName(fractionalItem, resultFluid);
-                            setNbtColor(fractionalItem, getFluidColor(resultFluid));
+                            setBottleName(fractionalItem, fractionalFluid);
+                            setNbtColor(fractionalItem, getFluidColor(fractionalFluid));
                             setCustomModelDataValue(fractionalItem,fractionalFluid,this.mainTank.getCapacity());
                             //渡す
                             addOrDrop(player,level,pos,fractionalItem);
@@ -445,8 +490,8 @@ public class FluidBottle extends Item implements IFluidHandlerItem {
                         return InteractionResult.SUCCESS;
                     }
                 }
-                return InteractionResult.PASS;
             }
+            return InteractionResult.PASS;
         }
         return InteractionResult.PASS;
     }

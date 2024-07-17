@@ -16,6 +16,7 @@ public class BlockEntityRegistry {
     }
 
     // ブロックエンティティの作成
+        //るつぼ
     public static final RegistryObject<BlockEntityType<CrucibleBlockEntity>> CRUCIBLE_BE =
             BLOCKENTITIES.register("crucible",() ->
                     BlockEntityType.Builder.of(
@@ -23,6 +24,7 @@ public class BlockEntityRegistry {
                             BlockRegistry.CRUCIBLE.get()
                     ).build(null)
             );
+        //液球
     public static final RegistryObject<BlockEntityType<OrbBlockEntity>> ORB_BE =
             BLOCKENTITIES.register("orb",() ->
                     BlockEntityType.Builder.of(
@@ -30,6 +32,7 @@ public class BlockEntityRegistry {
                             BlockRegistry.ORB.get()
                     ).build(null)
             );
+        //液体ケージ
     public static final RegistryObject<BlockEntityType<FluidCageBlockEntity>> FLUID_CAGE_BE =
             BLOCKENTITIES.register("fluid_cage",() ->
                     BlockEntityType.Builder.of(
@@ -37,7 +40,15 @@ public class BlockEntityRegistry {
                             BlockRegistry.FLUID_CAGE.get()
                     ).build(null)
             );
-
+        //液体散布器
+    public static final RegistryObject<BlockEntityType<FluidSpreaderBlockEntity>> FLUID_SPREADER_BE =
+            BLOCKENTITIES.register("fluid_spreader",() ->
+                    BlockEntityType.Builder.of(
+                            FluidSpreaderBlockEntity::new,
+                            BlockRegistry.FLUID_SPREADER.get()
+                    ).build(null)
+            );
+        //焙炉
     public static final RegistryObject<BlockEntityType<RoastingTableBlockEntity>> ROASTING_TABLE_BE =
             BLOCKENTITIES.register("alchemy_roasting_table",() ->
                     BlockEntityType.Builder.of(

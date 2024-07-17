@@ -4,8 +4,8 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"particle": "minecraft:block/mangrove_planks",
-		"all": "heliopause:block/alchemy_roasting_table",
-		"side":"heliopause:block/alchemy_roasting_table_side"
+		"all": "heliopause:block/alchemy_roasting_table/alchemy_roasting_table",
+		"side":"heliopause:block/alchemy_roasting_table/alchemy_roasting_table_side"
 	},
 	"elements": [
 		{

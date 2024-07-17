@@ -1,12 +1,22 @@
 {
   "itemGroup.heliopause_main": "Heliopause",
+
   "block.heliopause.alchemy_stove": "錬金こん炉",
   "block.heliopause.alchemy_roasting_table": "錬金焙炉",
   "block.heliopause.crucible": "るつぼ",
   "block.heliopause.orb": "液球",
   "block.heliopause.fluid_cage": "液体ケージ",
+  "block.heliopause.fluid_spreader": "液体散布器",
   "block.heliopause.alchemy_biron_block": "錬金赤銅ブロック",
   "block.heliopause.glowstone_alloy_block": "グロウストーン合金ブロック",
+
+  "block.heliopause.copper_pipe": "銅の管",
+  "item.heliopause.low_copper_pipe": "銅の低圧管",
+  "item.heliopause.medium_copper_pipe": "銅の中圧管",
+  "item.heliopause.high_copper_pipe": "銅の高圧管",
+
+  "block.heliopause.paperbush": "ミツマタ",
+  "block.heliopause.paperbush_leaves": "ミツマタの葉",
 
   "item.heliopause.alchemy_biron_ingot": "錬金赤銅インゴット",
   "item.heliopause.alchemy_biron_nugget": "錬金赤銅塊",
@@ -19,11 +29,19 @@
   "item.heliopause.large_bottle.filled": "%1$s入り大瓶",
 
   "item.heliopause.bottle.tooltip.amount": "充填量: %s/%smb",
-  "item.heliopause.bottle.tooltip.description1": "右クリックで瓶に充填",
-  "item.heliopause.bottle.tooltip.description2": "シフト右クリックで瓶から排出",
-  "item.heliopause.bottleStack.tooltip.description1": "右クリックでスタックされた瓶に一括充填",
-  "item.heliopause.bottleStack.tooltip.description2": "シフト右クリックでスタックされた瓶から一括排出",
+  "item.heliopause.bottle.tooltip.description1": "アイテムに充填",
+  "item.heliopause.bottle.tooltip.description2": "アイテムから排出",
+  "item.heliopause.bottleStack.tooltip.description1": "スタックに一括充填",
+  "item.heliopause.bottleStack.tooltip.description2": "スタックから一括排出",
+
+  "item.heliopause.paperbush_twigs": "ミツマタの枝",
+  "item.heliopause.sorcery paper": "魔法紙",
+
+  "item.heliopause.imitation_core": "模造天体コア",
 
   "recipe.heliopause.roasting": "焙煎",
-  "recipe.heliopause.orrery": "旋天模倣"
+  "recipe.heliopause.transmutation": "錬成",
+  "recipe.heliopause.orrery": "遷天模倣",
+
+  "keybinding.heliopause.bottle_drain": "アイテムから排出"
 }

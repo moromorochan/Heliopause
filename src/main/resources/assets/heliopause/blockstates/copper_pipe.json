@@ -1,0 +1,167 @@
+{
+  "multipart": [
+    {
+      "when": {"center": 1},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thin_node"
+      }
+    },
+    {
+      "when": {"north": 1},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thin_link",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {"east": 1},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thin_link",
+        "uvlock": true,
+        "y": 90
+      }
+    },
+    {
+      "when": {"south": 1},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thin_link",
+        "uvlock": true,
+        "y": 180
+      }
+    },
+    {
+      "when": {"west": 1},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thin_link",
+        "uvlock": true,
+        "y": 270
+      }
+    },
+    {
+      "when": {"down": 1},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thin_link",
+        "uvlock": true,
+        "x": 90
+      }
+    },
+    {
+      "when": {"up": 1},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thin_link",
+        "uvlock": true,
+        "x": 270
+      }
+    },
+
+
+    {
+      "when": {"center": 2},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_middle_node"
+      }
+    },
+    {
+      "when": {"north": 2},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_middle_link",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {"east": 2},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_middle_link",
+        "uvlock": true,
+        "y": 90
+      }
+    },
+    {
+      "when": {"south": 2},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_middle_link",
+        "uvlock": true,
+        "y": 180
+      }
+    },
+    {
+      "when": {"west": 2},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_middle_link",
+        "uvlock": true,
+        "y": 270
+      }
+    },
+    {
+      "when": {"down": 2},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_middle_link",
+        "uvlock": true,
+        "x": 90
+      }
+    },
+    {
+      "when": {"up": 2},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_middle_link",
+        "uvlock": true,
+        "x": 270
+      }
+    },
+
+
+    {
+      "when": {"center": 3},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thick_node"
+      }
+    },
+    {
+      "when": {"north": 3},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thick_link",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {"east": 3},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thick_link",
+        "uvlock": true,
+        "y": 90
+      }
+    },
+    {
+      "when": {"south": 3},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thick_link",
+        "uvlock": true,
+        "y": 180
+      }
+    },
+    {
+      "when": {"west": 3},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thick_link",
+        "uvlock": true,
+        "y": 270
+      }
+    },
+    {
+      "when": {"down": 3},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thick_link",
+        "uvlock": true,
+        "x": 90
+      }
+    },
+    {
+      "when": {"up": 3},
+      "apply": {
+        "model": "heliopause:block/pipe/copper_pipe/copper_pipe_thick_link",
+        "uvlock": true,
+        "x": 270
+      }
+    }
+  ]
+}
