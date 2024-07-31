@@ -1,20 +1,13 @@
 package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.block.CopperPipeBlock;
 import com.moromoro.heliopause.item.FluidBottle;
 import com.moromoro.heliopause.item.PipeBlockItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.moromoro.heliopause.block.AbstractNetworkBlock.CENTER;
 
 public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Heliopause.MODID);
@@ -31,6 +24,10 @@ public class ItemRegistry {
             ITEMS.register("fluid_cage", () -> new BlockItem(BlockRegistry.FLUID_CAGE.get(), new Item.Properties()));
     public static final RegistryObject<Item> FLUID_SPREADER_ITEM =
             ITEMS.register("fluid_spreader", () -> new BlockItem(BlockRegistry.FLUID_SPREADER.get(), new Item.Properties()));
+
+    //模造天体コア
+    public static final RegistryObject<Item> COMET_CORE_ITEM =
+            ITEMS.register("comet_core", () -> new BlockItem(BlockRegistry.COMET_CORE.get(), new Item.Properties()));
 
     //パイプ
     public static final RegistryObject<Item> LOW_COPPER_PIPE_ITEM =
@@ -69,18 +66,7 @@ public class ItemRegistry {
         //模造天体コア
     public static final RegistryObject<Item> IMITATION_CORE_ITEM =
             ITEMS.register("imitation_core", () -> new Item(new Item.Properties()));
-    /*
-    public static final RegistryObject<Item> IMITATION_DWARF_CORE_ITEM =
-            ITEMS.register("imitation_dwarf_core", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> IMITATION_STAR_CORE_ITEM =
-            ITEMS.register("imitation_star_core", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> IMITATION_PLANET_CORE_ITEM =
-            ITEMS.register("imitation_planet_core", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> IMITATION_COMET_CORE_ITEM =
-            ITEMS.register("imitation_comet_core", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> IMITATION_COLLAPSAR_CORE_ITEM =
-            ITEMS.register("imitation_collapsar_core", () -> new Item(new Item.Properties()));
-*/
+
         //金属
     public static final RegistryObject<Item> ALCHEMY_BIRON_INGOT_ITEM =
             ITEMS.register("alchemy_biron_ingot", () -> new Item(new Item.Properties()));

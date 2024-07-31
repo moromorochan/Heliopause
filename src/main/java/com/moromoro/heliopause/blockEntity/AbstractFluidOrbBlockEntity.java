@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 
 public abstract class AbstractFluidOrbBlockEntity extends AbstractFluidTankEntity {
     //回転の進捗を格納
-    private float rotationOffset;
+    protected float rotationOffset;
     //浮き沈みの進捗を格納
     private float waveOffset;
 

@@ -8,6 +8,7 @@ import com.moromoro.heliopause.screen.RoastingTableScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.MenuType;
@@ -37,7 +38,7 @@ public class Heliopause {
 
     // 参照するmodIDを定義
     public static final String MODID = "heliopause";
-    public static final String MODNAME = "Heliopause";
+    //public static final String MODNAME = "Heliopause";
 
     // slf4j logger を参照
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -52,6 +53,9 @@ public class Heliopause {
 
     // mod名前空間に登録されるアイテムを保持するための遅延レジスタを作成
     public static final DeferredRegister<Item> ITEMS = ItemRegistry.ITEMS;
+
+    // mod名前空間に登録されるパーティクルタイプを保持するための遅延レジスタを作成
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = ParticleRegistry.PARTICLE_TYPES;
 
     // mod名前空間に登録されるGUI画面を保持するための遅延レジスタを作成
     public static final DeferredRegister<MenuType<?>> MENU_TYPES = MenuTypeRegistry.MENU_TYPES;
@@ -78,6 +82,7 @@ public class Heliopause {
                 output.accept(ItemRegistry.LOW_COPPER_PIPE_ITEM.get());
                 output.accept(ItemRegistry.MEDIUM_COPPER_PIPE_ITEM.get());
                 output.accept(ItemRegistry.HIGH_COPPER_PIPE_ITEM.get());
+                output.accept(ItemRegistry.COMET_CORE_ITEM.get());
                 output.accept(ItemRegistry.ALCHEMY_BIRON_BLOCK_ITEM.get());
                 output.accept(ItemRegistry.ALCHEMY_BIRON_INGOT_ITEM.get());
                 output.accept(ItemRegistry.ALCHEMY_BIRON_NUGGET_ITEM.get());
@@ -99,6 +104,7 @@ public class Heliopause {
         BLOCKS.register(modEventBus);
         BLOCKENTITIES.register(modEventBus);
         ITEMS.register(modEventBus);
+        PARTICLE_TYPES.register(modEventBus);
         MENU_TYPES.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         RECIPE_SERIALIZERS.register(modEventBus);

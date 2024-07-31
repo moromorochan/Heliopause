@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -67,15 +68,17 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
 
         int color = sprite.getPixelRGBA(0, 7, 7);
         //float alpha = (color >> 24 & 255) / 255f;
-        float blue = (color >> 16 & 255) / 255f;
-        float green = (color >> 8 & 255) / 255f;
-        float red = (color & 255) / 255f;
-        int combinedColor = ((int)(red * 255) << 16) | ((int)(green * 255) << 8) | (int)(blue * 255);
-        //Heliopause.LOGGER.debug("got pixel color:"+ combinedColor);
+        //int blue = (color >> 16 & 255);
+        //int green = (color >> 8 & 255);
+        //int red = (color & 255);
+        //int combinedColor = (red << 16) | (green << 8) | blue;
+        int combinedColor = FastColor.ARGB32.color(
+                255,
+                FastColor.ABGR32.red(color),
+                FastColor.ABGR32.green(color),
+                FastColor.ABGR32.blue(color)
+        );
         return combinedColor;
-
-        //idが無ければ、デフォルトカラーを返す
-        //return 0xFF00FF;
     }
 
     //アイテムの色を取得
@@ -217,15 +220,6 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
         int tankCapacity = this.mainTank.getCapacity();
         // 液体の量を表示
         tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.amount", fluidAmount,tankCapacity));
-        /*
-        //ボトルのスタック数に応じた操作説明を表示
-        if (itemStack.getCount() == 1) {
-            tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));
-            tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2"));
-        } else {
-            tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));
-            tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
-        }*/
     }
     //ツールチップをクロスヘアの右側に表示
     public @NotNull List<Component> getBlockHoverTexts(ClientLevel clientLevel, ItemStack itemStack, BlockPos pos){
@@ -238,8 +232,8 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
             Component useKey = instance.options.keyUse.getTranslatedKeyMessage();
             Component drainKey = KeyMapRegistry.BOTTLE_DRAIN.getKeyMapping().getTranslatedKeyMessage();
         if (itemStack.getCount() == 1) {
-            //シフトを押している間は行を反転
-            if(!instance.player.isShiftKeyDown()){
+            //操作キーを押している間は行を反転
+            if(!KeyMapRegistry.BOTTLE_DRAIN.isPressed()){
                 tooltip.add(Component.literal("[").append(useKey).append("] :"));
                 tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));
                 tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
@@ -252,7 +246,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
             }
         } else {
             //シフトを押している間は行を反転
-            if(!instance.player.isShiftKeyDown()){
+            if(!KeyMapRegistry.BOTTLE_DRAIN.isPressed()){
                 tooltip.add(Component.literal("[").append(useKey).append("] :"));
                 tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));
                 tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
@@ -335,7 +329,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
             //アイテムがひとつのときは、USE_AMOUNTずつ出し入れ
             if (itemCount==1)
             {
-                if (player.isShiftKeyDown()) {
+                if (KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
                     // シフト右クリック: アイテムからブロックへ移す
                     FluidStack transferred = transferFluid(blockFluidHandler,this,USE_AMOUNT);
                     if (!transferred.isEmpty()) {
@@ -380,7 +374,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
                 FluidTank wholeTank = new FluidTank(itemCount * mainTank.getCapacity());
                 wholeTank.setFluid(wholeStack);
 
-                if(player.isShiftKeyDown()){
+                if(KeyMapRegistry.BOTTLE_DRAIN.isPressed()){
                     // シフト右クリック: アイテムスタックからブロックへ移す
                     FluidStack transferred = transferFluid(blockFluidHandler,wholeTank, wholeTank.getCapacity());
                     if(!transferred.isEmpty()){

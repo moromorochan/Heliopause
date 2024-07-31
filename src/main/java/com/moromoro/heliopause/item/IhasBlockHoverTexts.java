@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface IhasBlockHoverTexts {
     @NotNull
-    public List<Component> getBlockHoverTexts(ClientLevel clientLevel, ItemStack itemStack, BlockPos pos);
+    List<Component> getBlockHoverTexts(ClientLevel clientLevel, ItemStack itemStack, BlockPos pos);
 }

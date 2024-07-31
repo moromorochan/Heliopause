@@ -1,5 +1,6 @@
 package com.moromoro.heliopause.block;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -12,7 +13,7 @@ import java.util.Objects;
 
 public abstract class HorizontalAxisBlock extends Block {
 
-    public static final EnumProperty AXIS = BlockStateProperties.HORIZONTAL_AXIS;
+    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
 
     public HorizontalAxisBlock(Properties properties)
     {

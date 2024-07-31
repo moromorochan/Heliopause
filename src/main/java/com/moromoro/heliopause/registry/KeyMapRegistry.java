@@ -10,8 +10,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
-import static com.mojang.blaze3d.platform.InputConstants.isKeyDown;
-
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public enum KeyMapRegistry {
 
@@ -31,7 +29,7 @@ public enum KeyMapRegistry {
     @SubscribeEvent
     public static void register(RegisterKeyMappingsEvent event){
         for( KeyMapRegistry key : values()){
-            key.keyMapping = new KeyMapping(key.keyApplication, key.keyCode, Heliopause.MODNAME);
+            key.keyMapping = new KeyMapping(key.keyApplication, key.keyCode, Heliopause.MODID);
 
             event.register(key.keyMapping);
         }
@@ -42,9 +40,9 @@ public enum KeyMapRegistry {
     }
 
     public boolean isPressed(){
-        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(),keyCode);
+        return keyMapping.isDown();
     }
-    public boolean isPressed(int key){
+    public static boolean isPressed(int key){
         return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(),key);
     }
 }

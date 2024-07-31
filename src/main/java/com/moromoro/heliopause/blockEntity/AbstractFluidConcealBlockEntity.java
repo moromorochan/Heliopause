@@ -1,6 +1,5 @@
 package com.moromoro.heliopause.blockEntity;
 
-import com.moromoro.Heliopause;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -21,7 +20,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class AbstractFluidConcealBlockEntity  extends FluidHandlerBlockEntity implements IFluidHandler {
+public abstract class AbstractFluidConcealBlockEntity  extends FluidHandlerBlockEntity implements IFluidHandler {
 
     protected LazyOptional<IFluidHandler> fluidCapability = LazyOptional.of(() -> this.mainTank);
 
@@ -36,7 +35,7 @@ public class AbstractFluidConcealBlockEntity  extends FluidHandlerBlockEntity im
                 super.onContentsChanged();
                 setChanged();
                 if (level != null && !level.isClientSide) {
-                    Heliopause.LOGGER.debug("contentChanged_abstract");
+                    //Heliopause.LOGGER.debug("contentChanged_abstract");
                     //updateRenderData();
                 }
             }

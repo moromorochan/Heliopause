@@ -28,7 +28,7 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
     public AbstractFluidOrbBlockRenderer(BlockEntityRendererProvider.Context context){
     }
 
-    private static HashMap<BlockPos,FluidStack> fluidList = new HashMap<>();
+    protected static HashMap<BlockPos,FluidStack> fluidList = new HashMap<>();
 
     public static void updateData(BlockPos pos, FluidStack updateStack) {
         if(updateStack.getAmount() == 0){removeData(pos); return;}
@@ -125,7 +125,7 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         return 0f;
     }
 
-    private static void renderFluid(PoseStack poseStack, MultiBufferSource bufferSource, HashMap<String,Object> renderingRequires)
+    protected static void renderFluid(PoseStack poseStack, MultiBufferSource bufferSource, HashMap<String,Object> renderingRequires)
     {
         //値を取り出す
         FluidStack fluidStack = (FluidStack) renderingRequires.get("fluidStack");
@@ -231,14 +231,14 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
     }
 
     //アニメーション用の波形をつくる
-    private static float CreateSinWaveform(float waveOffset,float amplitude){
+    protected static float CreateSinWaveform(float waveOffset,float amplitude){
         return (amplitude * Math.sin(Math.toRadians(waveOffset)));
     }
-    private static float CreateCosWaveform(float waveOffset, float amplitude){
+    protected static float CreateCosWaveform(float waveOffset, float amplitude){
         return (amplitude * Math.cos(Math.toRadians(waveOffset)));
     }
 
-    private static void renderQuads(HashMap<String,Object> renderingRequires, Vector3f[] vertexPos, Vector2f[] vertexUV)
+    protected static void renderQuads(HashMap<String,Object> renderingRequires, Vector3f[] vertexPos, Vector2f[] vertexUV)
     {
         //配列から値を取り出す
         Matrix4f matrix=(Matrix4f) renderingRequires.get("matrix");

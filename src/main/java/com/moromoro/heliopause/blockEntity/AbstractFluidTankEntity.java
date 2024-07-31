@@ -1,6 +1,5 @@
 package com.moromoro.heliopause.blockEntity;
 
-import com.moromoro.Heliopause;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -26,7 +25,7 @@ public abstract class AbstractFluidTankEntity extends AbstractFluidConcealBlockE
                 super.onContentsChanged();
                 setChanged();
                 if (level != null && !level.isClientSide) {
-                    Heliopause.LOGGER.debug("contentChanged_abstract");
+                    //Heliopause.LOGGER.debug("contentChanged_abstract");
                     updateRenderData();
                 }
             }

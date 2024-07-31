@@ -56,5 +56,14 @@ public class BlockEntityRegistry {
                             BlockRegistry.ROASTING_TABLE.get()
                     ).build(null)
             );
+
+        //模造天体コア
+    public static final RegistryObject<BlockEntityType<CometCoreBlockEntity>> COMET_CORE_BE =
+                BLOCKENTITIES.register("comet_core",() ->
+                        BlockEntityType.Builder.of(
+                                CometCoreBlockEntity::new,
+                                BlockRegistry.COMET_CORE.get()
+                        ).build(null)
+                );
 }
 

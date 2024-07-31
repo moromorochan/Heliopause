@@ -95,7 +95,7 @@ public class AbstractNetworkBlock extends Block {
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder)
     {
         super.createBlockStateDefinition(builder);
-        builder.add( NORTH, EAST, SOUTH, WEST, UP, DOWN, CENTER );
+        builder.add( NORTH, EAST, SOUTH, WEST, UP, DOWN, CENTER);
     }
 
     @Override
@@ -169,7 +169,6 @@ public class AbstractNetworkBlock extends Block {
                 connectedState = connectedState.setValue(getProperty(direction), state.getValue(getProperty(direction))>0 ? getDiameter(state):0);
             }
         }
-
         return connectedState;
     }
 

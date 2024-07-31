@@ -33,6 +33,16 @@ public class BlockRegistry {
                             .noOcclusion()
                             .noParticlesOnBreak()
             ));
+
+    //模造天体コア
+    public static final RegistryObject<Block> COMET_CORE =
+            BLOCKS.register("comet_core",() -> new CometCoreBlock(
+                    BlockBehaviour.Properties.of()
+                            .strength(1.0f)
+                            .noCollission()
+                            .noOcclusion()
+                            .noParticlesOnBreak()
+            ));
     //流体ケージ
     public static final RegistryObject<Block> FLUID_CAGE =
             BLOCKS.register("fluid_cage",() -> new FluidCageBlock(
@@ -51,7 +61,9 @@ public class BlockRegistry {
     public static final RegistryObject<Block> COPPER_PIPE =
             BLOCKS.register("copper_pipe",() -> new CopperPipeBlock(
                     BlockBehaviour.Properties.of()
+                            .strength(1.0f)
                             .sound(SoundType.COPPER)
+                            .dynamicShape()
             ));
 
     //錬金焙炉

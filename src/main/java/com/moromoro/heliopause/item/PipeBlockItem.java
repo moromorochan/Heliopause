@@ -20,7 +20,7 @@ public class PipeBlockItem extends BlockItem {
 
     @Override
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
-        Heliopause.LOGGER.debug("State on Item");
+        //Heliopause.LOGGER.debug("State on Item");
         BlockState variedState = state
                 .setValue( NORTH, state.getValue(NORTH)>0 ? this.diameter:0 )
                 .setValue( EAST, state.getValue(EAST)>0 ? this.diameter:0 )

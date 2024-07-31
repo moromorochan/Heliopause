@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -110,12 +111,11 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
     //液体のtintカラーの取得
     private static float[] getFluidColor(FluidStack fluidStack) {
         int color = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor();
-        //カラーデータを変換
-        //alpha *= (color >> 24 & 255) / 255f;
-        float red = (color >> 16 & 255) / 255f;
-        float green = (color >> 8 & 255) / 255f;
-        float blue = (color & 255) / 255f;
-        return new float[] {red,green,blue};
+        return new float[] {
+                (float) FastColor.ARGB32.red(color)/255f,
+                (float) FastColor.ARGB32.green(color)/255f,
+                (float) FastColor.ARGB32.blue(color)/255f
+        };
     }
 
     //ブロックの光レベルの取得
