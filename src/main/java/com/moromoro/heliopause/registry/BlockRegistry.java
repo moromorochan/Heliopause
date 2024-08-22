@@ -35,14 +35,14 @@ public class BlockRegistry {
             ));
 
     //模造天体コア
-    public static final RegistryObject<Block> COMET_CORE =
+    /*public static final RegistryObject<Block> COMET_CORE =
             BLOCKS.register("comet_core",() -> new CometCoreBlock(
                     BlockBehaviour.Properties.of()
                             .strength(1.0f)
                             .noCollission()
                             .noOcclusion()
                             .noParticlesOnBreak()
-            ));
+            ));*/
     //流体ケージ
     public static final RegistryObject<Block> FLUID_CAGE =
             BLOCKS.register("fluid_cage",() -> new FluidCageBlock(
@@ -51,12 +51,12 @@ public class BlockRegistry {
                             .sound(SoundType.WOOD)
             ));
     //液体散布器
-    public static final RegistryObject<Block> FLUID_SPREADER =
+    /*public static final RegistryObject<Block> FLUID_SPREADER =
             BLOCKS.register("fluid_spreader",() -> new FluidSpreaderBlock(
                     BlockBehaviour.Properties.of()
                             .strength(1.0f)
                             .sound(SoundType.COPPER)
-            ));
+            ));*/
     //銅パイプ
     public static final RegistryObject<Block> COPPER_PIPE =
             BLOCKS.register("copper_pipe",() -> new CopperPipeBlock(

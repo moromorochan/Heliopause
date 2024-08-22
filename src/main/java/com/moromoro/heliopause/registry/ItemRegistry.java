@@ -22,12 +22,12 @@ public class ItemRegistry {
             ITEMS.register("alchemy_roasting_table", () -> new BlockItem(BlockRegistry.ROASTING_TABLE.get(), new Item.Properties()));
     public static final RegistryObject<Item> FLUID_CAGE_ITEM =
             ITEMS.register("fluid_cage", () -> new BlockItem(BlockRegistry.FLUID_CAGE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> FLUID_SPREADER_ITEM =
+    /*public static final RegistryObject<Item> FLUID_SPREADER_ITEM =
             ITEMS.register("fluid_spreader", () -> new BlockItem(BlockRegistry.FLUID_SPREADER.get(), new Item.Properties()));
 
     //模造天体コア
     public static final RegistryObject<Item> COMET_CORE_ITEM =
-            ITEMS.register("comet_core", () -> new BlockItem(BlockRegistry.COMET_CORE.get(), new Item.Properties()));
+            ITEMS.register("comet_core", () -> new BlockItem(BlockRegistry.COMET_CORE.get(), new Item.Properties()));*/
 
     //パイプ
     public static final RegistryObject<Item> LOW_COPPER_PIPE_ITEM =

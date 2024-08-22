@@ -41,13 +41,13 @@ public class BlockEntityRegistry {
                     ).build(null)
             );
         //液体散布器
-    public static final RegistryObject<BlockEntityType<FluidSpreaderBlockEntity>> FLUID_SPREADER_BE =
+    /*public static final RegistryObject<BlockEntityType<FluidSpreaderBlockEntity>> FLUID_SPREADER_BE =
             BLOCKENTITIES.register("fluid_spreader",() ->
                     BlockEntityType.Builder.of(
                             FluidSpreaderBlockEntity::new,
                             BlockRegistry.FLUID_SPREADER.get()
                     ).build(null)
-            );
+            );*/
         //焙炉
     public static final RegistryObject<BlockEntityType<RoastingTableBlockEntity>> ROASTING_TABLE_BE =
             BLOCKENTITIES.register("alchemy_roasting_table",() ->
@@ -58,12 +58,12 @@ public class BlockEntityRegistry {
             );
 
         //模造天体コア
-    public static final RegistryObject<BlockEntityType<CometCoreBlockEntity>> COMET_CORE_BE =
+    /*public static final RegistryObject<BlockEntityType<CometCoreBlockEntity>> COMET_CORE_BE =
                 BLOCKENTITIES.register("comet_core",() ->
                         BlockEntityType.Builder.of(
                                 CometCoreBlockEntity::new,
                                 BlockRegistry.COMET_CORE.get()
                         ).build(null)
-                );
+                );*/
 }
 
