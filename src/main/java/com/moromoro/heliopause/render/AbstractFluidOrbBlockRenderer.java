@@ -47,7 +47,7 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
     public void render(T entity, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         FluidStack fluidStack = fluidList.getOrDefault(entity.getBlockPos(), FluidStack.EMPTY);
         //タンクが空なら描画処理を完了
-        if (fluidStack==null||fluidStack.isEmpty())
+        if (!permanentRender(entity)&&(fluidStack==null||fluidStack.isEmpty()))
         {
             entity.setSmoothedTankAmount(0f);
             // 現在のフレーム時間を保存
@@ -56,11 +56,34 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
             return;
         }
 
+        //渡すデータをつくる
+        HashMap<String,Object> renderingRequires = new HashMap<>();
+        renderingRequires.put("fluidStack",fluidStack);
+
         // 現在のフレーム時間を取得
         long currentFrameTime = System.nanoTime();
         // デルタ時間を計算（秒単位）
         float deltaTime = (currentFrameTime - entity.getLastFrameTime()) / 1_000_000_000.0F;
 
+        //時間依存アニメーションに必要な情報を入れる
+        putProperties(entity,deltaTime,renderingRequires);
+
+        renderingRequires.put("combinedLight", combinedLight);
+
+        //親モデルをスタックに保管して、子モデルの編集をはじめる
+        poseStack.pushPose();
+        //液体の見た目をつくるメソッドを呼び出す
+        renderGroup(poseStack, bufferSource, renderingRequires);
+        //親モデルをスタックから取り出して、子モデルの編集をおわる
+        poseStack.popPose();
+
+        // 現在のフレーム時間を保存
+        entity.setLastFrameTime(currentFrameTime);
+    }
+
+    protected void putProperties(T entity, float deltaTime, HashMap<String, Object> renderingRequires) {
+
+        FluidStack fluidStack = (FluidStack) renderingRequires.get("fluidStack");
         //内容量の見た目スムージングを計算
         entity.setSmoothedTankAmount(Math.max(0.01f,Math.lerp(entity.getSmoothedTankAmount(), fluidStack.getAmount(), Math.min(1.0f,deltaTime * 15f))));
 
@@ -70,7 +93,6 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         //タンクの割合から、オーブのサイズを計算
         //オーブのサイズを格納
         float orbSize = (float) calcSize(getMinOrbSize(),getMaxOrbSize(),fillPercentage);
-
         //回転オフセットに加算
         entity.setRotationOffset(entity.getRotationOffset() + (deltaTime / orbSize) * getRotationSpeed());
         //液体を出し入れしたときに回転を加算
@@ -78,24 +100,18 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         //上下動オフセットに加算
         entity.setWaveOffset(entity.getWaveOffset() + (deltaTime / orbSize) * 170f);
 
-        //渡すデータをつくる
-        HashMap<String,Object> renderingRequires = new HashMap<>();
-        renderingRequires.put("fluidStack",fluidStack);
         renderingRequires.put("orbSize",orbSize);
         renderingRequires.put("rotationOffset", entity.getRotationOffset());
         renderingRequires.put("waveOffset", entity.getWaveOffset());
         renderingRequires.put("combinedOffset",entity.centerOffset().add(new Vec3(0,calcOffsetY(orbSize),0)));
-        renderingRequires.put("combinedLight", combinedLight);
+    }
 
-        //親モデルをスタックに保管して、子モデルの編集をはじめる
-        poseStack.pushPose();
-        //液体の見た目をつくるメソッドを呼び出す
-        renderFluid(poseStack, bufferSource, renderingRequires);
-        //親モデルをスタックから取り出して、子モデルの編集をおわる
-        poseStack.popPose();
+    protected boolean permanentRender(T entity) {
+        return false;
+    }
 
-        // 現在のフレーム時間を保存
-        entity.setLastFrameTime(currentFrameTime);
+    public void renderGroup(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, HashMap<String, Object> renderingRequires){
+        renderFluid(poseStack,bufferSource,renderingRequires);
     }
 
     public float getRotationSpeed() {
@@ -209,7 +225,7 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
     }
 
     //液体のtintカラーの取得
-    private static float[] getFluidColor(@NotNull FluidStack fluidStack) {
+    protected static float[] getFluidColor(@NotNull FluidStack fluidStack) {
         int color = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor();
         //カラーデータを変換
         //alpha *= (color >> 24 & 255) / 255f;

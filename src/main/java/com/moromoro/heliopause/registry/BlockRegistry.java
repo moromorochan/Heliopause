@@ -51,6 +51,22 @@ public class BlockRegistry {
                             .sound(SoundType.WOOD)
             ));
     //液体散布器
+        //オーブ
+    public static final RegistryObject<Block> FLUID_SPREADER_ORB =
+            BLOCKS.register("fluid_spreader_orb",() -> new FluidSpreaderOrbBlock(
+                    BlockBehaviour.Properties.of()
+                            .strength(1.0f)
+                            .noCollission()
+                            .noOcclusion()
+                            .noParticlesOnBreak()
+            ));
+        //塔
+    public static final RegistryObject<Block> FLUID_SPREADER_TOWER =
+            BLOCKS.register("fluid_spreader_tower",() -> new FluidSpreaderTowerBlock(
+                   BlockBehaviour.Properties.of()
+                           .strength(1.0f)
+                           .sound(SoundType.WOOD)
+            ))    ;
     /*public static final RegistryObject<Block> FLUID_SPREADER =
             BLOCKS.register("fluid_spreader",() -> new FluidSpreaderBlock(
                     BlockBehaviour.Properties.of()

@@ -20,6 +20,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//液体を扱う、液体を描画しないブロックエンティティ
 public abstract class AbstractFluidConcealBlockEntity  extends FluidHandlerBlockEntity implements IFluidHandler {
 
     protected LazyOptional<IFluidHandler> fluidCapability = LazyOptional.of(() -> this.mainTank);

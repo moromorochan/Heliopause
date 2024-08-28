@@ -2,6 +2,7 @@ package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -41,6 +42,13 @@ public class BlockEntityRegistry {
                     ).build(null)
             );
         //液体散布器
+    public static final RegistryObject<BlockEntityType<FluidSpreaderOrbBlockEntity>> FLUID_SPREADER_ORB_BE =
+                BLOCKENTITIES.register("fluid_spreader_orb",()->
+                        BlockEntityType.Builder.of(
+                                FluidSpreaderOrbBlockEntity::new,
+                                BlockRegistry.FLUID_SPREADER_ORB.get()
+                        ).build(null)
+                );
     /*public static final RegistryObject<BlockEntityType<FluidSpreaderBlockEntity>> FLUID_SPREADER_BE =
             BLOCKENTITIES.register("fluid_spreader",() ->
                     BlockEntityType.Builder.of(

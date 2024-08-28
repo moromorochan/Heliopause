@@ -5,6 +5,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+//液体を扱う、液体を液球として描画するブロックエンティティ
 public abstract class AbstractFluidOrbBlockEntity extends AbstractFluidTankEntity {
     //回転の進捗を格納
     protected float rotationOffset;

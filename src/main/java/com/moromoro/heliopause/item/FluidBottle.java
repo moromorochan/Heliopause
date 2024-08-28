@@ -313,7 +313,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
         if (blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()) {
             IFluidHandler blockFluidHandler =
                     blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER)
-                    .orElseThrow(() -> new RuntimeException("blockEntityCapacity is null. pos:"+ pos));
+                    .orElseThrow(() -> new RuntimeException("blockEntityCapability is null. pos:"+ pos));
             //その他のデータを取得
             Player player = context.getPlayer();
             //プレイヤー以外の操作はパス
