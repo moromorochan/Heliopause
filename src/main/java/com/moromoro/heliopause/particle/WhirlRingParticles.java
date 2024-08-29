@@ -7,6 +7,7 @@ import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -86,11 +87,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
         float partialPosZ = (float)(Mth.lerp((double)partialTicks, this.zo, this.z) - cameraPos.z());
 
         //軌道平面を取得
-        Quaternionf orbitalPlane = new Quaternionf();
-        orbitalPlane.rotateZ(orbitAxisYaw);
-        orbitalPlane.rotateX(orbitAxisPitch);
-        //回転
-        orbitalPlane.rotateZ(orbitRotation + Mth.lerp(partialTicks,0,getOrbitSpeed()));
+        Quaternionf orbitalPlane = getOrbitalPlane(partialTicks);
 
         //平面上にメッシュを配置するための座標を用意
         float quadHalf = this.quadSize/2f;
@@ -141,6 +138,32 @@ public class WhirlRingParticles extends TextureSheetParticle {
         buffer.vertex((double)underVertexPosArray[1].x(), (double)underVertexPosArray[1].y(), (double)underVertexPosArray[1].z()).uv(maxU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
 
         cameraDistance = Vector3f.length(overVertexPosArray[0].x(),overVertexPosArray[0].y(),overVertexPosArray[0].z());
+    }
+
+    private Quaternionf getOrbitalPlane(float partialTicks) {
+        Quaternionf orbitalPlane = new Quaternionf();
+        orbitalPlane.rotateZ(orbitAxisYaw);
+        orbitalPlane.rotateX(orbitAxisPitch);
+        //回転
+        orbitalPlane.rotateZ(orbitRotation + Mth.lerp(partialTicks,0,getOrbitSpeed()));
+        return orbitalPlane;
+    }
+
+    //TODO バウンディングボックスの最適化(今は半径を拡げて無理矢理設定している)
+    public AABB getBoundingBox() {
+        Vector3f basePos = new Vector3f(0,1600*orbitRadius*quadSize,0);
+        Quaternionf orbitalPlane = getOrbitalPlane(0);
+        basePos.rotate(orbitalPlane);
+        basePos.mul(quadSize);
+        basePos.add(new Vector3f((float) this.x, (float) this.y, (float) this.z));
+
+        float quadHalf = this.quadSize/2f;
+        float quadLengthHalf = (quadHalf + (0.5f*Math.min(1/quadHalf,this.orbitRadius))) * this.alpha;
+
+        return new AABB(
+                this.x - orbitRadius*2, this.y - orbitRadius*2, this.z - 0.1f,
+                this.x + orbitRadius*2, this.y + orbitRadius*2, this.z + 0.1f
+        );
     }
 
     @Override
