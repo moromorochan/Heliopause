@@ -16,4 +16,7 @@ public class ParticleRegistry {
 
     public static final RegistryObject<SimpleParticleType> FLUID_SPREAD_PARTICLES =
             PARTICLE_TYPES.register("fluid_spread_particles", () -> new SimpleParticleType(true));
+
+    public static final RegistryObject<SimpleParticleType> WHIRL_RING_PARTICLES =
+            PARTICLE_TYPES.register("whirl_ring_particles", () -> new SimpleParticleType(true));
 }

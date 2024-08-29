@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.event;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.particle.WhirlRingParticles;
 import com.moromoro.heliopause.particle.FluidSpreadParticles;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.registry.ParticleRegistry;
@@ -30,5 +31,6 @@ public class ModEventBusClientEvents {
     @SubscribeEvent
     public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ParticleRegistry.FLUID_SPREAD_PARTICLES.get(), FluidSpreadParticles.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.WHIRL_RING_PARTICLES.get(), WhirlRingParticles.Provider::new);
     }
 }
