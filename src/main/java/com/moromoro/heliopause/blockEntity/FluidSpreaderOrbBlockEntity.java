@@ -7,29 +7,30 @@ import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.registry.ParticleRegistry;
 import com.moromoro.heliopause.render.FluidSpreaderOrbBlockRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
 
     //アニメーションの滑らかな描画用変数
     //private float smoothedRingDensity;
     //リングの外径(幅は内側ギリギリまでで自動生成)
-    private float ringRadius=16.0f;
+    private float ringRadius=20.0f;
+    //内側どこまで寄せるか
+    protected final float innerRadius=0.6f;
 
     public FluidSpreaderOrbBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), pos, state, 1000);
@@ -70,16 +71,16 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
 
     private void createParticle(BlockState blockState, Level level, BlockPos pos, RandomSource randomSource) {
         //ブロックエンティティを取得
-        BlockEntity blockEntity=level.getBlockEntity(pos);
+        BlockEntity blockEntity= level.getBlockEntity(pos);
         if(blockEntity instanceof FluidSpreaderOrbBlockEntity){
 
             //パーティクルの数を生成
-            int particleAmount = randomSource.nextInt( 1+(int)(0.25*ringRadius),  1+(int)(2*ringRadius));
+            int particleAmount = randomSource.nextInt( 1+(int)(0.25*ringRadius),  1+(int)(1.5*ringRadius));
 
             for (int i = 0; i < particleAmount; i++) {
                 //位置を用意
                 float posX =(float) pos.getCenter().x;
-                float posY = (float) pos.getCenter().y+randomSource.nextFloat()*0.02f;//( pos.getY() +(8f/16f)-orbRadius + (Math.pow(randomSource.nextFloat(),0.25f)*2*orbRadius));
+                float posY = (float) pos.getCenter().y;//+randomSource.nextFloat()*0.04f;//( pos.getY() +(8f/16f)-orbRadius + (Math.pow(randomSource.nextFloat(),0.25f)*2*orbRadius));
                 float posZ =(float) pos.getCenter().z;
 
                 //パーティクルを生成
@@ -93,16 +94,23 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
                     //パーティクルに適用する色を液体から用意
                     int[] color = getFluidColor(getFluidInTank(0).getFluid());
                     particle.setColor(color[0],color[1],color[2]);
+                    if(this.level!=null&&!this.level.isClientSide())
+                    {
+                        particle.setLightIntensity(getFluidInTank(0).getFluid().getFluidType().getLightLevel());
+                    }
 
                     //パーティクルに適用する回転オフセットをランダムから用意
                     float randAngle = (float) Math.toRadians(randomSource.nextFloat()*360);
                     //パーティクルに適用する半径をランダムから用意
-                    float orbitWidth = ringRadius-0.8f;
-                    float orbitError = ((float)Math.pow(randomSource.nextDouble(),0.7d) - 0.5f ) * orbitWidth;
-                    float orbitRadius = 0.8f+ (ringRadius/2) + orbitError;
-                    particle.setOrbitalElements((float) Math.toRadians(-90),0,randAngle,orbitRadius,0.01f);
+                    float orbitWidth = ringRadius-innerRadius;
+                    float orbitError =
+                            ((float)Math.pow(randomSource.nextDouble(),0.4d)/2 * (randomSource.nextBoolean()?1:-1))
+                            *(1)
+                            * orbitWidth;
+                    float orbitRadius = innerRadius + (ringRadius/2) + orbitError;
+                    particle.setOrbitalElements(new Vec3(posX,posY,posZ),(float) Math.toRadians(-90),0,randAngle,orbitRadius,1);
                     //パーティクルの大きさをリングの端からの距離に合わせる
-                    particle.setPixelBasedSize(1+(orbitWidth*0.5f-Math.abs(orbitError))*0.8f);
+                    particle.setPixelBasedSize(orbitWidth*0.5f-Math.abs(orbitError));
                     //particle.setColor(Math.abs(orbitError),color[1],color[2]);
                 }
 
