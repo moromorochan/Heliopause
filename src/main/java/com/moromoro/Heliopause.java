@@ -78,7 +78,7 @@ public class Heliopause {
                 output.accept(ItemRegistry.ROASTING_TABLE_ITEM.get());
                 output.accept(ItemRegistry.CRUCIBLE_ITEM.get());
                 output.accept(ItemRegistry.FLUID_CAGE_ITEM.get());
-                //output.accept(ItemRegistry.FLUID_SPREADER_ITEM.get());
+                output.accept(ItemRegistry.FLUID_SPREADER_TOWER_ITEM.get());
                 output.accept(ItemRegistry.LOW_COPPER_PIPE_ITEM.get());
                 output.accept(ItemRegistry.MEDIUM_COPPER_PIPE_ITEM.get());
                 output.accept(ItemRegistry.HIGH_COPPER_PIPE_ITEM.get());

@@ -49,6 +49,13 @@ public class BlockEntityRegistry {
                                 BlockRegistry.FLUID_SPREADER_ORB.get()
                         ).build(null)
                 );
+    public static final RegistryObject<BlockEntityType<FluidSpreaderOrbBlockEntity>> FLUID_SPREADER_TOWER_BE =
+            BLOCKENTITIES.register("fluid_spreader_tower",()->
+                    BlockEntityType.Builder.of(
+                            FluidSpreaderOrbBlockEntity::new,
+                            BlockRegistry.FLUID_SPREADER_TOWER.get()
+                    ).build(null)
+            );
     /*public static final RegistryObject<BlockEntityType<FluidSpreaderBlockEntity>> FLUID_SPREADER_BE =
             BLOCKENTITIES.register("fluid_spreader",() ->
                     BlockEntityType.Builder.of(

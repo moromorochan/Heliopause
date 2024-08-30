@@ -11,7 +11,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Math;
 import org.joml.Quaternionf;
@@ -38,7 +37,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
         cameraDistance=0;
         lightIntensity=0;
 
-        axisZError= (RandomSource.create().nextFloat()-0.5f)*0.037f;
+        axisZError= (RandomSource.create().nextFloat())*0.003f;
 
         //アルファとテクスチャの読み込み
         this.setAlpha(0.0F);
@@ -90,23 +89,24 @@ public class WhirlRingParticles extends TextureSheetParticle {
         Quaternionf orbitalPlane = getOrbitalPlane(partialTicks);
 
         //平面上にメッシュを配置するための座標を用意
-        float quadHalf = this.quadSize/2f;
-        float quadLengthHalf = (quadHalf + (0.5f*Math.min(1/quadHalf,this.orbitRadius))) * this.alpha;
+        float quadHalf = this.quadSize/2f ;
+        float quadLengthHalf = (quadHalf + 0.003f*this.orbitRadius*this.orbitRadius) * this.alpha;
+        float quadWidthHalf = quadHalf;
         float radius = this.orbitRadius/quadSize;
-        float zError = -0.02f*quadSize;
+        float zError = -0.03f * quadSize;
         //オモテ用
         Vector3f [] overVertexPosArray = new Vector3f[]{
-                new Vector3f(-quadLengthHalf, -quadHalf + radius, axisZError-zError),
-                new Vector3f(-quadLengthHalf, quadHalf + radius, axisZError-zError),
-                new Vector3f(quadLengthHalf, quadHalf + radius, axisZError-zError),
-                new Vector3f(quadLengthHalf, -quadHalf + radius, axisZError-zError)
+                new Vector3f(-quadLengthHalf, -quadWidthHalf + radius, axisZError-zError),
+                new Vector3f(-quadLengthHalf, quadWidthHalf + radius, axisZError-zError),
+                new Vector3f(quadLengthHalf, quadWidthHalf + radius, axisZError-zError),
+                new Vector3f(quadLengthHalf, -quadWidthHalf + radius, axisZError-zError)
         };
         //ウラ用
         Vector3f [] underVertexPosArray = new Vector3f[]{
-                new Vector3f(-quadLengthHalf, -quadHalf + radius, axisZError+zError),
-                new Vector3f(-quadLengthHalf, quadHalf + radius, axisZError+zError),
-                new Vector3f(quadLengthHalf, quadHalf + radius, axisZError+zError),
-                new Vector3f(quadLengthHalf, -quadHalf + radius, axisZError+zError)
+                new Vector3f(-quadLengthHalf, -quadWidthHalf + radius, axisZError+zError),
+                new Vector3f(-quadLengthHalf, quadWidthHalf + radius, axisZError+zError),
+                new Vector3f(quadLengthHalf, quadWidthHalf + radius, axisZError+zError),
+                new Vector3f(quadLengthHalf, -quadWidthHalf + radius, axisZError+zError)
         };
 
         for(int i = 0; i < 4; ++i) {
@@ -127,15 +127,15 @@ public class WhirlRingParticles extends TextureSheetParticle {
         float maxV = this.getV1();
         int lightColor = calcLight(this.getLightColor(partialTicks),lightIntensity);//lightIntensity;//Math.max(lightIntensity, this.getLightColor(partialTicks));
         //オモテ面
-        buffer.vertex((double)overVertexPosArray[0].x(), (double)overVertexPosArray[0].y(), (double)overVertexPosArray[0].z()).uv(maxU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-        buffer.vertex((double)overVertexPosArray[1].x(), (double)overVertexPosArray[1].y(), (double)overVertexPosArray[1].z()).uv(maxU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-        buffer.vertex((double)overVertexPosArray[2].x(), (double)overVertexPosArray[2].y(), (double)overVertexPosArray[2].z()).uv(minU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-        buffer.vertex((double)overVertexPosArray[3].x(), (double)overVertexPosArray[3].y(), (double)overVertexPosArray[3].z()).uv(minU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-        //ウラ面
         buffer.vertex((double)underVertexPosArray[0].x(), (double)underVertexPosArray[0].y(), (double)underVertexPosArray[0].z()).uv(maxU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
         buffer.vertex((double)underVertexPosArray[3].x(), (double)underVertexPosArray[3].y(), (double)underVertexPosArray[3].z()).uv(minU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
         buffer.vertex((double)underVertexPosArray[2].x(), (double)underVertexPosArray[2].y(), (double)underVertexPosArray[2].z()).uv(minU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
         buffer.vertex((double)underVertexPosArray[1].x(), (double)underVertexPosArray[1].y(), (double)underVertexPosArray[1].z()).uv(maxU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        //ウラ面
+        buffer.vertex((double)overVertexPosArray[0].x(), (double)overVertexPosArray[0].y(), (double)overVertexPosArray[0].z()).uv(maxU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex((double)overVertexPosArray[1].x(), (double)overVertexPosArray[1].y(), (double)overVertexPosArray[1].z()).uv(maxU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex((double)overVertexPosArray[2].x(), (double)overVertexPosArray[2].y(), (double)overVertexPosArray[2].z()).uv(minU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex((double)overVertexPosArray[3].x(), (double)overVertexPosArray[3].y(), (double)overVertexPosArray[3].z()).uv(minU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
 
         cameraDistance = Vector3f.length(overVertexPosArray[0].x(),overVertexPosArray[0].y(),overVertexPosArray[0].z());
     }
@@ -161,8 +161,8 @@ public class WhirlRingParticles extends TextureSheetParticle {
         float quadLengthHalf = (quadHalf + (0.5f*Math.min(1/quadHalf,this.orbitRadius))) * this.alpha;
 
         return new AABB(
-                this.x - orbitRadius*2, this.y - orbitRadius*2, this.z - 0.1f,
-                this.x + orbitRadius*2, this.y + orbitRadius*2, this.z + 0.1f
+                this.x - orbitRadius*2, this.y - orbitRadius*2, this.z - orbitRadius*2,
+                this.x + orbitRadius*2, this.y + orbitRadius*2, this.z + orbitRadius*2
         );
     }
 
@@ -190,9 +190,9 @@ public class WhirlRingParticles extends TextureSheetParticle {
             //
         }
     }
-    //半径と向心力に基づいた軌道速度を出す
+    //半径と向心力に基づいた軌道角速度を出す
     private float getOrbitSpeed() {
-        return Mth.sqrt(centripetalForce/orbitRadius);
+        return Mth.sqrt(centripetalForce/orbitRadius)/orbitRadius;
     }
 
     public void setLightIntensity(int intensity){

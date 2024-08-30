@@ -7,7 +7,6 @@ import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.registry.ParticleRegistry;
 import com.moromoro.heliopause.render.FluidSpreaderOrbBlockRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -28,12 +27,12 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
     //アニメーションの滑らかな描画用変数
     //private float smoothedRingDensity;
     //リングの外径(幅は内側ギリギリまでで自動生成)
-    private float ringRadius=20.0f;
+    private float ringRadius=3.0f;
     //内側どこまで寄せるか
     protected final float innerRadius=0.6f;
 
     public FluidSpreaderOrbBlockEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), pos, state, 1000);
+        super(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), pos, state, 1024);
     }
 
     @Override
@@ -75,12 +74,12 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
         if(blockEntity instanceof FluidSpreaderOrbBlockEntity){
 
             //パーティクルの数を生成
-            int particleAmount = randomSource.nextInt( 1+(int)(0.25*ringRadius),  1+(int)(1.5*ringRadius));
+            int particleAmount = randomSource.nextInt( (int)(0.5*ringRadius*ringRadius),  (int)(3*ringRadius*ringRadius));
 
             for (int i = 0; i < particleAmount; i++) {
                 //位置を用意
                 float posX =(float) pos.getCenter().x;
-                float posY = (float) pos.getCenter().y;//+randomSource.nextFloat()*0.04f;//( pos.getY() +(8f/16f)-orbRadius + (Math.pow(randomSource.nextFloat(),0.25f)*2*orbRadius));
+                float posY = (float) pos.getCenter().y + 1f/16f;//+randomSource.nextFloat()*0.04f;//( pos.getY() +(8f/16f)-orbRadius + (Math.pow(randomSource.nextFloat(),0.25f)*2*orbRadius));
                 float posZ =(float) pos.getCenter().z;
 
                 //パーティクルを生成
@@ -91,9 +90,7 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
 
                 //パーティクルに値を入れる
                 if (particle != null) {
-                    //パーティクルに適用する色を液体から用意
-                    int[] color = getFluidColor(getFluidInTank(0).getFluid());
-                    particle.setColor(color[0],color[1],color[2]);
+
                     if(this.level!=null&&!this.level.isClientSide())
                     {
                         particle.setLightIntensity(getFluidInTank(0).getFluid().getFluidType().getLightLevel());
@@ -104,18 +101,50 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
                     //パーティクルに適用する半径をランダムから用意
                     float orbitWidth = ringRadius-innerRadius;
                     float orbitError =
-                            ((float)Math.pow(randomSource.nextDouble(),0.4d)/2 * (randomSource.nextBoolean()?1:-1))
+                            ((float)Math.pow(randomSource.nextDouble(),0.8d)/2 * (randomSource.nextBoolean()?1:-1))
                             *(1)
                             * orbitWidth;
                     float orbitRadius = innerRadius + (ringRadius/2) + orbitError;
                     particle.setOrbitalElements(new Vec3(posX,posY,posZ),(float) Math.toRadians(-90),0,randAngle,orbitRadius,1);
                     //パーティクルの大きさをリングの端からの距離に合わせる
                     particle.setPixelBasedSize(orbitWidth*0.5f-Math.abs(orbitError));
-                    //particle.setColor(Math.abs(orbitError),color[1],color[2]);
+
+                    //パーティクルに適用する色を液体から用意
+                    int[] color = getFLuidRingColor(getFluidInTank(0).getFluid(),orbitRadius,pos);//getFluidColor(getFluidInTank(0).getFluid());
+                    particle.setColor(color[0],color[1],color[2]);
                 }
 
             }
         }
+    }
+
+    private int[] getFLuidRingColor(Fluid fluid, float orbitRadius, BlockPos pos) {
+
+        //位置からシード固定のランダムソースを作成
+        RandomSource randomSource = RandomSource.create(pos.asLong());
+
+        //液体からスプライトを取得
+        TextureAtlasSprite sprite = getFluidSprite(fluid);
+
+        //テクスチャのピクセルの色を取得
+        int texColor = sprite.getPixelRGBA(0, randomSource.nextInt(0,15), (int)Math.floor(orbitRadius*2f)%16);
+
+        //ティントカラーを適用
+        int color = FastColor.ARGB32.multiply(
+                FastColor.ABGR32.color(
+                        255,
+                        FastColor.ABGR32.red(texColor),
+                        FastColor.ABGR32.green(texColor),
+                        FastColor.ABGR32.blue(texColor)
+                ),
+                IClientFluidTypeExtensions.of(fluid).getTintColor()
+        );
+
+        int red = FastColor.ABGR32.red(color);
+        int green = FastColor.ABGR32.green(color);
+        int blue = FastColor.ABGR32.blue(color);
+
+        return new int[]{red,green,blue};
     }
 
     //液体の色を取得
