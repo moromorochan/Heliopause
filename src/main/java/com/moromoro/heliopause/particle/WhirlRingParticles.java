@@ -171,7 +171,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
         super.tick();
 
         //小さくて遠いなら消す
-        if((this.cameraDistance/ java.lang.Math.pow(this.quadSize,0.2f))>80){
+        if(((this.cameraDistance-10f) / this.quadSize ) > 80){
             this.remove();
         }
         //寿命に応じてアルファを設定 アルファは幅に使用する
@@ -210,7 +210,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
 
     @Override
     public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_LIT;
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @OnlyIn(Dist.CLIENT)

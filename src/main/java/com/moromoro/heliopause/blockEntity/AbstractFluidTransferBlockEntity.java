@@ -15,10 +15,18 @@ import org.jetbrains.annotations.NotNull;
 
 //タンク容量は持たず、液体を移送するブロックエンティティ
 public abstract class AbstractFluidTransferBlockEntity extends FluidHandlerBlockEntity implements IFluidHandler {
-    public BlockPos operationBlockPos = this.getBlockPos();//操作を送る対象の位置
+    private BlockPos operationBlockPos = this.getBlockPos();//操作を送る対象の位置
     public EnumProperty<AttachFace> operationBlockFace = BlockStateProperties.ATTACH_FACE;//操作を送る対象の接続面
     public AbstractFluidTransferBlockEntity(@NotNull BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(blockEntityType, pos, state);
+    }
+
+    public BlockPos getOperationBlockPos() {
+        return operationBlockPos;
+    }
+
+    public void setOperationBlockPos(BlockPos operationBlockPos) {
+        this.operationBlockPos = operationBlockPos;
     }
 
     //タンクへの操作を担う側のブロックエンティティの液体ハンドラを取得

@@ -27,9 +27,9 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
     //アニメーションの滑らかな描画用変数
     //private float smoothedRingDensity;
     //リングの外径(幅は内側ギリギリまでで自動生成)
-    private float ringRadius=3.0f;
+    private float ringRadius=8.0f;
     //内側どこまで寄せるか
-    protected final float innerRadius=0.6f;
+    protected final float innerRadius=Math.max(0.6f,ringRadius-1.8f);
 
     public FluidSpreaderOrbBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), pos, state, 1024);
@@ -74,7 +74,7 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
         if(blockEntity instanceof FluidSpreaderOrbBlockEntity){
 
             //パーティクルの数を生成
-            int particleAmount = randomSource.nextInt( (int)(0.5*ringRadius*ringRadius),  (int)(3*ringRadius*ringRadius));
+            int particleAmount = randomSource.nextInt( (int)(0.5*ringRadius),  (int)(2*ringRadius));
 
             for (int i = 0; i < particleAmount; i++) {
                 //位置を用意
@@ -110,7 +110,7 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
                     particle.setPixelBasedSize(orbitWidth*0.5f-Math.abs(orbitError));
 
                     //パーティクルに適用する色を液体から用意
-                    int[] color = getFLuidRingColor(getFluidInTank(0).getFluid(),orbitRadius,pos);//getFluidColor(getFluidInTank(0).getFluid());
+                    int[] color = getFluidRingColor(getFluidInTank(0).getFluid(),orbitRadius,pos);//getFluidColor(getFluidInTank(0).getFluid());
                     particle.setColor(color[0],color[1],color[2]);
                 }
 
@@ -118,7 +118,7 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
         }
     }
 
-    private int[] getFLuidRingColor(Fluid fluid, float orbitRadius, BlockPos pos) {
+    private int[] getFluidRingColor(Fluid fluid, float orbitRadius, BlockPos pos) {
 
         //位置からシード固定のランダムソースを作成
         RandomSource randomSource = RandomSource.create(pos.asLong());
@@ -127,7 +127,7 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
         TextureAtlasSprite sprite = getFluidSprite(fluid);
 
         //テクスチャのピクセルの色を取得
-        int texColor = sprite.getPixelRGBA(0, randomSource.nextInt(0,15), (int)Math.floor(orbitRadius*2f)%16);
+        int texColor = sprite.getPixelRGBA(0,randomSource.nextInt(0,15),(int)Math.floor(orbitRadius*8f)%16);
 
         //ティントカラーを適用
         int color = FastColor.ARGB32.multiply(

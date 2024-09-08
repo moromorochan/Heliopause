@@ -20,6 +20,16 @@
       "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_4",
       "y":90
     },
+    "facing=east,level=5": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_5",
+      "y":90
+    },
+    "facing=east,level=6": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_6",
+      "y":90
+    },
+
+
     "facing=north,level=0": {
       "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_0",
       "y":0
@@ -40,6 +50,16 @@
       "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_4",
       "y":0
     },
+    "facing=north,level=5": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_5",
+      "y":0
+    },
+    "facing=north,level=6": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_6",
+      "y":0
+    },
+
+
     "facing=south,level=0": {
       "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_0",
       "y":180
@@ -60,6 +80,16 @@
       "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_4",
       "y":180
     },
+    "facing=south,level=5": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_5",
+      "y":180
+    },
+    "facing=south,level=6": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_6",
+      "y":180
+    },
+
+
     "facing=west,level=0": {
       "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_0",
       "y":270
@@ -78,6 +108,14 @@
     },
     "facing=west,level=4": {
       "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_4",
+      "y":270
+    },
+    "facing=west,level=5": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_5",
+      "y":270
+    },
+    "facing=west,level=6": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_6",
       "y":270
     }
   }

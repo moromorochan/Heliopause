@@ -4,9 +4,10 @@
   "block.heliopause.alchemy_stove": "錬金こん炉",
   "block.heliopause.alchemy_roasting_table": "錬金焙炉",
   "block.heliopause.crucible": "るつぼ",
-  "block.heliopause.orb": "液球",
-  "block.heliopause.fluid_cage": "液体ケージ",
-  "block.heliopause.fluid_spreader": "液体散布器",
+  "block.heliopause.orb": "流体球",
+  "block.heliopause.fluid_cage": "流体ケージ",
+  "block.heliopause.fluid_spreader_tower": "流体散布塔",
+  "block.heliopause.fluid_spreader_tower_orb": "流体散布塔",
   "block.heliopause.alchemy_biron_block": "錬金赤銅ブロック",
   "block.heliopause.glowstone_alloy_block": "グロウストーン合金ブロック",
 

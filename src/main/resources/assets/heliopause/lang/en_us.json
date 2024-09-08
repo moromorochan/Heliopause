@@ -6,7 +6,8 @@
   "block.heliopause.crucible": "Crucible",
   "block.heliopause.orb": "Fluid Globe",
   "block.heliopause.fluid_cage": "Fluid Cage",
-  "block.heliopause.fluid_spreader": "Fluid Spreader",
+  "block.heliopause.fluid_spreader_tower": "Fluid Spreader Tower",
+  "block.heliopause.fluid_spreader_tower_orb": "Fluid Spreader Tower",
   "block.heliopause.alchemy_biron_block": "Alchemy Biron Block",
   "block.heliopause.glowstone_alloy_block": "Glowstone Alloy Block",
 

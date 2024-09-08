@@ -1,22 +1,59 @@
 {
 	"credit": "Made by moromorochan with Blockbench",
-	"texture_size": [32, 96],
+	"texture_size": [32, 128],
 	"textures": {
 		"0": "heliopause:block/fluid_spreader_tower",
-		"particle": "heliopause:block/fluid_spreader_tower"
+		"particle": "minecraft:block/dark_oak_planks"
 	},
 	"elements": [
 		{
 			"from": [0, 0, 0],
 			"to": [16, 16, 16],
 			"faces": {
-				"north": {"uv": [8, 10.66667, 16, 13.33333], "texture": "#0"},
-				"east": {"uv": [8, 10.66667, 16, 13.33333], "texture": "#0"},
-				"south": {"uv": [0, 10.66667, 8, 13.33333], "texture": "#0"},
-				"west": {"uv": [8, 10.66667, 16, 13.33333], "texture": "#0"},
-				"up": {"uv": [8, 13.33333, 16, 16], "texture": "#0"},
-				"down": {"uv": [0, 13.33333, 8, 16], "texture": "#0"}
+				"north": {"uv": [0, 12, 8, 14], "texture": "#0"},
+				"east": {"uv": [0, 12, 8, 14], "texture": "#0"},
+				"south": {"uv": [8, 14, 16, 16], "texture": "#0"},
+				"west": {"uv": [0, 12, 8, 14], "texture": "#0"},
+				"up": {"uv": [8, 12, 16, 14], "texture": "#0"},
+				"down": {"uv": [0, 14, 8, 16], "texture": "#0"}
 			}
 		}
-	]
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 1.5, 0],
+			"scale": [0.15, 0.15, 0.15]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 1.5, 0],
+			"scale": [0.15, 0.15, 0.15]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"scale": [0.23, 0.23, 0.23]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 225, 0],
+			"scale": [0.23, 0.23, 0.23]
+		},
+		"ground": {
+			"translation": [0, 1, 0],
+			"scale": [0.15, 0.15, 0.15]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"translation": [0, -6, 0],
+			"scale": [0.23, 0.23, 0.23]
+		},
+		"head": {
+			"scale": [0.75, 0.75, 0.75]
+		},
+		"fixed": {
+			"rotation": [0, -90, 0],
+			"translation": [0, -6.5, 0],
+			"scale": [0.22, 0.22, 0.22]
+		}
+	}
 }
