@@ -24,11 +24,14 @@
   "item.heliopause.glowstone_alloy_ingot": "Glowstone Alloy Ingot",
   "item.heliopause.glowstone_alloy_nugget": "Glowstone Alloy Nugget",
 
+  "item.heliopause.chalk": "Chalk",
   "item.heliopause.vial": "Vial",
   "item.heliopause.vial.filled": "%1$s Vial",
   "item.heliopause.large_bottle": "Large Bottle",
   "item.heliopause.large_bottle.filled": "%1$s Large Bottle",
 
+  "item.heliopause.chalk.tooltip.description1": "Hold %1$s",
+  "item.heliopause.chalk.tooltip.description2": "Hold to select the magic circle to draw",
   "item.heliopause.bottle.tooltip.amount": "Amount: %s/%smb",
   "item.heliopause.bottle.tooltip.description1": "fill item",
   "item.heliopause.bottle.tooltip.description2": "drain item",

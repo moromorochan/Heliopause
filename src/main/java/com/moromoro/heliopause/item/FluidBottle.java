@@ -245,7 +245,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
                 tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1").withStyle(ChatFormatting.GRAY));
             }
         } else {
-            //シフトを押している間は行を反転
+            //操作キーを押している間は行を反転
             if(!KeyMapRegistry.BOTTLE_DRAIN.isPressed()){
                 tooltip.add(Component.literal("[").append(useKey).append("] :"));
                 tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));

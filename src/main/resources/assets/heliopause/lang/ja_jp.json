@@ -24,11 +24,14 @@
   "item.heliopause.glowstone_alloy_ingot": "グロウストーン合金インゴット",
   "item.heliopause.glowstone_alloy_nugget": "グロウストーン合金塊",
 
+  "item.heliopause.chalk": "チョーク",
   "item.heliopause.vial": "バイアル瓶",
   "item.heliopause.vial.filled": "%1$s入りバイアル瓶",
   "item.heliopause.large_bottle": "大瓶",
   "item.heliopause.large_bottle.filled": "%1$s入り大瓶",
 
+  "item.heliopause.chalk.tooltip.description1": "%1$sを長押し",
+  "item.heliopause.chalk.tooltip.description2": "描く魔法陣を選択",
   "item.heliopause.bottle.tooltip.amount": "充填量: %s/%smb",
   "item.heliopause.bottle.tooltip.description1": "アイテムに充填",
   "item.heliopause.bottle.tooltip.description2": "アイテムから排出",
@@ -36,7 +39,7 @@
   "item.heliopause.bottleStack.tooltip.description2": "スタックから一括排出",
 
   "item.heliopause.paperbush_twigs": "ミツマタの枝",
-  "item.heliopause.sorcery paper": "魔法紙",
+  "item.heliopause.sorcery paper": "魔術用紙",
 
   "item.heliopause.imitation_core": "模造天体コア",
 

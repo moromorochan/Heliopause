@@ -90,6 +90,7 @@ public class Heliopause {
                 output.accept(ItemRegistry.GLOWSTONE_ALLOY_INGOT_ITEM.get());
                 output.accept(ItemRegistry.GLOWSTONE_ALLOY_NUGGET_ITEM.get());
                 output.accept(ItemRegistry.IMITATION_CORE_ITEM.get());
+                output.accept(ItemRegistry.CHALK_ITEM.get());
                 output.accept(ItemRegistry.VIAL_ITEM.get());
                 output.accept(ItemRegistry.LARGE_BOTTLE_ITEM.get());
                 output.accept(ItemRegistry.PAPERBUSH_BLOCK_ITEM.get());

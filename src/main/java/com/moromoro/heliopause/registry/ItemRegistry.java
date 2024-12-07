@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.item.ChalkItem;
 import com.moromoro.heliopause.item.FluidBottle;
 import com.moromoro.heliopause.item.PipeBlockItem;
 import net.minecraft.world.item.BlockItem;
@@ -62,6 +63,10 @@ public class ItemRegistry {
             ITEMS.register("vial",()->new FluidBottle(new Item.Properties(),500,50));
     public static final RegistryObject<FluidBottle> LARGE_BOTTLE_ITEM =
             ITEMS.register("large_bottle",()->new FluidBottle(new Item.Properties(),2000,200));
+
+        //ツール
+        public static final RegistryObject<ChalkItem> CHALK_ITEM =
+                ITEMS.register("chalk", () -> new ChalkItem(new Item.Properties()));
 
         //模造天体コア
     public static final RegistryObject<Item> IMITATION_CORE_ITEM =

@@ -2,6 +2,7 @@ package com.moromoro.heliopause.blockEntity;
 
 import com.moromoro.ConfigHolder;
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.particle.FluidSpreadParticles;
 import com.moromoro.heliopause.particle.WhirlRingParticles;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.registry.ParticleRegistry;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,7 +29,7 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
     //アニメーションの滑らかな描画用変数
     //private float smoothedRingDensity;
     //リングの外径(幅は内側ギリギリまでで自動生成)
-    private float ringRadius=8.0f;
+    private float ringRadius=4.0f;
     //内側どこまで寄せるか
     protected final float innerRadius=Math.max(0.6f,ringRadius-1.8f);
 
@@ -78,42 +80,63 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
 
             for (int i = 0; i < particleAmount; i++) {
                 //位置を用意
-                float posX =(float) pos.getCenter().x;
-                float posY = (float) pos.getCenter().y + 1f/16f;//+randomSource.nextFloat()*0.04f;//( pos.getY() +(8f/16f)-orbRadius + (Math.pow(randomSource.nextFloat(),0.25f)*2*orbRadius));
-                float posZ =(float) pos.getCenter().z;
+                float centerPosX =(float) pos.getCenter().x;
+                float centerPosY = (float) pos.getCenter().y + 1f/16f;//+randomSource.nextFloat()*0.04f;//( pos.getY() +(8f/16f)-orbRadius + (Math.pow(randomSource.nextFloat(),0.25f)*2*orbRadius));
+                float centerPosZ =(float) pos.getCenter().z;
+
+                //パーティクルに適用する回転オフセットをランダムから用意
+                float randAngle = (float) Math.toRadians(randomSource.nextFloat()*360);
+                //パーティクルに適用する半径をランダムから用意
+                float orbitWidth = ringRadius-innerRadius;
+                float orbitError =
+                        ((float)Math.pow(randomSource.nextDouble(),0.8d)/2 * (randomSource.nextBoolean()?1:-1))
+                                *(1)
+                                * orbitWidth;
+                float orbitRadius = innerRadius + (ringRadius/2) + orbitError;
+
+                //パーティクルに適用する色を液体から用意
+                int[] color = getFluidRingColor(getFluidInTank(0).getFluid(),orbitRadius,pos);//getFluidColor(getFluidInTank(0).getFluid());
 
                 //パーティクルを生成
-                WhirlRingParticles particle = (WhirlRingParticles) Minecraft.getInstance().particleEngine.createParticle(
+                WhirlRingParticles ringParticle = (WhirlRingParticles) Minecraft.getInstance().particleEngine.createParticle(
                         ParticleRegistry.WHIRL_RING_PARTICLES.get(),
-                        posX , posY, posZ , 0, 0, 0
+                        centerPosX , centerPosY, centerPosZ , 0, 0, 0
                 );
 
                 //パーティクルに値を入れる
-                if (particle != null) {
+                if (ringParticle != null) {
 
                     if(this.level!=null&&!this.level.isClientSide())
                     {
-                        particle.setLightIntensity(getFluidInTank(0).getFluid().getFluidType().getLightLevel());
+                        ringParticle.setLightIntensity(getFluidInTank(0).getFluid().getFluidType().getLightLevel());
                     }
 
-                    //パーティクルに適用する回転オフセットをランダムから用意
-                    float randAngle = (float) Math.toRadians(randomSource.nextFloat()*360);
-                    //パーティクルに適用する半径をランダムから用意
-                    float orbitWidth = ringRadius-innerRadius;
-                    float orbitError =
-                            ((float)Math.pow(randomSource.nextDouble(),0.8d)/2 * (randomSource.nextBoolean()?1:-1))
-                            *(1)
-                            * orbitWidth;
-                    float orbitRadius = innerRadius + (ringRadius/2) + orbitError;
-                    particle.setOrbitalElements(new Vec3(posX,posY,posZ),(float) Math.toRadians(-90),0,randAngle,orbitRadius,1);
+                    ringParticle.setOrbitalElements(new Vec3(centerPosX,centerPosY,centerPosZ),(float) Math.toRadians(-90),0,randAngle,orbitRadius,1);
                     //パーティクルの大きさをリングの端からの距離に合わせる
-                    particle.setPixelBasedSize(orbitWidth*0.5f-Math.abs(orbitError));
+                    ringParticle.setPixelBasedSize(orbitWidth*0.5f-Math.abs(orbitError));
 
-                    //パーティクルに適用する色を液体から用意
-                    int[] color = getFluidRingColor(getFluidInTank(0).getFluid(),orbitRadius,pos);//getFluidColor(getFluidInTank(0).getFluid());
-                    particle.setColor(color[0],color[1],color[2]);
+                    ringParticle.setColor(color[0],color[1],color[2]);
                 }
 
+                //信号が入っていない場合、散布パーティクルを生成する
+                if(!redStonePowered()){
+                    //軌道上の位置を取得
+                    float orbitPosX = (float) (centerPosX + Math.cos(randAngle) * orbitRadius);
+                    float orbitPosZ = (float) (centerPosZ + Math.sin(randAngle) * orbitRadius);
+                    //軌道速度(パーティクルの初速度にするもの)を取得
+                    float centripetalForce = 0.1f; //TODO パーティクルと向心力の値を揃える仕組みを用意する
+                    float orbitSpeed = Mth.sqrt(centripetalForce/orbitRadius)/orbitRadius;
+                    float orbitVelX = (float) (Math.cos(randAngle-Math.toRadians(90)) * orbitSpeed);
+                    float orbitVelZ = (float) (Math.sin(randAngle-Math.toRadians(90)) * orbitSpeed);
+                    FluidSpreadParticles spreadParticle = (FluidSpreadParticles) Minecraft.getInstance().particleEngine.createParticle(
+                            ParticleRegistry.FLUID_SPREAD_PARTICLES.get(),
+                            orbitPosX,centerPosY-0.1f,orbitPosZ,orbitVelX,0,orbitVelZ
+                    );
+                    //パーティクルに値を入れる
+                    if (spreadParticle != null) {
+                        spreadParticle.setColor(color[0],color[1],color[2]);
+                    }
+                }
             }
         }
     }
