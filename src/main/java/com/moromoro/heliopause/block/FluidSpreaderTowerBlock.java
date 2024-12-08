@@ -2,7 +2,6 @@ package com.moromoro.heliopause.block;
 
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -38,7 +37,12 @@ public class FluidSpreaderTowerBlock extends HorizontalFacingEntityBlock{
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return BlockEntityRegistry.FLUID_SPREADER_TOWER_BE.get().create(pos, state);
+        if(state.getValue(LEVEL)==0){
+            return BlockEntityRegistry.FLUID_SPREADER_BASE_BE.get().create(pos, state);
+        }
+        else{
+            return BlockEntityRegistry.FLUID_SPREADER_POLE_BE.get().create(pos, state);
+        }
     }
 
     @Override

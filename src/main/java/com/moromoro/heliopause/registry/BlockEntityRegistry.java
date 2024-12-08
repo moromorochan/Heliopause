@@ -2,7 +2,6 @@ package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -50,14 +49,22 @@ public class BlockEntityRegistry {
                                 BlockRegistry.FLUID_SPREADER_ORB.get()
                         ).build(null)
                 );
-            //散布塔
-    public static final RegistryObject<BlockEntityType<FluidSpreaderTowerBlockEntity>> FLUID_SPREADER_TOWER_BE =
+            //散布塔ポール部
+    public static final RegistryObject<BlockEntityType<FluidSpreaderTowerPoleEntity>> FLUID_SPREADER_POLE_BE =
             BLOCKENTITIES.register("fluid_spreader_tower",()->
                     BlockEntityType.Builder.of(
-                            FluidSpreaderTowerBlockEntity::new,
+                            FluidSpreaderTowerPoleEntity::new,
                             BlockRegistry.FLUID_SPREADER_TOWER.get()
                     ).build(null)
             );
+    //散布塔基部
+    public static final RegistryObject<BlockEntityType<FluidSpreaderTowerBaseEntity>> FLUID_SPREADER_BASE_BE =
+        BLOCKENTITIES.register("fluid_spreader_tower_base",()->
+            BlockEntityType.Builder.of(
+                FluidSpreaderTowerBaseEntity::new,
+                BlockRegistry.FLUID_SPREADER_TOWER.get()
+            ).build(null)
+        );
         //焙炉
     public static final RegistryObject<BlockEntityType<RoastingTableBlockEntity>> ROASTING_TABLE_BE =
             BLOCKENTITIES.register("alchemy_roasting_table",() ->
