@@ -40,8 +40,7 @@ public class BlockEntityRegistry {
                             BlockRegistry.FLUID_CAGE.get()
                     ).build(null)
             );
-        //液体散布器
-            //液球
+        //流体散布塔 中心星
     public static final RegistryObject<BlockEntityType<FluidSpreaderOrbBlockEntity>> FLUID_SPREADER_ORB_BE =
                 BLOCKENTITIES.register("fluid_spreader_orb",()->
                         BlockEntityType.Builder.of(
@@ -49,22 +48,6 @@ public class BlockEntityRegistry {
                                 BlockRegistry.FLUID_SPREADER_ORB.get()
                         ).build(null)
                 );
-            //散布塔ポール部
-    public static final RegistryObject<BlockEntityType<FluidSpreaderTowerPoleEntity>> FLUID_SPREADER_POLE_BE =
-            BLOCKENTITIES.register("fluid_spreader_tower",()->
-                    BlockEntityType.Builder.of(
-                            FluidSpreaderTowerPoleEntity::new,
-                            BlockRegistry.FLUID_SPREADER_TOWER.get()
-                    ).build(null)
-            );
-    //散布塔基部
-    public static final RegistryObject<BlockEntityType<FluidSpreaderTowerBaseEntity>> FLUID_SPREADER_BASE_BE =
-        BLOCKENTITIES.register("fluid_spreader_tower_base",()->
-            BlockEntityType.Builder.of(
-                FluidSpreaderTowerBaseEntity::new,
-                BlockRegistry.FLUID_SPREADER_TOWER.get()
-            ).build(null)
-        );
         //焙炉
     public static final RegistryObject<BlockEntityType<RoastingTableBlockEntity>> ROASTING_TABLE_BE =
             BLOCKENTITIES.register("alchemy_roasting_table",() ->

@@ -6,15 +6,17 @@ import com.moromoro.heliopause.particle.FluidSpreadParticles;
 import com.moromoro.heliopause.particle.WhirlRingParticles;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.registry.ParticleRegistry;
-import com.moromoro.heliopause.render.FluidSpreaderOrbBlockRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,6 +25,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.Objects;
 
 public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
 
@@ -33,18 +37,39 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
     //内側どこまで寄せるか
     protected final float innerRadius=Math.max(0.6f,ringRadius-1.8f);
 
+    //中心星にするアイテム
+    protected Container centerItemContainer;
+    public ItemStack centerItem = ItemStack.EMPTY;
+
     public FluidSpreaderOrbBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), pos, state, 1024);
     }
 
-    @Override
-    protected void updateRenderData() {
-        FluidSpreaderOrbBlockRenderer.updateData(this.getBlockPos(), mainTank.getFluid());
+    public ItemStack getCenterItem() {
+        return Objects.requireNonNullElse(centerItem, ItemStack.EMPTY);
+    }
+
+    public void setCenterItem(ItemStack item){
+        centerItem = item;
+        setChanged();
     }
 
     @Override
-    protected void removeRenderData() {
-        FluidSpreaderOrbBlockRenderer.removeData(this.getBlockPos());
+    public void saveAdditional(CompoundTag nbt) {
+        super.saveAdditional(nbt);
+        // centerItemをNBTに書き込む
+        CompoundTag itemNbt = new CompoundTag();
+        centerItem.save(itemNbt);
+        nbt.put("CenterItem", itemNbt);
+    }
+
+    @Override
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        // centerItemをNBTから読み込む
+        if (nbt.contains("CenterItem")) {
+            centerItem = ItemStack.of(nbt.getCompound("CenterItem"));
+        }
     }
 
     public void tick(Level level, BlockPos pos, BlockState blockState, FluidSpreaderOrbBlockEntity blockEntity) {
@@ -211,6 +236,14 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
                     .apply(new ResourceLocation("minecraft", "missing_texture"));
         }
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidTexture);
+    }
+
+    @Override
+    protected void updateRenderData() {
+    }
+
+    @Override
+    protected void removeRenderData() {
     }
 /*
     @Override

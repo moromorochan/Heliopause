@@ -1,122 +1,16 @@
 {
   "variants": {
-    "facing=east,level=0": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_0",
-      "y":90
+    "top=false,bottom=false": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_middle"
     },
-    "facing=east,level=1": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_1",
-      "y":90
+    "top=false,bottom=true": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_bottom"
     },
-    "facing=east,level=2": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_2",
-      "y":90
+    "top=true,bottom=false": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_top"
     },
-    "facing=east,level=3": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_3",
-      "y":90
-    },
-    "facing=east,level=4": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_4",
-      "y":90
-    },
-    "facing=east,level=5": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_5",
-      "y":90
-    },
-    "facing=east,level=6": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_6",
-      "y":90
-    },
-
-
-    "facing=north,level=0": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_0",
-      "y":0
-    },
-    "facing=north,level=1": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_1",
-      "y":0
-    },
-    "facing=north,level=2": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_2",
-      "y":0
-    },
-    "facing=north,level=3": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_3",
-      "y":0
-    },
-    "facing=north,level=4": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_4",
-      "y":0
-    },
-    "facing=north,level=5": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_5",
-      "y":0
-    },
-    "facing=north,level=6": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_6",
-      "y":0
-    },
-
-
-    "facing=south,level=0": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_0",
-      "y":180
-    },
-    "facing=south,level=1": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_1",
-      "y":180
-    },
-    "facing=south,level=2": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_2",
-      "y":180
-    },
-    "facing=south,level=3": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_3",
-      "y":180
-    },
-    "facing=south,level=4": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_4",
-      "y":180
-    },
-    "facing=south,level=5": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_5",
-      "y":180
-    },
-    "facing=south,level=6": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_6",
-      "y":180
-    },
-
-
-    "facing=west,level=0": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_0",
-      "y":270
-    },
-    "facing=west,level=1": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_1",
-      "y":270
-    },
-    "facing=west,level=2": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_2",
-      "y":270
-    },
-    "facing=west,level=3": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_3",
-      "y":270
-    },
-    "facing=west,level=4": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_4",
-      "y":270
-    },
-    "facing=west,level=5": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_5",
-      "y":270
-    },
-    "facing=west,level=6": {
-      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_tower_6",
-      "y":270
+    "top=true,bottom=true": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_top"
     }
   }
 }
