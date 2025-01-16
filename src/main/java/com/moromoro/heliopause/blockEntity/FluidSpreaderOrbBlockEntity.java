@@ -2,9 +2,11 @@ package com.moromoro.heliopause.blockEntity;
 
 import com.moromoro.ConfigHolder;
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.entity.OrreryInteractionOperatorEntity;
 import com.moromoro.heliopause.particle.FluidSpreadParticles;
 import com.moromoro.heliopause.particle.WhirlRingParticles;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
+import com.moromoro.heliopause.registry.EntityRegistry;
 import com.moromoro.heliopause.registry.ParticleRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -12,21 +14,27 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Container;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Objects;
+import java.util.*;
 
 public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
 
@@ -38,7 +46,6 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
     protected final float innerRadius=Math.max(0.6f,ringRadius-1.8f);
 
     //中心星にするアイテム
-    protected Container centerItemContainer;
     public ItemStack centerItem = ItemStack.EMPTY;
 
     public FluidSpreaderOrbBlockEntity(BlockPos pos, BlockState state) {
@@ -74,6 +81,7 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
 
     public void tick(Level level, BlockPos pos, BlockState blockState, FluidSpreaderOrbBlockEntity blockEntity) {
         boolean active = hasFluid() && !redStonePowered();
+        //レシピの動き
         if (active) {
             //smoothedRingDensity+=0.1f;
             RandomSource randomSource = RandomSource.createNewThreadLocalInstance();
@@ -85,6 +93,22 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
         }else {
             //smoothedRingDensity-=0.1f;
         }
+        //インタラクト用の動き
+        if(!level.isClientSide()){
+            ServerLevel serverLevel = (ServerLevel) this.level;
+            if (serverLevel != null) {
+                List<ServerPlayer> players = serverLevel.players();
+                for(Player player : players){
+                    if (isInRange(player,10)) {
+                        setOrreryInteractionOperator(player, serverLevel);
+                    }
+                }
+            }
+        }
+    }
+    //ブロックからの距離判定
+    private boolean isInRange(Player player, float range) {
+        return player.getEyePosition().distanceTo(getBlockPos().getCenter()) <= range;
     }
 
     private boolean redStonePowered() {
@@ -245,32 +269,35 @@ public class FluidSpreaderOrbBlockEntity extends AbstractFluidOrbBlockEntity{
     @Override
     protected void removeRenderData() {
     }
-/*
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (getFluidInTank(0).isEmpty()) {
-            setSmoothedRingDensity(0f);
-        } else {
-            setSmoothedRingDensity(1f);
+
+    private void setOrreryInteractionOperator(Player player, ServerLevel level) {
+        //視線を取得
+        BlockPos blockPos = this.getBlockPos();
+        Vec3 playerLookVec = player.getLookAngle();
+        Vec3 playerEyePos = player.getEyePosition();
+
+        //軌道平面との交点を計算
+        double playerToCursorDist = (blockPos.getCenter().y - playerEyePos.y) / playerLookVec.y;
+        //カーソルが2ブロック以上離れているか、頭の反対側ならキャンセル
+        if(playerToCursorDist < 0d || playerToCursorDist > 2d){return;}
+        Vec3 intersection = playerEyePos.add(playerLookVec.scale(playerToCursorDist));
+
+        //距離を確認
+        if(intersection.distanceTo(blockPos.getCenter())<=5){
+            //既存のブロックエンティティを探す
+            boolean entityExists = level.getEntitiesOfClass(OrreryInteractionOperatorEntity.class, new AABB(intersection,intersection).inflate(1))
+                .stream().anyMatch(entity -> entity.getPlayerUUID().equals(player.getUUID()));
+            if(!entityExists){
+                //無ければ作成
+                OrreryInteractionOperatorEntity newEntity = new OrreryInteractionOperatorEntity(level, blockPos, player.getUUID());
+                newEntity.setPos(intersection.add(0,-0.1f,0));
+                level.addFreshEntity(newEntity);
+            }else{
+                //あれば延命
+                level.getEntitiesOfClass(OrreryInteractionOperatorEntity.class, new AABB(intersection,intersection).inflate(1))
+                    .stream().filter(entity -> entity.getPlayerUUID().equals(player.getUUID()))
+                    .forEach(OrreryInteractionOperatorEntity::notifyUpdate);
+            }
         }
     }
-
-    //データの読み込み
-    @Override
-    public void load(@NonNull CompoundTag nbt){
-        super.load(nbt);
-        if (getFluidInTank(0).isEmpty()) {
-            setSmoothedRingDensity(0f);
-        } else {
-            setSmoothedRingDensity(1f);
-        }
-    }
-
-    public void setSmoothedRingDensity(float density) {
-        smoothedRingDensity = Mth.clamp(0f,1f,density);
-    }
-    public float getSmoothedRingDensity() {
-        return smoothedRingDensity;
-    }*/
 }

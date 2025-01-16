@@ -11,6 +11,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -33,6 +34,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
+import javax.swing.text.html.parser.Entity;
+
+import static com.moromoro.heliopause.registry.EntityRegistry.ENTITIES;
+
 @Mod(Heliopause.MODID)
 public class Heliopause {
 
@@ -53,6 +58,9 @@ public class Heliopause {
 
     // mod名前空間に登録されるアイテムを保持するための遅延レジスタを作成
     public static final DeferredRegister<Item> ITEMS = ItemRegistry.ITEMS;
+
+    // mod名前空間に登録されるエンティティを保持するための遅延レジスタを作成
+    public static final DeferredRegister<EntityType<?>> ENTITIES = EntityRegistry.ENTITIES;
 
     // mod名前空間に登録されるパーティクルタイプを保持するための遅延レジスタを作成
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = ParticleRegistry.PARTICLE_TYPES;
@@ -105,6 +113,7 @@ public class Heliopause {
         BLOCKS.register(modEventBus);
         BLOCKENTITIES.register(modEventBus);
         ITEMS.register(modEventBus);
+        ENTITIES.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
         MENU_TYPES.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
