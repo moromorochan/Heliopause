@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.item;
 
 import com.moromoro.ConfigHolder;
+import com.moromoro.heliopause.entity.OrreryInteractionOperatorEntity;
 import com.moromoro.heliopause.registry.KeyMapRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -15,6 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -25,6 +27,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
@@ -38,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHoverTexts {
+public class FluidBottle extends Item implements IFluidHandlerItem, IhasHoverTexts {
 
     private static final String FLUID_NBT_KEY = "FluidStack";
     public static final String COLOR_NBT_KEY = "color";
@@ -222,42 +227,88 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
         tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.amount", fluidAmount,tankCapacity));
     }
     //ツールチップをクロスヘアの右側に表示
-    public @NotNull List<Component> getBlockHoverTexts(ClientLevel clientLevel, ItemStack itemStack, BlockPos pos){
+    public @NotNull List<Component> getBlockHoverTexts(ClientLevel clientLevel, ItemStack itemStack, HitResult hitResult){
         List<Component> tooltip = new ArrayList<>();
         Minecraft instance = Minecraft.getInstance();
-        BlockEntity blockEntity = clientLevel.getBlockEntity(pos);
-        if(blockEntity==null){return tooltip;}
-        if(blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()){
-            //操作キーを取得
-            Component useKey = instance.options.keyUse.getTranslatedKeyMessage();
-            Component drainKey = KeyMapRegistry.BOTTLE_DRAIN.getKeyMapping().getTranslatedKeyMessage();
-        if (itemStack.getCount() == 1) {
-            //操作キーを押している間は行を反転
-            if(!KeyMapRegistry.BOTTLE_DRAIN.isPressed()){
-                tooltip.add(Component.literal("[").append(useKey).append("] :"));
-                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));
-                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
-                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2").withStyle(ChatFormatting.GRAY));
-            }else{
-                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
-                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2"));
-                tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
-                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1").withStyle(ChatFormatting.GRAY));
+
+        //ブロックエンティティの場合
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockPos pos = ((BlockHitResult) hitResult).getBlockPos();
+            BlockEntity blockEntity = clientLevel.getBlockEntity(pos);
+            if (blockEntity == null) {
+                return tooltip;
             }
-        } else {
-            //操作キーを押している間は行を反転
-            if(!KeyMapRegistry.BOTTLE_DRAIN.isPressed()){
-                tooltip.add(Component.literal("[").append(useKey).append("] :"));
-                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));
-                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
-                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2").withStyle(ChatFormatting.GRAY));
-            }else{
-                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
-                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
-                tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
-                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1").withStyle(ChatFormatting.GRAY));
+            if (blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()) {
+                //操作キーを取得
+                Component useKey = instance.options.keyUse.getTranslatedKeyMessage();
+                Component drainKey = KeyMapRegistry.BOTTLE_DRAIN.getKeyMapping().getTranslatedKeyMessage();
+                if (itemStack.getCount() == 1) {
+                    //操作キーを押している間は行を反転
+                    if (!KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
+                        tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2").withStyle(ChatFormatting.GRAY));
+                    } else {
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2"));
+                        tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1").withStyle(ChatFormatting.GRAY));
+                    }
+                } else {
+                    //操作キーを押している間は行を反転
+                    if (!KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
+                        tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2").withStyle(ChatFormatting.GRAY));
+                    } else {
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
+                        tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1").withStyle(ChatFormatting.GRAY));
+                    }
+                }
             }
         }
+        //エンティティの場合
+        else if (hitResult.getType() == HitResult.Type.ENTITY) {
+            Entity entity = ((EntityHitResult) hitResult).getEntity();
+            if(entity.isRemoved()){
+                return tooltip;
+            }
+            if(entity instanceof OrreryInteractionOperatorEntity){
+                //操作キーを取得
+                Component useKey = instance.options.keyUse.getTranslatedKeyMessage();
+                Component drainKey = KeyMapRegistry.BOTTLE_DRAIN.getKeyMapping().getTranslatedKeyMessage();
+                if (itemStack.getCount() == 1) {
+                    //操作キーを押している間は行を反転
+                    if (!KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
+                        tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2").withStyle(ChatFormatting.GRAY));
+                    } else {
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2"));
+                        tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1").withStyle(ChatFormatting.GRAY));
+                    }
+                } else {
+                    //操作キーを押している間は行を反転
+                    if (!KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
+                        tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2").withStyle(ChatFormatting.GRAY));
+                    } else {
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
+                        tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1").withStyle(ChatFormatting.GRAY));
+                    }
+                }
+            }
         }
         return tooltip;
     }

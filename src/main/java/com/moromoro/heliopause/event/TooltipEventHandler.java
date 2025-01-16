@@ -1,12 +1,10 @@
 package com.moromoro.heliopause.event;
 
-import com.moromoro.heliopause.item.IhasBlockHoverTexts;
+import com.moromoro.heliopause.item.IhasHoverTexts;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,8 +19,8 @@ public class TooltipEventHandler {
         Player player = instance.player;
         if (player != null ) {
             HitResult hitResult = instance.hitResult;
-            if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
-                BlockPos pos = ((BlockHitResult) hitResult).getBlockPos();
+            if (hitResult != null /*&& hitResult.getType() == HitResult.Type.BLOCK*/) {
+                //BlockPos pos = ((BlockHitResult) hitResult).getBlockPos();
                 //メインハンドアイテムを取得
                 ItemStack mainHandItem = player.getMainHandItem();
                 //オフハンドアイテムを取得
@@ -33,12 +31,12 @@ public class TooltipEventHandler {
                 }
                 List<Component> tooltipLists = new ArrayList<>();
                 //メインハンドをチェック
-                if(!mainHandItem.isEmpty() && mainHandItem.getItem() instanceof IhasBlockHoverTexts){
-                    tooltipLists = ((IhasBlockHoverTexts)mainHandItem.getItem()).getBlockHoverTexts(instance.level, mainHandItem, pos);
+                if(!mainHandItem.isEmpty() && mainHandItem.getItem() instanceof IhasHoverTexts){
+                    tooltipLists = ((IhasHoverTexts)mainHandItem.getItem()).getBlockHoverTexts(instance.level, mainHandItem, hitResult);
                 }
                 //オフハンドをチェック
-                else if (!offHandItem.isEmpty() && offHandItem.getItem() instanceof IhasBlockHoverTexts) {
-                    tooltipLists = ((IhasBlockHoverTexts) offHandItem.getItem()).getBlockHoverTexts(instance.level, offHandItem, pos);
+                else if (!offHandItem.isEmpty() && offHandItem.getItem() instanceof IhasHoverTexts) {
+                    tooltipLists = ((IhasHoverTexts) offHandItem.getItem()).getBlockHoverTexts(instance.level, offHandItem, hitResult);
                 }
 
                 if(tooltipLists.isEmpty()){return;}

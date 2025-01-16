@@ -23,8 +23,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.levelgen.structure.templatesystem.BlockStateMatchTest;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ChalkItem extends Item implements IhasBlockHoverTexts{
+public class ChalkItem extends Item implements IhasHoverTexts {
 
     private static final String CORNER_NBT_KEY = "CornerPos";
     private static final int SIDE_LENGTH_LIMIT = 16;
@@ -44,16 +44,19 @@ public class ChalkItem extends Item implements IhasBlockHoverTexts{
     }
 
     @Override
-    public @NotNull List<Component> getBlockHoverTexts(ClientLevel clientLevel, ItemStack itemStack, BlockPos pos) {
+    public @NotNull List<Component> getBlockHoverTexts(ClientLevel clientLevel, ItemStack itemStack, HitResult hitResult) {
         List<Component> tooltip = new ArrayList<>();
         Minecraft instance = Minecraft.getInstance();
-        BlockState blockState = clientLevel.getBlockState(pos);
-        if(blockState.isAir()){return tooltip;}
-        //操作キーを取得
-        Component useKey = instance.options.keyUse.getTranslatedKeyMessage();
-        //tooltip.add(Component.literal("[").append(useKey).append("] :"));
-        tooltip.add(Component.literal("[").append(Component.translatable("item.heliopause.chalk.tooltip.description1",useKey)).append("] :"));
-        tooltip.add(Component.translatable("item.heliopause.chalk.tooltip.description2"));
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockPos pos = ((BlockHitResult) hitResult).getBlockPos();
+            BlockState blockState = clientLevel.getBlockState(pos);
+            if(blockState.isAir()){return tooltip;}
+            //操作キーを取得
+            Component useKey = instance.options.keyUse.getTranslatedKeyMessage();
+            //tooltip.add(Component.literal("[").append(useKey).append("] :"));
+            tooltip.add(Component.literal("[").append(Component.translatable("item.heliopause.chalk.tooltip.description1",useKey)).append("] :"));
+            tooltip.add(Component.translatable("item.heliopause.chalk.tooltip.description2"));
+        }
         return tooltip;
     }
 
