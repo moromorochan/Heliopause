@@ -19,7 +19,7 @@ public abstract class AbstractFluidTankEntity extends AbstractFluidConcealBlockE
 
     public AbstractFluidTankEntity(BlockEntityType<?> blockEntityType,BlockPos pos, BlockState state, int capacity) {
         super(blockEntityType, pos, state,capacity);
-        this.mainTank = new FluidTank(capacity){
+        this.tank = new FluidTank(capacity){
             //内容が更新されたときの挙動
             @Override
             protected void onContentsChanged() {

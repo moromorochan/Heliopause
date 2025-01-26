@@ -11,7 +11,7 @@ public class OrbBlockEntity extends AbstractFluidOrbBlockEntity {
     }
     @Override
     protected void updateRenderData() {
-        OrbBlockRenderer.updateData(this.getBlockPos(), mainTank.getFluid());
+        OrbBlockRenderer.updateData(this.getBlockPos(), this.tank.getFluid());
     }
     @Override
     protected void removeRenderData() {

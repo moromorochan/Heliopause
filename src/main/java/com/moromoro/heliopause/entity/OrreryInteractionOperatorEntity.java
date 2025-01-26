@@ -78,6 +78,9 @@ public class OrreryInteractionOperatorEntity extends Entity {
         if (!this.level().isClientSide) {
             //右クリックされたとき
             Heliopause.LOGGER.debug("right clicked!");
+            if(this.level().getBlockEntity(this.blockStatePos) instanceof FluidSpreaderOrbBlockEntity entity){
+                entity.setCircumstellars(player, hand, 0);
+            }
         }
         return InteractionResult.sidedSuccess(this.level().isClientSide);
     }
@@ -87,6 +90,9 @@ public class OrreryInteractionOperatorEntity extends Entity {
         if (!this.level().isClientSide) {
             //左クリックされたとき
             Heliopause.LOGGER.debug("left clicked!");
+            if(this.level().getBlockEntity(this.blockStatePos) instanceof FluidSpreaderOrbBlockEntity entity){
+                entity.setCircumstellars((Player) source.getEntity(), InteractionHand.MAIN_HAND, 1);
+            }
         }
         return true;
     }

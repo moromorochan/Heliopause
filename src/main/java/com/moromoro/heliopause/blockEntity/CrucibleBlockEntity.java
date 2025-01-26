@@ -12,7 +12,7 @@ public class CrucibleBlockEntity extends AbstractFluidTankEntity {
 
     @Override
     protected void updateRenderData() {
-        CrucibleBlockRenderer.updateData(this.getBlockPos(), mainTank.getFluid());
+        CrucibleBlockRenderer.updateData(this.getBlockPos(), this.tank.getFluid());
     }
     @Override
     protected void removeRenderData() {

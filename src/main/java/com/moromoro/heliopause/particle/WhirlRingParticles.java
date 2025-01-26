@@ -4,7 +4,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
@@ -30,6 +33,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
 
     private float cameraDistance;//カメラからの距離, 小さくて遠ければパーティクルを消す
 
+    public static final float LENGTH_INTENSITY = 0.3f;
     protected WhirlRingParticles(ClientLevel clientLevel, double posX, double posY, double posZ, double velocityX, double velocityY, double velocityZ, SpriteSet spriteSet) {
         super(clientLevel, posX, posY, posZ, velocityX, velocityY, velocityZ);
 
@@ -37,7 +41,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
         cameraDistance=0;
         lightIntensity=0;
 
-        axisZError= (RandomSource.create().nextFloat())*0.003f;
+        axisZError= 0;
 
         //アルファとテクスチャの読み込み
         this.setAlpha(0.0F);
@@ -59,6 +63,14 @@ public class WhirlRingParticles extends TextureSheetParticle {
         this.xd = velocityX;
         this.yd = velocityY;
         this.zd = velocityZ;
+    }
+
+    @Override
+    public void setColor(float rColor, float gColor, float bColor) {
+        super.setColor(rColor, gColor, bColor);
+        this.axisZError = 0.1f * (0.5f - RandomSource.create(
+            FastColor.ARGB32.color(255, (int) (rColor*255), (int) (gColor*255), (int) (bColor*255))
+        ).nextFloat());
     }
 
     //軌道要素を設定する
@@ -89,33 +101,31 @@ public class WhirlRingParticles extends TextureSheetParticle {
         Quaternionf orbitalPlane = getOrbitalPlane(partialTicks);
 
         //平面上にメッシュを配置するための座標を用意
-        float quadHalf = this.quadSize/2f ;
-        float quadLengthHalf = (quadHalf + 0.003f*this.orbitRadius*this.orbitRadius) * this.alpha;
-        float quadWidthHalf = quadHalf;
+        float quadLengthHalf = getQuadLengthHalf();
+        float quadWidthHalf = Math.min(quadLengthHalf,this.quadSize/2f);
         float radius = this.orbitRadius/quadSize;
-        float zError = -0.03f * quadSize;
         //オモテ用
         Vector3f [] overVertexPosArray = new Vector3f[]{
-                new Vector3f(-quadLengthHalf, -quadWidthHalf + radius, axisZError-zError),
-                new Vector3f(-quadLengthHalf, quadWidthHalf + radius, axisZError-zError),
-                new Vector3f(quadLengthHalf, quadWidthHalf + radius, axisZError-zError),
-                new Vector3f(quadLengthHalf, -quadWidthHalf + radius, axisZError-zError)
+                new Vector3f(-quadLengthHalf, -quadWidthHalf + radius, 0),
+                new Vector3f(-quadLengthHalf, quadWidthHalf + radius, 0),
+                new Vector3f(quadLengthHalf, quadWidthHalf + radius, 0),
+                new Vector3f(quadLengthHalf, -quadWidthHalf + radius, 0)
         };
         //ウラ用
         Vector3f [] underVertexPosArray = new Vector3f[]{
-                new Vector3f(-quadLengthHalf, -quadWidthHalf + radius, axisZError+zError),
-                new Vector3f(-quadLengthHalf, quadWidthHalf + radius, axisZError+zError),
-                new Vector3f(quadLengthHalf, quadWidthHalf + radius, axisZError+zError),
-                new Vector3f(quadLengthHalf, -quadWidthHalf + radius, axisZError+zError)
+                new Vector3f(-quadLengthHalf, -quadWidthHalf + radius, 0),
+                new Vector3f(-quadLengthHalf, quadWidthHalf + radius,0),
+                new Vector3f(quadLengthHalf, quadWidthHalf + radius, 0),
+                new Vector3f(quadLengthHalf, -quadWidthHalf + radius, 0)
         };
 
         for(int i = 0; i < 4; ++i) {
-            Vector3f overMeshVector = overVertexPosArray[i];
+            Vector3f overMeshVector = overVertexPosArray[i].add(0,0,0.05f+axisZError);
             overMeshVector.rotate(orbitalPlane);
             overMeshVector.mul(quadSize);
             overMeshVector.add(partialPosX, partialPosY, partialPosZ);
 
-            Vector3f underMeshVector = underVertexPosArray[i];
+            Vector3f underMeshVector = underVertexPosArray[i].add(0,0,-0.05f+axisZError);
             underMeshVector.rotate(orbitalPlane);
             underMeshVector.mul(quadSize);
             underMeshVector.add(partialPosX,partialPosY,partialPosZ);
@@ -140,6 +150,10 @@ public class WhirlRingParticles extends TextureSheetParticle {
         cameraDistance = Vector3f.length(overVertexPosArray[0].x(),overVertexPosArray[0].y(),overVertexPosArray[0].z());
     }
 
+    private float getQuadLengthHalf(){
+       return (Math.max(quadSize,LENGTH_INTENSITY * orbitRadius) * this.alpha);
+    }
+
     private Quaternionf getOrbitalPlane(float partialTicks) {
         Quaternionf orbitalPlane = new Quaternionf();
         orbitalPlane.rotateZ(orbitAxisYaw);
@@ -149,21 +163,20 @@ public class WhirlRingParticles extends TextureSheetParticle {
         return orbitalPlane;
     }
 
-    //TODO バウンディングボックスの最適化(今は半径を拡げて無理矢理設定している)
-    public AABB getBoundingBox() {
-        Vector3f basePos = new Vector3f(0,1600*orbitRadius*quadSize,0);
-        Quaternionf orbitalPlane = getOrbitalPlane(0);
-        basePos.rotate(orbitalPlane);
-        basePos.mul(quadSize);
-        basePos.add(new Vector3f((float) this.x, (float) this.y, (float) this.z));
+    public @NotNull AABB getBoundingBox() {
+        Vec3 visualPos = getVisualPos();
+        float quadHalf = getQuadLengthHalf();
 
-        float quadHalf = this.quadSize/2f;
-        float quadLengthHalf = (quadHalf + (0.5f*Math.min(1/quadHalf,this.orbitRadius))) * this.alpha;
+        return new AABB(visualPos,visualPos).inflate(quadHalf);
+    }
 
-        return new AABB(
-                this.x - orbitRadius*2, this.y - orbitRadius*2, this.z - orbitRadius*2,
-                this.x + orbitRadius*2, this.y + orbitRadius*2, this.z + orbitRadius*2
-        );
+    private @NotNull Vec3 getVisualPos() {
+        //極座標を取得
+        float radius = this.orbitRadius;
+        float revolution = this.orbitRotation;
+
+        //極座標から直交座標へ変換 見た目上の位置を取得
+        return new Vec3(-radius * Math.sin(revolution), 0, -radius * Math.cos(revolution)).add(getPos());
     }
 
     @Override
@@ -197,6 +210,13 @@ public class WhirlRingParticles extends TextureSheetParticle {
 
     public void setLightIntensity(int intensity){
         this.lightIntensity=intensity;
+    }
+
+    //見た目座標に準拠した光レベルの取得
+    protected int getLightColor(float light) {
+        Vec3 visualPos = getVisualPos();
+        BlockPos blockpos = BlockPos.containing(visualPos.x,visualPos.y,visualPos.z);
+        return this.level.hasChunkAt(blockpos) ? LevelRenderer.getLightColor(this.level, blockpos) : 0;
     }
 
     //ブロックの光レベルの取得

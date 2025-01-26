@@ -15,7 +15,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.FluidHandlerBlockEntity;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,13 +22,14 @@ import org.jetbrains.annotations.Nullable;
 //液体を扱う、液体を描画しないブロックエンティティ
 public abstract class AbstractFluidConcealBlockEntity  extends FluidHandlerBlockEntity implements IFluidHandler {
 
-    protected LazyOptional<IFluidHandler> fluidCapability = LazyOptional.of(() -> this.mainTank);
+    protected LazyOptional<IFluidHandler> fluidCapability = LazyOptional.of(() -> this.tank);
 
-    protected FluidTank mainTank;
+    //protected FluidTank mainTank;
 
     public AbstractFluidConcealBlockEntity(BlockEntityType<?> blockEntityType,BlockPos pos, BlockState state, int capacity) {
         super(blockEntityType, pos, state);
-        this.mainTank = new FluidTank(capacity){
+        this.tank.setCapacity(capacity);
+        /*this.mainTank = new FluidTank(capacity){
             //内容が更新されたときの挙動
             @Override
             protected void onContentsChanged() {
@@ -40,54 +40,51 @@ public abstract class AbstractFluidConcealBlockEntity  extends FluidHandlerBlock
                     //updateRenderData();
                 }
             }
-        };
+        };*/
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        fluidCapability = LazyOptional.of(() -> mainTank);
+        fluidCapability = LazyOptional.of(() -> this.tank);
     }
 
     @Override
     public int getTanks() {
-        return mainTank.getTanks();
+        return this.tank.getTanks();
     }
 
     @Override
     public @NotNull FluidStack getFluidInTank(int tank) {
-        return mainTank.getFluidInTank(tank);
+        return this.tank.getFluidInTank(tank);
     }
 
     @Override
     public int getTankCapacity(int tank) {
-        return mainTank.getTankCapacity(tank);
+        return this.tank.getTankCapacity(tank);
     }
 
     @Override
     public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-        return mainTank.isFluidValid(tank,stack);
+        return this.tank.isFluidValid(tank,stack);
     }
 
 
     @Override
     public int fill(FluidStack resource, FluidAction action) {
-        int result = mainTank.fill(resource,action);
-        return result;
+        return this.tank.fill(resource,action);
     }
 
     @NotNull
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
-        FluidStack result = mainTank.drain(resource,action);
-        return result;
+        return this.tank.drain(resource,action);
     }
 
     @NotNull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
-        FluidStack result = mainTank.drain(maxDrain,action);
-        return result;
+        return this.tank.drain(maxDrain,action);
     }
 
     //変更の保存
@@ -100,13 +97,13 @@ public abstract class AbstractFluidConcealBlockEntity  extends FluidHandlerBlock
     @Override
     public void load(@NonNull CompoundTag nbt){
         super.load(nbt);
-        mainTank.readFromNBT(nbt);
+        this.tank.readFromNBT(nbt);
     }
     //データの書き出し
     @Override
     protected void saveAdditional(@NonNull CompoundTag nbt) {
         super.saveAdditional(nbt);
-        mainTank.writeToNBT(nbt);
+        this.tank.writeToNBT(nbt);
     }
 
     @Override
