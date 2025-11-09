@@ -1,6 +1,5 @@
 package com.moromoro.heliopause.blockEntity;
 
-import com.moromoro.Heliopause;
 import com.moromoro.heliopause.block.RoastingTableBlock;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.screen.RoastingTableMenu;

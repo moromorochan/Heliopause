@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "heliopause:alchemy_biron_ingot"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "heliopause:alchemy_biron_nugget"
+  }
+}

@@ -100,7 +100,7 @@ public class FluidSpreaderTowerBlock extends Block {
                         BlockEntity blockEntity = level.getBlockEntity(abovePos);
                         if (blockEntity instanceof FluidSpreaderOrbBlockEntity orbBlockEntity) {
                             //アイテムスタックを書き込む
-                            orbBlockEntity.setCenterItem(heldItem.copyWithCount(1));
+                            orbBlockEntity.setCenterBlockState(blockState);
                             //手持ちを減らす
                             heldItem.shrink(1);
                             return InteractionResult.SUCCESS;

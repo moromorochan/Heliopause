@@ -1,8 +1,8 @@
 {
-  "itemGroup.heliopause_main": "Heliopause",
+  "creativetab.heliopause_tab": "Heliopause",
 
   "block.heliopause.alchemy_stove": "錬金こん炉",
-  "block.heliopause.alchemy_roasting_table": "錬金焙炉",
+  "block.heliopause.alchemy_roasting_table": "錬金ホイロ",
   "block.heliopause.crucible": "るつぼ",
   "block.heliopause.orb": "流体球",
   "block.heliopause.fluid_cage": "流体ケージ",
@@ -40,6 +40,7 @@
 
   "item.heliopause.paperbush_twigs": "ミツマタの枝",
   "item.heliopause.sorcery paper": "魔術用紙",
+  "item.heliopause.celestite_shard": "天青石の欠片",
 
   "item.heliopause.imitation_core": "模造天体コア",
 

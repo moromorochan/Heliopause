@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "heliopause:block/converge_cylinder/top",
+    "side": "heliopause:block/converge_cylinder/upper"
+  }
+}

@@ -1,19 +1,26 @@
 package com.moromoro.heliopause.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.FluidSpreaderOrbBlockEntity;
 import com.moromoro.heliopause.ingredient.CircumstellarIngredient;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -24,10 +31,11 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.*;
 import org.joml.Math;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+/*
 public class FluidSpreaderOrbBlockRenderer<T extends FluidSpreaderOrbBlockEntity> implements BlockEntityRenderer<T> {
     private final ItemRenderer itemRenderer;
     private final BlockRenderDispatcher blockRenderer;
@@ -43,7 +51,7 @@ public class FluidSpreaderOrbBlockRenderer<T extends FluidSpreaderOrbBlockEntity
         if(ingredientList.isEmpty()){removeData(pos); return;}
 
         if (ingredientsList.containsKey(pos)){
-            ingredientsList.replace(pos,ingredientList);
+            ingredientsList.replace(pos,(ingredientList));
         }else{
             ingredientsList.put(pos,ingredientList);
         }
@@ -67,9 +75,7 @@ public class FluidSpreaderOrbBlockRenderer<T extends FluidSpreaderOrbBlockEntity
 
     @Override
     public void render(@NotNull FluidSpreaderOrbBlockEntity entity, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-        /*if(partialTicks<=0.1f){
-            entity.requestModelDataUpdate();
-        }*/
+
         //アイテムを取得
         ItemStack centerItem = entity.getCenterItem();
         if(!centerItem.isEmpty()){
@@ -98,7 +104,7 @@ public class FluidSpreaderOrbBlockRenderer<T extends FluidSpreaderOrbBlockEntity
             poseStack.pushPose();
 
             // 中心をブロックの中心に合わせる
-            poseStack.translate(0.5, (7f/16f) + waveOffset, 0.5);
+            poseStack.translate(0.5, 0.5 +calcOffsetY(orbSize) + waveOffset, 0.5);
             //中心星の描画
             //ブロックアイテムの場合
             if(centerItem.getItem() instanceof BlockItem blockItem){
@@ -124,24 +130,61 @@ public class FluidSpreaderOrbBlockRenderer<T extends FluidSpreaderOrbBlockEntity
                 itemRenderer.renderStatic(centerItem,ItemDisplayContext.FIXED,combinedLight,combinedOverlay,poseStack,bufferSource,entity.getLevel(),0);
             }
             poseStack.popPose();
+            if(Minecraft.getInstance().options.renderDebug){//惑星圏のデバッグ表示/追加UI表示
+                int circleColor = FastColor.ARGB32.color(255, 255,255,255);
+                //内側
+                renderCircle(poseStack, bufferSource, 0.98f, circleColor);
+                renderCircle(poseStack, bufferSource, 1.02f, circleColor);
+                //外側
+                renderCircle(poseStack, bufferSource, 4.98f, circleColor);
+                renderCircle(poseStack, bufferSource, 5.02f, circleColor);
+            }
 
             //衛星の描画
             List<CircumstellarIngredient> ingredients = ingredientsList.getOrDefault(entity.getBlockPos(), new ArrayList<>());//entity.getCircumstellars();
+            //デバッグ用のカラーピッカー
+            int colorIndex = 1;
+
             for (CircumstellarIngredient ingredient : ingredients) {
-                if(!ingredient.disk_shaped/*shouldRenderSatellite(entity, ingredient,partialTicks)*/){
+                if (!ingredient.getDisk_shaped() && shouldRenderSatellite(entity, ingredient, partialTicks)) {
                     //Heliopause.LOGGER.debug("shouldRenderSatellite passed");
-                    if(!ingredient.getFluidStack().isEmpty()){
-                        //衛星の位置を取得
-                        Vec3 satPos = getSatPos(entity, ingredient, partialTicks);
+                    if (!ingredient.getFluidStack().isEmpty()) {
                         //衛星のサイズを計算
-                        float satSize = getSatRadius(entity,ingredient);
+                        float satSize = ingredient.getSatRadius(entity.getTankCapacity(0));
+                        //衛星の位置を取得
+                        float orbitalRadius = ingredient.getOrbitalSlotId();
+                        float smoothRevolution = getSmoothRevolution(entity, ingredient, partialTicks, orbitalRadius);
+                        Vec3 satPos = getSatPos(smoothRevolution, orbitalRadius).add(new Vec3(0, calcOffsetY(satSize), 0));
                         //自転オフセットを公転から用意する
-                        float satRot = (ingredient.getRotationRatio() * ingredient.getRevolutionOffset())%360;
+                        float satRot = (ingredient.getRotationRatio() * smoothRevolution) % 360;
                         //衛星の位置から光の影響を取得
-                        int satCombLight = getCombinedLight((ClientLevel) entity.getLevel(), satPos);
+                        int satCombLight = getCombinedLight((ClientLevel) entity.getLevel(), entity.getBlockPos().getCenter().add(satPos));
                         //レンダリング
-                        renderFluidSatellite(satPos, satSize, satRot, ingredient.getFluidStack(),entity, partialTicks, poseStack, bufferSource, satCombLight, combinedOverlay);
+                        renderFluidSatellite(satPos, satSize * 2, satRot, ingredient.getFluidStack(), entity, partialTicks, poseStack, bufferSource, satCombLight, combinedOverlay);
+                        if (Minecraft.getInstance().options.renderDebug) {//液球の有効範囲のデバッグ表示/追加UI表示
+                            int circleColor = FastColor.ARGB32.color(255, (colorIndex & 0x1) != 0 ? 255 : 0, (colorIndex & 0x2) != 0 ? 255 : 0, (colorIndex & 0x4) != 0 ? 255 : 0);
+
+                            renderCircle(poseStack, bufferSource, satPos, satSize, circleColor);
+                            renderCircle(poseStack, bufferSource, satPos, ingredient.getFluidStack().getAmount() * 0.0006f, circleColor);
+                            colorIndex++;
+                        }
                     }
+                } else if (Minecraft.getInstance().options.renderDebug) {//リングの有効範囲のデバッグ表示/追加UI表示
+                    float ringRadius = ingredient.getOrbitalSlotId();
+                    float ringWidthHalf = FluidSpreaderOrbBlockEntity.calcRingWidth(ingredient.getAmount(), ringRadius) / 2f;
+                    float ringRevolution = -ingredient.getRevolutionOffset()+90;
+                    float ringSpreadHalf = -(float) ingredient.getRotationRatio() / 2;
+                    float innerRadius = ringRadius - ringWidthHalf;
+                    float outerRadius = ringRadius + ringWidthHalf;
+                    int circleColor = FastColor.ARGB32.color(255, (colorIndex & 0x1) != 0 ? 255 : 0, (colorIndex & 0x2) != 0 ? 255 : 0, (colorIndex & 0x4) != 0 ? 255 : 0);
+                    renderArc(poseStack, bufferSource,ringRevolution-ringSpreadHalf,ringRevolution+ringSpreadHalf, innerRadius, circleColor);
+                    //renderCircle(poseStack, bufferSource, innerRadius, circleColor);
+                    renderTeeth(poseStack, bufferSource, innerRadius, circleColor, false);
+                    renderArc(poseStack, bufferSource,ringRevolution-ringSpreadHalf,ringRevolution+ringSpreadHalf, outerRadius, circleColor);
+                    //renderCircle(poseStack, bufferSource, outerRadius, circleColor);
+                    renderTeeth(poseStack, bufferSource, outerRadius, circleColor, true);
+
+                    colorIndex++;
                 }
             }
             // 現在のフレーム時間を保存
@@ -150,40 +193,43 @@ public class FluidSpreaderOrbBlockRenderer<T extends FluidSpreaderOrbBlockEntity
     }
 
     //衛星の位置(原点=ブロックエンティティ)を取得
-    private Vec3 getSatPos(FluidSpreaderOrbBlockEntity entity, CircumstellarIngredient ingredient, float partialTicks){
+    private Vec3 getSatPos(float revolutionOffset, float orbitRadius){
         //極座標を取得
-        float radius = ingredient.getOrbitalRadius();
-        float revolution = ingredient.getRevolutionOffset();
-        //前回tick時点のrevolutionを計算
-        float prevRevolution = revolution - (Mth.sqrt(entity.getCentForce() / radius) / radius);
-        //滑らかな巡行を計算
-        float smoothRevolution = Math.lerp(prevRevolution, revolution, partialTicks);
         //ラジアンへ変換
-        float revolutionRadians = Math.toRadians(smoothRevolution);
+        float revolutionRadians = Math.toRadians(revolutionOffset);
         //極座標から直交座標へ変換
-        return new Vec3(radius * Math.sin(revolutionRadians), 0, radius * Math.cos(revolutionRadians));
+        return new Vec3(orbitRadius * Math.sin(revolutionRadians), 0, orbitRadius * Math.cos(revolutionRadians));
     }
 
-    //衛星のサイズを計算
-    private float getSatRadius(FluidSpreaderOrbBlockEntity entity, CircumstellarIngredient ingredient){
-        float fillPercentage =  ingredient.getFluidStack().getAmount() /(float) entity.getTankCapacity(0);
-        return fillPercentage * fillPercentage * fillPercentage * 0.7f;
+    private float getSmoothRevolution(FluidSpreaderOrbBlockEntity entity, CircumstellarIngredient ingredient, float partialTicks, float radius) {
+        float revolution = ingredient.getRevolutionOffset();
+        //前回tick時点のrevolutionを計算
+        float prevRevolution = revolution - Math.toRadians(Mth.sqrt(entity.getCentForce() / radius) / radius);
+        //滑らかな巡行を計算
+        float smoothRevolution = Math.lerp(revolution, prevRevolution, partialTicks);
+        return smoothRevolution;
     }
 
     //衛星がそれぞれ画面内にあるかの判定
     protected boolean shouldRenderSatellite(FluidSpreaderOrbBlockEntity entity, CircumstellarIngredient ingredient, float partialTicks){
         //形状を確認 円盤ならスキップ
         if(!ingredient.getDisk_shaped()) {
-            //衛星の位置を取得
-            Vec3 satPos = getSatPos(entity, ingredient, partialTicks).add(entity.getBlockPos().getCenter());
             //衛星のサイズを計算
-            float satSize = getSatRadius(entity,ingredient);
+            float satSize = ingredient.getSatRadius(entity.getTankCapacity(0));
+            //衛星の位置を取得
+            float orbitalRadius = ingredient.getOrbitalSlotId();
+            float smoothRevolution = getSmoothRevolution(entity, ingredient, partialTicks, orbitalRadius);
+            Vec3 satPos = getSatPos(smoothRevolution, orbitalRadius).add(entity.getBlockPos().getCenter()).add(new Vec3(0,calcOffsetY(satSize),0));
             //値から衛星のバウンディングボックスを決定
             AABB ingredientBoundingBox = new AABB(satPos, satPos).inflate(satSize);
             // バウンディングボックスが画面内にあるかどうかを判定
-            if (Minecraft.getInstance().cameraEntity != null) {
-                return Minecraft.getInstance().cameraEntity.getBoundingBox().intersects(ingredientBoundingBox);
-            }
+            GameRenderer renderer = Minecraft.getInstance().gameRenderer;
+            Camera camera = renderer.getMainCamera();
+            Matrix4f viewMatrix = new Matrix4f();
+            viewMatrix.lookAt(camera.getPosition().toVector3f(),camera.getLookVector(),camera.getUpVector());
+            Frustum frustum = new Frustum(viewMatrix, renderer.getProjectionMatrix(Minecraft.getInstance().options.fov().get()));
+            frustum.prepare(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+            return frustum.isVisible(ingredientBoundingBox);
         }
         return false;
     }
@@ -215,7 +261,7 @@ public class FluidSpreaderOrbBlockRenderer<T extends FluidSpreaderOrbBlockEntity
 
         renderingRequires.put("orbSize",satSize);
         renderingRequires.put("rotationOffset", satRot);
-        renderingRequires.put("waveOffset", 0f);
+        renderingRequires.put("waveOffset", satRot*(int)(3f/satSize));
         renderingRequires.put("combinedOffset",satPos);
 
         //親モデルをスタックに保管して、子モデルの編集をはじめる
@@ -228,6 +274,92 @@ public class FluidSpreaderOrbBlockRenderer<T extends FluidSpreaderOrbBlockEntity
         poseStack.popPose();
     }
 
+    private void renderArc(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, Vec3 circlePos,float angleStart, float angleEnd, float circleRadius, int circleColor){
+
+        int red = FastColor.ARGB32.red(circleColor);
+        int green = FastColor.ARGB32.green(circleColor);
+        int blue = FastColor.ARGB32.blue(circleColor);
+
+        //angleStart %=360;
+        //angleEnd %= 360;
+        //多角形の線分の数
+        float segments = 2 + Math.round(80 * Math.abs(angleEnd-angleStart)/360);
+        float angleIncrement = Math.toRadians((angleEnd-angleStart) / segments);
+        //カメラの向きを取得
+        //Vector3f lookVec = Minecraft.getInstance().gameRenderer.getMainCamera().getLookVector().normalize();
+        //座標系開始
+        poseStack.pushPose();
+        // 中心をブロックの中心に合わせる
+        poseStack.translate(0.5+circlePos.x,0.5 + circlePos.y,0.5+circlePos.z);
+        //描画形式を設定
+        VertexConsumer buffer = bufferSource.getBuffer(RenderType.LINE_STRIP);
+        //円の描画
+        for (int i = 0; i <= segments; i++) {
+            float angle = Math.toRadians(angleStart) + i * angleIncrement;
+            //頂点座標を用意
+            float x1 = circleRadius * (float) Math.cos(angle);
+            float y1 = circleRadius * (float) Math.sin(angle);
+
+            buffer.vertex(poseStack.last().pose(), x1, 0, y1)
+                .color(red, green, blue, 255)
+                .normal(0,0,0)
+                .endVertex();
+        }
+        //終了
+        poseStack.popPose();
+    }
+
+    private void renderArc(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource,float angleStart, float angleEnd, float circleRadius, int circleColor){
+        renderArc(poseStack, bufferSource, new Vec3(0,calcOffsetY(1), 0),angleStart, angleEnd, circleRadius, circleColor);
+    }
+
+    private void renderCircle(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, Vec3 circlePos, float circleRadius, int circleColor){
+        renderArc(poseStack, bufferSource, circlePos, 0, 360, circleRadius, circleColor);
+    }
+    private void renderCircle(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, float circleRadius, int circleColor){
+        renderArc(poseStack,bufferSource,0,360,circleRadius,circleColor);
+    }
+
+    private void renderTeeth(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, Vec3 circlePos, float circleRadius, int circleColor, boolean inner){
+        int red = FastColor.ARGB32.red(circleColor);
+        int green = FastColor.ARGB32.green(circleColor);
+        int blue = FastColor.ARGB32.blue(circleColor);
+        //歯の数
+        float segments = 32;
+        float angleIncrement = (float) (2 * Math.PI / segments);
+
+        //座標系開始
+        poseStack.pushPose();
+        // 中心をブロックの中心に合わせる
+        poseStack.translate(0.5+circlePos.x,0.5 + circlePos.y,0.5+circlePos.z);
+        //描画形式を設定
+        VertexConsumer buffer = bufferSource.getBuffer(RenderType.LINES);
+        //円の描画
+        for (int i = 0; i <= segments; i++) {
+            float angle = i * angleIncrement;
+            //頂点座標を用意
+            float x1 = circleRadius * (float) Math.cos(angle);
+            float y1 = circleRadius * (float) Math.sin(angle);
+            float x2 = (circleRadius+ (inner ? -0.1f: 0.1f)) * (float) Math.cos(angle);
+            float y2 = (circleRadius+ (inner ? -0.1f: 0.1f)) * (float) Math.sin(angle);
+
+            buffer.vertex(poseStack.last().pose(), x1, 0, y1)
+                .color(red, green, blue, 255)
+                .normal(0,0,0)
+                .endVertex();
+            buffer.vertex(poseStack.last().pose(), x2, 0, y2)
+                .color(red, green, blue, 255)
+                .normal(0,0,0)
+                .endVertex();
+        }
+        //終了
+        poseStack.popPose();
+    }
+
+    private void renderTeeth(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, float circleRadius, int circleColor, boolean inner){
+        renderTeeth(poseStack,bufferSource,new Vec3(0,calcOffsetY(1),0),circleRadius,circleColor, inner);
+    }
+
     //任意の位置の明るさを取得
     private int getCombinedLight(ClientLevel level, Vec3 pos){
         BlockPos blockpos = BlockPos.containing(pos.x, pos.y, pos.z);
@@ -237,4 +369,4 @@ public class FluidSpreaderOrbBlockRenderer<T extends FluidSpreaderOrbBlockEntity
     public float getRotationSpeed() {
         return -40f;
     }
-}
+}*/

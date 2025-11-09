@@ -1,0 +1,24 @@
+{
+  "type": "heliopause:orrery_whirling",
+  "processingTime": 200,
+  "result": {
+    "type": "block",
+    "id": "heliopause:imitation_moon"
+  },
+  "solvent":{
+    "type": "block",
+    "id": "minecraft:polished_diorite"
+  },
+  "ingredients": [
+    {
+      "type": "item",
+      "id": "heliopause:celestite_shard",
+      "amount": 1
+    },
+    {
+      "type": "item",
+      "id": "heliopause:celestite_shard",
+      "amount": 1
+    }
+  ]
+}

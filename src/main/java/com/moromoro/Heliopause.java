@@ -8,18 +8,7 @@ import com.moromoro.heliopause.screen.RoastingTableScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -30,13 +19,17 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
-import javax.swing.text.html.parser.Entity;
-
+import static com.moromoro.heliopause.registry.BlockEntityRegistry.BLOCKENTITIES;
+import static com.moromoro.heliopause.registry.BlockRegistry.BLOCKS;
+import static com.moromoro.heliopause.registry.CreativeTabRegistry.CREATIVE_MODE_TABS;
 import static com.moromoro.heliopause.registry.EntityRegistry.ENTITIES;
+import static com.moromoro.heliopause.registry.ItemRegistry.ITEMS;
+import static com.moromoro.heliopause.registry.MenuTypeRegistry.MENU_TYPES;
+import static com.moromoro.heliopause.registry.ParticleRegistry.PARTICLE_TYPES;
+import static com.moromoro.heliopause.registry.RecipeSerializerRegistry.RECIPE_SERIALIZERS;
+import static com.moromoro.heliopause.registry.RecipeTypeRegistry.RECIPE_TYPES;
 
 @Mod(Heliopause.MODID)
 public class Heliopause {
@@ -49,62 +42,6 @@ public class Heliopause {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     //ブロック・ブロックエンティティ・アイテムの登録
-
-    // mod名前空間に登録されるブロックを保持するための遅延レジスタを作成
-    public static final DeferredRegister<Block> BLOCKS = BlockRegistry.BLOCKS;
-
-    // mod名前空間に登録されるブロックエンティティを保持するための遅延レジスタを作成
-    public static final DeferredRegister<BlockEntityType<?>> BLOCKENTITIES = BlockEntityRegistry.BLOCKENTITIES;
-
-    // mod名前空間に登録されるアイテムを保持するための遅延レジスタを作成
-    public static final DeferredRegister<Item> ITEMS = ItemRegistry.ITEMS;
-
-    // mod名前空間に登録されるエンティティを保持するための遅延レジスタを作成
-    public static final DeferredRegister<EntityType<?>> ENTITIES = EntityRegistry.ENTITIES;
-
-    // mod名前空間に登録されるパーティクルタイプを保持するための遅延レジスタを作成
-    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = ParticleRegistry.PARTICLE_TYPES;
-
-    // mod名前空間に登録されるGUI画面を保持するための遅延レジスタを作成
-    public static final DeferredRegister<MenuType<?>> MENU_TYPES = MenuTypeRegistry.MENU_TYPES;
-
-    // mod名前空間に登録されるクリエイティブモードタブを保持するための遅延レジスタを作成
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-
-    // mod名前空間に登録されるカスタムレシピタイプを保持するための遅延レジスタを作成
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = RecipeSerializerRegistry.SERIALIZERS;
-
-    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = RecipeTypeRegistry.RECIPE_TYPES;
-
-    // aquosolis:example_tab クリエイティブタブを作成
-    public static final RegistryObject<CreativeModeTab> HELIOPAUSE_TAB_MAIN = CREATIVE_MODE_TABS.register("heliopause_main", () -> CreativeModeTab.builder()
-            //.withTabsBefore(CreativeModeTabs.COMBAT)
-            .title(Component.translatable("itemGroup.heliopause_main"))
-            .icon(() -> ItemRegistry.ALCHEMY_STOVE_ITEM.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-                output.accept(ItemRegistry.ALCHEMY_STOVE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-                output.accept(ItemRegistry.ROASTING_TABLE_ITEM.get());
-                output.accept(ItemRegistry.CRUCIBLE_ITEM.get());
-                output.accept(ItemRegistry.FLUID_CAGE_ITEM.get());
-                output.accept(ItemRegistry.FLUID_SPREADER_TOWER_ITEM.get());
-                output.accept(ItemRegistry.LOW_COPPER_PIPE_ITEM.get());
-                output.accept(ItemRegistry.MEDIUM_COPPER_PIPE_ITEM.get());
-                output.accept(ItemRegistry.HIGH_COPPER_PIPE_ITEM.get());
-                //output.accept(ItemRegistry.COMET_CORE_ITEM.get());
-                output.accept(ItemRegistry.ALCHEMY_BIRON_BLOCK_ITEM.get());
-                output.accept(ItemRegistry.ALCHEMY_BIRON_INGOT_ITEM.get());
-                output.accept(ItemRegistry.ALCHEMY_BIRON_NUGGET_ITEM.get());
-                output.accept(ItemRegistry.GLOWSTONE_ALLOY_BLOCK_ITEM.get());
-                output.accept(ItemRegistry.GLOWSTONE_ALLOY_INGOT_ITEM.get());
-                output.accept(ItemRegistry.GLOWSTONE_ALLOY_NUGGET_ITEM.get());
-                output.accept(ItemRegistry.IMITATION_CORE_ITEM.get());
-                output.accept(ItemRegistry.CHALK_ITEM.get());
-                output.accept(ItemRegistry.VIAL_ITEM.get());
-                output.accept(ItemRegistry.LARGE_BOTTLE_ITEM.get());
-                output.accept(ItemRegistry.PAPERBUSH_BLOCK_ITEM.get());
-                output.accept(ItemRegistry.PAPERBUSH_LEAVES_BLOCK_ITEM.get());
-                output.accept(ItemRegistry.PAPERBUSH_TWIGS_ITEM.get());
-            }).build());
 
     public Heliopause()
     {

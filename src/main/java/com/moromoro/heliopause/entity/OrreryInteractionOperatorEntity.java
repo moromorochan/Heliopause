@@ -1,7 +1,7 @@
 package com.moromoro.heliopause.entity;
 
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.blockEntity.FluidSpreaderOrbBlockEntity;
+import com.moromoro.heliopause.blockEntity.CentralStarBlockEntity;
 import com.moromoro.heliopause.registry.EntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -47,11 +47,13 @@ public class OrreryInteractionOperatorEntity extends Entity {
     public void tick(){
         if(!this.level().isClientSide()){
             ServerLevel serverLevel = (ServerLevel) this.level();
-            if(this.playerUUID!=null && (serverLevel.getBlockEntity(this.blockStatePos) instanceof FluidSpreaderOrbBlockEntity)) {
+            if(this.playerUUID!=null && (serverLevel.getBlockEntity(this.blockStatePos) instanceof CentralStarBlockEntity)) {
             Player player = serverLevel.getPlayerByUUID(this.playerUUID);
+            double blockEntityDistance = this.position().distanceTo(this.blockStatePos.getCenter());
             if (player == null
                 || this.position().distanceTo(player.getEyePosition()) > 2
-                || this.position().distanceTo(this.blockStatePos.getCenter()) > 5) {
+                || blockEntityDistance <= 1
+                || blockEntityDistance > 5) {
                 this.discard();
             }else{
                 //位置を設定
@@ -78,8 +80,8 @@ public class OrreryInteractionOperatorEntity extends Entity {
         if (!this.level().isClientSide) {
             //右クリックされたとき
             Heliopause.LOGGER.debug("right clicked!");
-            if(this.level().getBlockEntity(this.blockStatePos) instanceof FluidSpreaderOrbBlockEntity entity){
-                entity.setCircumstellars(player, hand, 0);
+            if(this.level().getBlockEntity(this.blockStatePos) instanceof CentralStarBlockEntity entity){
+                //entity.setCircumstellars(player, hand, 0);
             }
         }
         return InteractionResult.sidedSuccess(this.level().isClientSide);
@@ -90,8 +92,8 @@ public class OrreryInteractionOperatorEntity extends Entity {
         if (!this.level().isClientSide) {
             //左クリックされたとき
             Heliopause.LOGGER.debug("left clicked!");
-            if(this.level().getBlockEntity(this.blockStatePos) instanceof FluidSpreaderOrbBlockEntity entity){
-                entity.setCircumstellars((Player) source.getEntity(), InteractionHand.MAIN_HAND, 1);
+            if(this.level().getBlockEntity(this.blockStatePos) instanceof CentralStarBlockEntity entity){
+                //entity.setCircumstellars((Player) source.getEntity(), InteractionHand.MAIN_HAND, 1);
             }
         }
         return true;

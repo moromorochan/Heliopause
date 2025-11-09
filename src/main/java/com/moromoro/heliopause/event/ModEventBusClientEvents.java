@@ -3,19 +3,34 @@ package com.moromoro.heliopause.event;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.particle.WhirlRingParticles;
 import com.moromoro.heliopause.particle.FluidSpreadParticles;
-import com.moromoro.heliopause.registry.BlockEntityRegistry;
-import com.moromoro.heliopause.registry.EntityRegistry;
-import com.moromoro.heliopause.registry.ParticleRegistry;
+import com.moromoro.heliopause.recipe.orreryWhirling.OrreryIngredientLoader;
+import com.moromoro.heliopause.registry.*;
 import com.moromoro.heliopause.render.*;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 //クライアント側の挙動を登録するところ
 @Mod.EventBusSubscriber(modid = Heliopause.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModEventBusClientEvents {
+    //リロード時の処理の登録
+    /*@SubscribeEvent
+    public static void onResourceReload(AddReloadListenerEvent event){
+        event.addListener(new OrreryIngredientLoader());
+    }*/
+
+    //レンダリングタイプの登録
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event) {
+
+        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.MOON.get(), RenderType.translucent());
+    }
 
     //エンティティ・ブロックエンティティレンダラの登録
     @SubscribeEvent
@@ -26,8 +41,8 @@ public class ModEventBusClientEvents {
         event.registerBlockEntityRenderer(BlockEntityRegistry.FLUID_CAGE_BE.get(), FluidCageBlockRenderer::new);
         //event.registerBlockEntityRenderer(BlockEntityRegistry.FLUID_SPREADER_BE.get(), FluidSpreaderBlockRenderer::new);
         //event.registerBlockEntityRenderer(BlockEntityRegistry.COMET_CORE_BE.get(), CometCoreBlockRenderer::new);
-        event.registerBlockEntityRenderer(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), FluidSpreaderOrbBlockRenderer::new);
-
+        event.registerBlockEntityRenderer(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), CentralStarBlockRenderer::new);
+        event.registerBlockEntityRenderer(BlockEntityRegistry.CENTRAL_STAR_BE.get(), CentralStarBlockRenderer::new);
         //エンティティ
         event.registerEntityRenderer(EntityRegistry.ORRERY_INTERACTION_OPERATOR_E.get(), VoidEntityRenderer::new);
     }

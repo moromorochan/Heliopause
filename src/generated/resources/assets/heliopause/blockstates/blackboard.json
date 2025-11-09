@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "heliopause:block/blackboard"
+      },
+      {
+        "model": "heliopause:block/blackboard",
+        "y": 90
+      },
+      {
+        "model": "heliopause:block/blackboard",
+        "y": 180
+      },
+      {
+        "model": "heliopause:block/blackboard",
+        "y": 270
+      }
+    ]
+  }
+}

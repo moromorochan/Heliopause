@@ -48,6 +48,14 @@ public class BlockEntityRegistry {
                                 BlockRegistry.FLUID_SPREADER_ORB.get()
                         ).build(null)
                 );
+        //中心星
+    public static final RegistryObject<BlockEntityType<CentralStarBlockEntity>> CENTRAL_STAR_BE =
+        BLOCKENTITIES.register("central_star",()->
+            BlockEntityType.Builder.of(
+                CentralStarBlockEntity::new,
+                BlockRegistry.CENTRAL_STAR.get()
+            ).build(null)
+        );
         //焙炉
     public static final RegistryObject<BlockEntityType<RoastingTableBlockEntity>> ROASTING_TABLE_BE =
             BLOCKENTITIES.register("alchemy_roasting_table",() ->

@@ -1,5 +1,5 @@
 {
-  "itemGroup.heliopause_main": "Heliopause",
+  "creativetab.heliopause_tab": "Heliopause",
 
   "block.heliopause.alchemy_stove": "Alchemy Stove",
   "block.heliopause.alchemy_roasting_table": "Alchemy Roasting Table",
@@ -40,6 +40,7 @@
 
   "item.heliopause.paperbush_twigs": "Paperbush Twigs",
   "item.heliopause.sorcery paper": "Sorcery Paper",
+  "item.heliopause.celestite_shard": "Celestite Shard",
 
   "item.heliopause.imitation_core": "Imitation Celestial Core",
 

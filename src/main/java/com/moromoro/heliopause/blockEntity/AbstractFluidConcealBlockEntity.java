@@ -7,6 +7,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //液体を扱う、液体を描画しないブロックエンティティ
-public abstract class AbstractFluidConcealBlockEntity  extends FluidHandlerBlockEntity implements IFluidHandler {
+public abstract class AbstractFluidConcealBlockEntity extends FluidHandlerBlockEntity implements IFluidHandler {
 
     protected LazyOptional<IFluidHandler> fluidCapability = LazyOptional.of(() -> this.tank);
 
@@ -91,6 +92,10 @@ public abstract class AbstractFluidConcealBlockEntity  extends FluidHandlerBlock
     @Override
     public void setChanged() {
         super.setChanged();
+        if (level != null && !level.isClientSide()) {
+            // 状態が変更されたらクライアントにデータを同期
+            ((ServerLevel) level).sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
     }
 
     //データの読み込み

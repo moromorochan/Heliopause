@@ -79,7 +79,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
         this.orbitAxisYaw = axisYaw;
         this.orbitRotation = axisRoll;
         this.orbitRadius = radius;
-        this.centripetalForce = centripetalForce / 1000f;
+        this.centripetalForce = centripetalForce;
     }
 
     public void setPixelBasedSize(float quadPixelSize){
@@ -159,7 +159,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
         orbitalPlane.rotateZ(orbitAxisYaw);
         orbitalPlane.rotateX(orbitAxisPitch);
         //回転
-        orbitalPlane.rotateZ(orbitRotation + Mth.lerp(partialTicks,0,getOrbitSpeed()));
+        orbitalPlane.rotateZ(Math.toRadians(orbitRotation + Mth.lerp(getOrbitSpeed(),0,partialTicks)));
         return orbitalPlane;
     }
 
@@ -173,7 +173,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
     private @NotNull Vec3 getVisualPos() {
         //極座標を取得
         float radius = this.orbitRadius;
-        float revolution = this.orbitRotation;
+        float revolution = Math.toRadians(this.orbitRotation);
 
         //極座標から直交座標へ変換 見た目上の位置を取得
         return new Vec3(-radius * Math.sin(revolution), 0, -radius * Math.cos(revolution)).add(getPos());

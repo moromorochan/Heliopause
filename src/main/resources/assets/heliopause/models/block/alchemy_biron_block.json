@@ -1,6 +1,0 @@
-{
-    "parent": "minecraft:block/cube_all",
-    "textures": {
-      "all": "heliopause:block/alchemy_biron_block"
-    }
-  }

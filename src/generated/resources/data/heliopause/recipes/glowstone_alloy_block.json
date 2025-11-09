@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "heliopause:glowstone_alloy_ingot"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_ingot"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_ingot"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_ingot"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_ingot"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_ingot"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_ingot"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_ingot"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_ingot"
+    }
+  ],
+  "result": {
+    "item": "heliopause:glowstone_alloy_block"
+  }
+}

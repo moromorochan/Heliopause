@@ -14,7 +14,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -33,20 +35,20 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RoastingTableBlock extends HorizontalAxisEntityBlock {
+public class RoastingTableBlock extends BaseEntityBlock {
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
-    public RoastingTableBlock() {
-        super(
-                BlockBehaviour.Properties.of()
-                        .strength(2.0F)
-                        .sound(SoundType.CHISELED_BOOKSHELF)
-                        .lightLevel(blockState -> blockState.getValue(LIT) ? 5 : 0)
-        );
-        this.registerDefaultState(this.stateDefinition.any().setValue(AXIS, Direction.Axis.Z).setValue(LIT, Boolean.valueOf(false)));
+    public RoastingTableBlock(Properties properties) {
+        super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false));
     }
 
-    public static VoxelShape SHAPE = Shapes.join(
+    @Override
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
+        return RenderShape.MODEL;
+    }
+
+    /*public static VoxelShape SHAPE = Shapes.join(
             Block.box(0,9,0,16,16,16),
             Block.box(2, 0, 2, 14, 9, 14),
             BooleanOp.OR
@@ -55,7 +57,7 @@ public class RoastingTableBlock extends HorizontalAxisEntityBlock {
     @Override
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return SHAPE;
-    }
+    }*/
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder)
@@ -115,6 +117,7 @@ public class RoastingTableBlock extends HorizontalAxisEntityBlock {
                 level.playLocalSound(posX+ 0.5f, posY, posZ+ 0.5f, SoundEvents.SMOKER_SMOKE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }
 
+            /*
             //ブロックの方向を取得
             Comparable axis = blockState.getValue(AXIS);
 
@@ -131,6 +134,7 @@ public class RoastingTableBlock extends HorizontalAxisEntityBlock {
 
             //パーティクルを生成
             level.addParticle(ParticleTypes.SMOKE, posX+axisEmitX, posY+axisEmitY, posZ+axisEmitZ, 0, 0, 0);
+            */
         }
     }
 }

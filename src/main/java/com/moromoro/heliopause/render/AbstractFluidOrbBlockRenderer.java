@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,7 +23,9 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBlockEntity> implements BlockEntityRenderer<T> {
     public AbstractFluidOrbBlockRenderer(BlockEntityRendererProvider.Context context){
@@ -52,7 +55,6 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
             entity.setSmoothedTankAmount(0f);
             // 現在のフレーム時間を保存
             entity.setLastFrameTime(System.nanoTime());
-
             return;
         }
 
@@ -101,7 +103,7 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         entity.setWaveOffset(entity.getWaveOffset() + (deltaTime / orbSize) * 170f);
 
         renderingRequires.put("orbSize",orbSize);
-        renderingRequires.put("rotationOffset", entity.getRotationOffset());
+        renderingRequires.put("rotationOffset", entity.getRotationOffset() + RandomSource.create(entity.getBlockPos().asLong()).nextInt(0,360));
         renderingRequires.put("waveOffset", entity.getWaveOffset());
         renderingRequires.put("combinedOffset",entity.centerOffset().add(new Vec3(0,calcOffsetY(orbSize),0)));
     }
@@ -154,15 +156,12 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         TextureAtlasSprite sprite = getFluidSprite(fluidStack);
         //液体のtintカラーの取得
         float[] color = getFluidColor(fluidStack);
-        //ブロックの光レベルの取得
-        int light = calcLight(combinedLight,fluidStack);
 
         //配列に値を格納
         renderingRequires.put("matrix", poseStack.last().pose());
         renderingRequires.put("consumer", consumer);
         renderingRequires.put("sprite", sprite);
         renderingRequires.put("color", color);
-        renderingRequires.put("light",light);
 
         //メッシュを組み立てる
 
@@ -173,47 +172,86 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
 
         //必要な座標を用意
         final float topY = orbSize * ((float) Math.sqrt(1.5))/2, sideX = orbSize * Math.sqrt(1f/3f), sideY = topY/3;
+
+        //ドット数を用意
+        int pixel_num = Math.max(1, Math.round(16*(orbSize/Math.sqrt(2))));
+        //角度とドット数からテクスチャのずれを設定
+        float pixel_offset = (-rotationOffset * Math.ceil(pixel_num * 2/16f) *16) / 360f;
+
+        //必要な座標の設定
+        //面全体
+        Vector3f topVertex0 = new Vector3f(0,topY,0);
+        Vector3f topVertex1 = new Vector3f(CreateCosWaveform(60,sideX), sideY, CreateSinWaveform(60,sideX)).rotateY(Math.toRadians(-rotationOffset));
+        Vector3f topVertex2 = new Vector3f(sideX, -sideY, 0).rotateY(Math.toRadians(-rotationOffset));
+        Vector3f topVertex3 = new Vector3f(CreateCosWaveform(-60,sideX), sideY, CreateSinWaveform(-60,sideX)).rotateY(Math.toRadians(-rotationOffset));
+
+        Vector3f bottomVertex0 = new Vector3f(CreateCosWaveform(60,sideX),sideY, CreateSinWaveform(60,sideX)).rotateY(Math.toRadians(-rotationOffset));
+        Vector3f bottomVertex1 = new Vector3f(CreateCosWaveform(120,sideX),-sideY,CreateSinWaveform(120,sideX)).rotateY(Math.toRadians(-rotationOffset));
+        Vector3f bottomVertex2 = new Vector3f(0,-topY,0);
+        Vector3f bottomVertex3 = new Vector3f(sideX,-sideY,0).rotateY(Math.toRadians(-rotationOffset));
+
+        //スケール調整
+        poseStack.translate(0, CreateCosWaveform(waveOffset+50, -topY * 0.02f),0);
+        poseStack.scale(1,1 + CreateCosWaveform(waveOffset+50, orbSize *0.02f),1);
+
+        //位置調整
+        poseStack.translate(0.5f,0.5f+ CreateSinWaveform(waveOffset, orbSize *0.02f),0.5f);
+
+        //フチ
+
+        //テクスチャの境目
+
         //場合分け
         //方向1 2 3
         for (int i = 0; i < 3; i++) {
             //上面
             Vector3f[] vertPos0 = {
-                    new Vector3f(0,topY+CreateCosWaveform(waveOffset+25f, orbSize *0.03f),0),
-                    new Vector3f(CreateCosWaveform(60+i*120+rotationOffset,sideX),sideY +CreateCosWaveform(waveOffset, orbSize *0.03f), CreateSinWaveform(60+i*120+rotationOffset,sideX)),
-                    new Vector3f(CreateCosWaveform(i*120+rotationOffset,sideX),-sideY+CreateCosWaveform(waveOffset-25f, orbSize *0.03f), CreateSinWaveform(i*120+rotationOffset,sideX)),
-                    new Vector3f(CreateCosWaveform(-60+i*120+rotationOffset,sideX),sideY+CreateCosWaveform(waveOffset, orbSize *0.03f), CreateSinWaveform(-60+i*120+rotationOffset,sideX))
+                topVertex3.rotateY(Math.toRadians(120)),
+                topVertex0,
+                topVertex1.rotateY(Math.toRadians(120)),
+                topVertex2.rotateY(Math.toRadians(120))
             };
-            Vector2f[] vertUV0 = {
-                    new Vector2f(8-(orbSize *4),8),
-                    new Vector2f(8,8+(orbSize *4)),
-                    new Vector2f(8+(orbSize *4),8),
-                    new Vector2f(8,8-(orbSize *4))
-            };
+
+            //面ごとの明るさ設定
+            int light0 = calcLight(combinedLight,fluidStack);
+            renderingRequires.put("light",light0);
             //メッシュを定義するメソッドを呼び出す
-            renderQuads(renderingRequires,vertPos0,vertUV0);
+            renderQuads(renderingRequires,vertPos0,pixel_offset,pixel_num);
 
             //下面
             Vector3f[] vertPos1 = {
-                    new Vector3f(CreateCosWaveform(60+i*120+rotationOffset,sideX),sideY +CreateCosWaveform(waveOffset, orbSize *0.03f), CreateSinWaveform(60+i*120+rotationOffset,sideX)),
-                    new Vector3f(CreateCosWaveform(120+i*120+rotationOffset,sideX),-sideY +CreateCosWaveform(waveOffset-25f, orbSize *0.03f),CreateSinWaveform(120+i*120+rotationOffset,sideX)),
-                    new Vector3f(0,-topY +CreateCosWaveform(waveOffset-50f, orbSize *0.03f),0),
-                    new Vector3f(CreateCosWaveform(i*120+rotationOffset,sideX),-sideY +CreateCosWaveform(waveOffset-25f, orbSize *0.03f),CreateSinWaveform(i*120+rotationOffset,sideX))
+                bottomVertex3.rotateY(Math.toRadians(120)),
+                    bottomVertex0.rotateY(Math.toRadians(120)),
+                    bottomVertex1.rotateY(Math.toRadians(120)),
+                    bottomVertex2
             };
-            Vector2f[] vertUV1 = {
 
-                    new Vector2f(8-(orbSize *4),8),
-                    new Vector2f(8,8+(orbSize *4)),
-                    new Vector2f(8+(orbSize *4),8),
-                    new Vector2f(8,8-(orbSize *4))
-            };
+            //面ごとの明るさ設定
+            int light1 = calcLight(combinedLight/2,fluidStack);
+            renderingRequires.put("light",light1);
             //メッシュを定義するメソッドを呼び出す
-            renderQuads(renderingRequires,vertPos1,vertUV1);
+            renderQuads(renderingRequires,vertPos1,pixel_offset,pixel_num);
         }
     }
 
-    //(ながれる)液体テクスチャの取得
+    private static double calcPixelSize(float meshSize, int resolution) {
+        //サイズが0なら0を返す
+        if(meshSize == 0.0){
+            return 0.0;
+        }
+        //ドット数の計算
+        int divisor = (int) Math.round(resolution * meshSize);
+        //メッシュが小さすぎてドット数が0になる場合、メッシュの大きさを返す
+        if(divisor == 0){
+            return meshSize;
+        }
+        //ドットサイズを返す
+        return meshSize / divisor;
+    }
+
+    //(とどまる)液体テクスチャの取得
     private static TextureAtlasSprite getFluidSprite(@NotNull FluidStack fluidStack){
-        ResourceLocation fluidTexture = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getFlowingTexture(fluidStack);
+        ResourceLocation fluidTexture = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getStillTexture(fluidStack);
         //例外処理
         if (fluidTexture == null) {
             Heliopause.LOGGER.debug("Rendering failure on getting Fluid Sprite.");
@@ -254,27 +292,111 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         return (amplitude * Math.cos(Math.toRadians(waveOffset)));
     }
 
-    protected static void renderQuads(HashMap<String,Object> renderingRequires, Vector3f[] vertexPos, Vector2f[] vertexUV)
-    {
+    protected static void renderQuads(HashMap<String, Object> renderingRequires, Vector3f[] vertexPos, float pixelOffset, float pixelNum) {
         //配列から値を取り出す
-        Matrix4f matrix=(Matrix4f) renderingRequires.get("matrix");
-        VertexConsumer buffer=(VertexConsumer) renderingRequires.get("consumer");
-        TextureAtlasSprite sprite=(TextureAtlasSprite) renderingRequires.get("sprite");
-        float[] color =(float[]) renderingRequires.get("color");
-        int light=(int) renderingRequires.get("light");
-        Vec3 offset =(Vec3) renderingRequires.get("combinedOffset");
+        Matrix4f matrix = (Matrix4f) renderingRequires.get("matrix");
+        VertexConsumer buffer = (VertexConsumer) renderingRequires.get("consumer");
+        TextureAtlasSprite sprite = (TextureAtlasSprite) renderingRequires.get("sprite");
+        float[] color = (float[]) renderingRequires.get("color");
+        int light = (int) renderingRequires.get("light");
+        Vec3 offset = (Vec3) renderingRequires.get("combinedOffset");
 
-        //色を取り出す
+        //色を取得
         float red = color[0];
         float green = color[1];
         float blue = color[2];
 
-        //頂点を決める
-        for (int i = 0; i < 4; i++) {
-            buffer.vertex(matrix, 0.5f+vertexPos[i].x + (float) offset.x, 0.5f+vertexPos[i].y + (float) offset.y, 0.5f+vertexPos[i].z + (float) offset.z)
-                    .color(red, green, blue, 1f)
-                    .uv(sprite.getU(vertexUV[i].x),sprite.getV(vertexUV[i].y))
-                    .uv2(light).normal(0, 1, 0).endVertex();
+        pixelOffset = pixelOffset % 16;
+
+        //uvの開始位置を設定
+        Vector2f uv0 = new Vector2f(
+            Math.round(pixelNum / 2f) - pixelOffset,
+            Math.round(pixelNum / 2f) - pixelOffset);
+
+        // 面のローカル軸を計算
+        Vector3f localAxisX = new Vector3f(vertexPos[1]).sub(vertexPos[0]).mul(1f / pixelNum);
+        Vector3f localAxisY = new Vector3f(vertexPos[3]).sub(vertexPos[0]).mul(1f / pixelNum);
+
+        //分割位置の配列を用意
+        List<Float> partPosX = new ArrayList<>();
+        partPosX.add(0f);
+        float boundaryX = (float)(Math.ceil(uv0.x / 16.0)) * 16f - uv0.x;
+        if(boundaryX > 0f && boundaryX < pixelNum){
+            partPosX.add(boundaryX);
         }
+        for (float b = boundaryX + 16f; b < pixelNum; b += 16f) {
+            partPosX.add(b);
+        }
+        partPosX.add(pixelNum);
+
+        List<Float> partPosY = new ArrayList<>();
+        partPosY.add(0f);
+        float boundaryY = (float)(Math.ceil(uv0.y / 16.0)) * 16f - uv0.y;
+        if(boundaryY > 0f && boundaryY < pixelNum){
+            partPosY.add(boundaryY);
+        }
+        for (float b = boundaryY + 16f; b < pixelNum; b += 16f) {
+            partPosY.add(b);
+        }
+        partPosY.add(pixelNum);
+
+        //各面を描画
+        for (int yi = 0; yi < partPosY.size() - 1; yi++) {
+            for (int xi = 0; xi < partPosX.size() - 1; xi++) {
+
+                float relX1 = partPosX.get(xi);
+                float relX2 = partPosX.get(xi + 1);
+                float relY1 = partPosY.get(yi);
+                float relY2 = partPosY.get(yi + 1);
+
+                float u1 = modUV(uv0.x + relX1);
+                float u2 = modUV(uv0.x + relX2);
+                if(u2<=u1){
+                    u2+=16;
+                }
+                float v1 = modUV(uv0.y + relY1);
+                float v2 = modUV(uv0.y + relY2);
+                if(v2<=v1){
+                    v2+=16;
+                }
+
+                Vector2f[] vertexUV = new Vector2f[4];
+                vertexUV[0] = new Vector2f(u1, v1); // 左下
+                vertexUV[1] = new Vector2f(u2, v1); // 左上
+                vertexUV[2] = new Vector2f(u2, v2); // 右上
+                vertexUV[3] = new Vector2f(u1, v2); // 右下
+
+                Vector3f[] partVertexPos = new Vector3f[4];
+                partVertexPos[0] = new Vector3f(vertexPos[0])
+                    .add(new Vector3f(localAxisX).mul(relX1))
+                    .add(new Vector3f(localAxisY).mul(relY1));
+                partVertexPos[1] = new Vector3f(vertexPos[0])
+                    .add(new Vector3f(localAxisX).mul(relX2))
+                    .add(new Vector3f(localAxisY).mul(relY1));
+                partVertexPos[2] = new Vector3f(vertexPos[0])
+                    .add(new Vector3f(localAxisX).mul(relX2))
+                    .add(new Vector3f(localAxisY).mul(relY2));
+                partVertexPos[3] = new Vector3f(vertexPos[0])
+                    .add(new Vector3f(localAxisX).mul(relX1))
+                    .add(new Vector3f(localAxisY).mul(relY2));
+
+                // 面を描画
+                for (int i = 0; i < 4; i++) {
+                    buffer.vertex(matrix,
+                            partVertexPos[i].x + (float) offset.x,
+                            partVertexPos[i].y + (float) offset.y,
+                            partVertexPos[i].z + (float) offset.z)
+                        .color(red, green, blue, 1f)
+                        .uv(sprite.getU(vertexUV[i].x), sprite.getV(vertexUV[i].y))
+                        .uv2(light)
+                        .normal(0, 1, 0)
+                        .endVertex();
+                }
+            }
+        }
+    }
+
+    private static float modUV(float value) {
+        return ((value % 16) + 16) % 16;
     }
 }

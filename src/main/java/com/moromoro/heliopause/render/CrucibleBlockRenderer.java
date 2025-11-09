@@ -3,6 +3,7 @@ package com.moromoro.heliopause.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.block.CrucibleBlock;
 import com.moromoro.heliopause.blockEntity.CrucibleBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -26,7 +28,9 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
     public CrucibleBlockRenderer(BlockEntityRendererProvider.Context context){
     }
     //ブロックの端から液面の端までの距離
-    private static final float MARGIN = 2/16f;
+    private static final float MARGIN = (float) (CrucibleBlock.INNER.min(Direction.Axis.X) /16f);
+    private static final float FLUID_TOP = 13f;
+    private static final float FLUID_BOTTOM =(float) (CrucibleBlock.INNER.min(Direction.Axis.Y));
 
     private static HashMap<BlockPos,FluidStack> fluidList = new HashMap<>();
 
@@ -65,9 +69,9 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
         //entity.setSmoothedTankAmount(Math.clamp(0, entity.getTankCapacity(0), entity.getSmoothedTankAmount()));
 
         //液面高さの上限と下限を決める
-        final float fillMax = 15f, fillMin = 5f;
+        //final float fillMax = 15f, fillMin = 5f;
         //タンクの割合から液面高さを計算
-        float fillPercentage = Math.clamp(fillMin, fillMax, fillMin + (fillMax-fillMin)*(entity.getSmoothedTankAmount() / entity.getTankCapacity(0)))/16f;
+        float fillPercentage = Math.clamp(FLUID_BOTTOM, FLUID_TOP, FLUID_BOTTOM + (FLUID_TOP-FLUID_BOTTOM)*(entity.getSmoothedTankAmount() / entity.getTankCapacity(0)))/16f;
 
         //親モデルをスタックに保管して、子モデルの編集をはじめる
         poseStack.pushPose();

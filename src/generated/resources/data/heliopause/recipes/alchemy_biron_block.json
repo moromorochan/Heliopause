@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "heliopause:alchemy_biron_ingot"
+    },
+    {
+      "item": "heliopause:alchemy_biron_ingot"
+    },
+    {
+      "item": "heliopause:alchemy_biron_ingot"
+    },
+    {
+      "item": "heliopause:alchemy_biron_ingot"
+    },
+    {
+      "item": "heliopause:alchemy_biron_ingot"
+    },
+    {
+      "item": "heliopause:alchemy_biron_ingot"
+    },
+    {
+      "item": "heliopause:alchemy_biron_ingot"
+    },
+    {
+      "item": "heliopause:alchemy_biron_ingot"
+    },
+    {
+      "item": "heliopause:alchemy_biron_ingot"
+    }
+  ],
+  "result": {
+    "item": "heliopause:alchemy_biron_block"
+  }
+}

@@ -3,7 +3,7 @@ package com.moromoro.heliopause.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.blockEntity.AbstractCoreBlockEntity;
+import com.moromoro.heliopause.blockEntity.AbstractFluidOrbBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -20,7 +20,7 @@ import org.joml.Vector3f;
 
 import java.util.HashMap;
 
-public class AbstractCoreBlockRenderer<T extends AbstractCoreBlockEntity> extends AbstractFluidOrbBlockRenderer<T> {
+public class AbstractCoreBlockRenderer<T extends AbstractFluidOrbBlockEntity> extends AbstractFluidOrbBlockRenderer<T> {
     public AbstractCoreBlockRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
     }
@@ -170,7 +170,7 @@ public class AbstractCoreBlockRenderer<T extends AbstractCoreBlockEntity> extend
                     new Vector2f(16*i/3f,8)
             };
             //メッシュを定義するメソッドを呼び出す
-            renderQuads(renderingRequires,vertPos0,vertUV0);
+            //renderQuads(renderingRequires,vertPos0,vertUV0);
 
             //下面
             Vector3f[] vertPos1 = {
@@ -186,7 +186,7 @@ public class AbstractCoreBlockRenderer<T extends AbstractCoreBlockEntity> extend
                     new Vector2f(16*i/3f,0)
             };
             //メッシュを定義するメソッドを呼び出す
-            renderQuads(renderingRequires,vertPos1,vertUV1);
+            //renderQuads(renderingRequires,vertPos1,vertUV1);
         }
     }
 
