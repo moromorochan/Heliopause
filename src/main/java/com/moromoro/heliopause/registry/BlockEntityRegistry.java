@@ -59,12 +59,29 @@ public class BlockEntityRegistry {
         //焙炉
     public static final RegistryObject<BlockEntityType<RoastingTableBlockEntity>> ROASTING_TABLE_BE =
             BLOCKENTITIES.register("alchemy_roasting_table",() ->
-                    BlockEntityType.Builder.of(
-                            RoastingTableBlockEntity::new,
-                            BlockRegistry.ROASTING_TABLE.get()
-                    ).build(null)
+                BlockEntityType.Builder.of(
+                    RoastingTableBlockEntity::new,
+                    BlockRegistry.ROASTING_TABLE.get()
+                ).build(null)
             );
 
+        // 描かれた黒板
+    public static final RegistryObject<BlockEntityType<WrittenBoardBlockEntity>> WRITTEN_BOARD_BE =
+        BLOCKENTITIES.register("written_board",() ->
+                BlockEntityType.Builder.of(
+                    WrittenBoardBlockEntity::new,
+                    BlockRegistry.WRITTEN_BOARD.get()
+                ).build(null)
+            );
+
+    // シデロスタットオーブ
+    public static final RegistryObject<BlockEntityType<SiderostatBlockEntity>> SIDEROSTAT_BE =
+        BLOCKENTITIES.register("siderostat",() ->
+            BlockEntityType.Builder.of(
+                SiderostatBlockEntity::new,
+                BlockRegistry.SIDEROSTAT_TOP.get()
+            ).build(null)
+            );
         //模造天体コア
     /*public static final RegistryObject<BlockEntityType<CometCoreBlockEntity>> COMET_CORE_BE =
                 BLOCKENTITIES.register("comet_core",() ->

@@ -5,6 +5,7 @@ import com.moromoro.heliopause.event.TooltipEventHandler;
 import com.moromoro.heliopause.item.FluidBottle;
 import com.moromoro.heliopause.registry.*;
 import com.moromoro.heliopause.screen.RoastingTableScreen;
+import com.moromoro.heliopause.screen.SiderostatScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -88,6 +89,7 @@ public class Heliopause {
 
             //メニューとスクリーンを紐づけ
             MenuScreens.register(MenuTypeRegistry.ROASTING_TABLE_MENU.get(), RoastingTableScreen::new);
+            MenuScreens.register(MenuTypeRegistry.SIDEROSTAT_MENU.get(), SiderostatScreen::new);
 
             //キーコンフィグの追加
 

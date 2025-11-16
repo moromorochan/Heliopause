@@ -34,8 +34,8 @@ import java.util.List;
 
 public class ChalkItem extends Item implements IhasHoverTexts {
 
-    private static final String CORNER_NBT_KEY = "CornerPos";
-    private static final int SIDE_LENGTH_LIMIT = 16;
+    /*private static final String CORNER_NBT_KEY = "CornerPos";
+    private static final int SIDE_LENGTH_LIMIT = 16;*/
 
     private MagicCircleAssemblyMenu menu;
 
@@ -73,13 +73,23 @@ public class ChalkItem extends Item implements IhasHoverTexts {
         Direction direction = context.getClickedFace();
         BlockPos pos = context.getClickedPos();
         ItemStack stack = context.getItemInHand();
+        BlockState blockState = level.getBlockState(pos);
+
+        if(!stack.is(this)){
+            return InteractionResult.PASS;
+        }
+        if(blockState.is(BlockRegistry.BLACKBOARD.get())){
+            level.setBlock(pos,BlockRegistry.WRITTEN_BOARD.get().defaultBlockState(), 0);
+        } else if (blockState.is(BlockRegistry.WRITTEN_BOARD.get())) {
+
+        }
 
         //最初の角を選択
-        if(!hasCornerPos(stack)){
+        /*if(!hasCornerPos(stack)){
             setCornerPos(stack,pos);
-        }
+        }*/
         //次の角を選択
-        else{
+        /*else{
             //最初の角をnbtから取得
             BlockPos lastPos = getNbtCorner(stack);
             //座標の距離を確認して、遠すぎたらキャンセル
@@ -102,7 +112,7 @@ public class ChalkItem extends Item implements IhasHoverTexts {
             }
             //保存した座標を削除
             removeCornerPos(stack);
-        }
+        }*/
         /*
         //縦のブロックを取得(テスト用)
         BlockState[] OverBlocks = new BlockState[8];
@@ -161,14 +171,14 @@ public class ChalkItem extends Item implements IhasHoverTexts {
     }
 
     //選択範囲の長さが限界を越えていないかチェックする
-    private boolean checkSideLength(@Nullable BlockPos pos1, @Nullable BlockPos pos2) {
+    /*private boolean checkSideLength(@Nullable BlockPos pos1, @Nullable BlockPos pos2) {
         if(pos1==null||pos2==null) return false;
         return (
                     (Math.abs(pos1.getX()-pos2.getX())<=SIDE_LENGTH_LIMIT)
                 &&  (Math.abs(pos1.getY()-pos2.getY())<=SIDE_LENGTH_LIMIT)
                 &&  (Math.abs(pos1.getZ()-pos2.getZ())<=SIDE_LENGTH_LIMIT)
                 );
-    }
+    }*/
 
     //レシピを確認・適用する
     private void applyRecipe(BlockPos firstCorner,BlockState[][][] selectedBlocks, Level level, Direction direction) {
@@ -310,7 +320,7 @@ public class ChalkItem extends Item implements IhasHoverTexts {
         return stateArray;
     }
 
-    //nbtから座標を取得する
+    /*/nbtから座標を取得する
     private BlockPos getNbtCorner(ItemStack stack) {
         CompoundTag nbt = stack.getTag();
         if(nbt!=null) {
@@ -343,4 +353,5 @@ public class ChalkItem extends Item implements IhasHoverTexts {
         }
         return false;
     }
+     */
 }

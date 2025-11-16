@@ -8,6 +8,11 @@
   "block.heliopause.fluid_cage": "流体ケージ",
   "block.heliopause.fluid_spreader_tower": "流体散布塔",
   "block.heliopause.fluid_spreader_tower_orb": "流体散布塔",
+  "block.heliopause.blackboard": "黒板",
+  "block.heliopause.written_board": "描かれた黒板",
+  "block.heliopause.siderostat_base": "シデロスタット",
+  "block.heliopause.siderostat": "シデロスタット",
+
   "block.heliopause.alchemy_biron_block": "錬金赤銅ブロック",
   "block.heliopause.glowstone_alloy_block": "グロウストーン合金ブロック",
 
@@ -25,6 +30,9 @@
   "item.heliopause.glowstone_alloy_nugget": "グロウストーン合金塊",
 
   "item.heliopause.chalk": "チョーク",
+  "item.heliopause.compass": "作陣用コンパス",
+  "item.heliopause.ruler": "作陣用定規",
+
   "item.heliopause.vial": "バイアル瓶",
   "item.heliopause.vial.filled": "%1$s入りバイアル瓶",
   "item.heliopause.large_bottle": "大瓶",
@@ -32,6 +40,11 @@
 
   "item.heliopause.chalk.tooltip.description1": "%1$sを長押し",
   "item.heliopause.chalk.tooltip.description2": "描く魔法陣を選択",
+  "item.heliopause.compass.tooltip.description1": "%1$sを長押し",
+  "item.heliopause.compass.tooltip.description2": "錬成陣を描く",
+  "item.heliopause.ruler.tooltip.description1": "%1$sを長押し",
+  "item.heliopause.ruler.tooltip.description2": "魔法陣を描く",
+
   "item.heliopause.bottle.tooltip.amount": "充填量: %s/%smb",
   "item.heliopause.bottle.tooltip.description1": "アイテムに充填",
   "item.heliopause.bottle.tooltip.description2": "アイテムから排出",

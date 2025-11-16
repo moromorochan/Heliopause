@@ -43,6 +43,7 @@ public class ModEventBusClientEvents {
         //event.registerBlockEntityRenderer(BlockEntityRegistry.COMET_CORE_BE.get(), CometCoreBlockRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), CentralStarBlockRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.CENTRAL_STAR_BE.get(), CentralStarBlockRenderer::new);
+        event.registerBlockEntityRenderer(BlockEntityRegistry.SIDEROSTAT_BE.get(), SiderostatRenderer::new);
         //エンティティ
         event.registerEntityRenderer(EntityRegistry.ORRERY_INTERACTION_OPERATOR_E.get(), VoidEntityRenderer::new);
     }

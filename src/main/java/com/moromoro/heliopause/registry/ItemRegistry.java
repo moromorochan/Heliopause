@@ -1,13 +1,12 @@
 package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.item.ChalkItem;
-import com.moromoro.heliopause.item.FluidBottle;
-import com.moromoro.heliopause.item.PipeBlockItem;
+import com.moromoro.heliopause.item.*;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.antlr.v4.tool.Rule;
 
 public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Heliopause.MODID);
@@ -41,6 +40,11 @@ public class ItemRegistry {
         //ツール
         public static final RegistryObject<ChalkItem> CHALK_ITEM =
                 ITEMS.register("chalk", () -> new ChalkItem(new Item.Properties()));
+
+        public static final RegistryObject<CompassItem> COMPASS_ITEM =
+            ITEMS.register("compass",() -> new CompassItem(new Item.Properties()));
+        public static final RegistryObject<RulerItem> RULER_ITEM =
+            ITEMS.register("ruler",() -> new RulerItem(new Item.Properties()));
 
         //模造天体コア
     public static final RegistryObject<Item> IMITATION_CORE_ITEM =

@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "heliopause:siderostat"
+          "name": "heliopause:blackboard"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "heliopause:blocks/siderostat"
+  "random_sequence": "heliopause:blocks/written_board"
 }

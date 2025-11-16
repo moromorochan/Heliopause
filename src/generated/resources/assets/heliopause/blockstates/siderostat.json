@@ -1,7 +1,18 @@
 {
   "variants": {
-    "": {
-      "model": "heliopause:block/siderostat/mount"
+    "facing=east": {
+      "model": "heliopause:block/siderostat/bow",
+      "y": 90
+    },
+    "facing=up": {
+      "model": "heliopause:block/siderostat/bow",
+      "x": 270,
+      "y": 90
+    },
+    "facing=west": {
+      "model": "heliopause:block/siderostat/bow",
+      "x": 180,
+      "y": 90
     }
   }
 }

@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "heliopause:siderostat"
+          "name": "heliopause:siderostat_base"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "heliopause:blocks/siderostat_orb"
+  "random_sequence": "heliopause:blocks/siderostat_base"
 }

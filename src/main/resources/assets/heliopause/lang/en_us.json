@@ -8,6 +8,11 @@
   "block.heliopause.fluid_cage": "Fluid Cage",
   "block.heliopause.fluid_spreader_tower": "Fluid Spreader Tower",
   "block.heliopause.fluid_spreader_tower_orb": "Fluid Spreader Tower",
+  "block.heliopause.blackboard": "Blackboard",
+  "block.heliopause.written_board": "Written BlackBoard",
+  "block.heliopause.siderostat_base": "Siderostat",
+  "block.heliopause.siderostat": "Siderostat",
+
   "block.heliopause.alchemy_biron_block": "Alchemy Biron Block",
   "block.heliopause.glowstone_alloy_block": "Glowstone Alloy Block",
 
@@ -25,6 +30,9 @@
   "item.heliopause.glowstone_alloy_nugget": "Glowstone Alloy Nugget",
 
   "item.heliopause.chalk": "Chalk",
+  "item.heliopause.compass": "Circle Drafting Compass",
+  "item.heliopause.ruler": "Circle Drafting Ruler",
+
   "item.heliopause.vial": "Vial",
   "item.heliopause.vial.filled": "%1$s Vial",
   "item.heliopause.large_bottle": "Large Bottle",
@@ -32,6 +40,11 @@
 
   "item.heliopause.chalk.tooltip.description1": "Hold %1$s",
   "item.heliopause.chalk.tooltip.description2": "Hold to select the magic circle to draw",
+  "item.heliopause.compass.tooltip.description1": "Hold %1$s",
+  "item.heliopause.compass.tooltip.description2": "draw a alchemy circle",
+  "item.heliopause.ruler.tooltip.description1": "Hold %1$s",
+  "item.heliopause.ruler.tooltip.description2": "draw a magic circle",
+
   "item.heliopause.bottle.tooltip.amount": "Amount: %s/%smb",
   "item.heliopause.bottle.tooltip.description1": "fill item",
   "item.heliopause.bottle.tooltip.description2": "drain item",

@@ -48,8 +48,8 @@ public class HEPBlockLootTables extends BlockLootSubProvider {
                     )
             )
         );
-        this.dropSelf(BlockRegistry.SIDEROSTAT.get());
-        this.dropOther(BlockRegistry.SIDEROSTAT_ORB.get(),BlockRegistry.SIDEROSTAT.get());
+        this.dropSelf(BlockRegistry.SIDEROSTAT_BASE.get());
+        //this.dropOther(BlockRegistry.SIDEROSTAT_ORB.get(),BlockRegistry.SIDEROSTAT_BASE.get());
 
         this.dropSelf(BlockRegistry.PENETRATOR.get());
         this.dropSelf(BlockRegistry.DISSOLVER.get());
@@ -57,6 +57,7 @@ public class HEPBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(BlockRegistry.REFINERY_CYLINDER.get());
 
         this.dropSelf(BlockRegistry.BLACKBOARD.get());
+        this.dropOther(BlockRegistry.WRITTEN_BOARD.get(), BlockRegistry.BLACKBOARD.get());
 
     }
 

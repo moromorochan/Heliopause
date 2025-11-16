@@ -91,6 +91,14 @@ public class BlockRegistry {
                 BlockBehaviour.Properties.of()
             ));
 
+    // 描かれた黒板
+    public static final RegistryObject<Block> WRITTEN_BOARD =
+        registerBlock("written_board",
+                ()-> new WrittenBoardBlock(
+                    BlockBehaviour.Properties.of()
+                )
+            );
+
     //流体ケージ
     public static final RegistryObject<Block> FLUID_CAGE =
         registerBlock("fluid_cage",() -> new FluidCageBlock(
@@ -99,27 +107,30 @@ public class BlockRegistry {
                             .sound(SoundType.WOOD)
             ));
 
-    //シデロスタット(本体)
-    public static final RegistryObject<SiderostatBaseBlock> SIDEROSTAT =
-        registerBlock("siderostat",() -> new SiderostatBaseBlock(
+    //シデロスタット(基台)
+    public static final RegistryObject<SiderostatBaseBlock> SIDEROSTAT_BASE =
+        registerBlock("siderostat_base",() -> new SiderostatBaseBlock(
            BlockBehaviour.Properties.of()
                .strength(1.5f)
                .sound(SoundType.WOOD)
         ));
     //シデロスタット(オーブ)
-    public static final RegistryObject<SiderostatOrbBlock> SIDEROSTAT_ORB =
-        registerBlock("siderostat_orb",() -> new SiderostatOrbBlock(
+    /*public static final RegistryObject<SiderostatBlock> SIDEROSTAT_ORB =
+        registerBlock("siderostat_orb",() -> new SiderostatBlock(
             BlockBehaviour.Properties.of()
                 .strength(1.5f)
                 //.noLootTable()
                 .sound(SoundType.COPPER)
-        ));
-    //シデロスタット(装飾類登録)
-    public static final RegistryObject<Block> SIDEROSTAT_BOW =
-        registerBlock("siderostat_bow",() -> new Block(
+        ));*/
+    //シデロスタット(弓・オーブ)
+    public static final RegistryObject<Block> SIDEROSTAT_TOP =
+        registerBlock("siderostat",() -> new SiderostatBlock(
             BlockBehaviour.Properties.of()
+                .strength(1.5f)
+                .sound(SoundType.WOOD)
                 .noLootTable()
         ));
+    //シデロスタット(装飾部)
     public static final RegistryObject<Block> SIDEROSTAT_MOTOR =
         registerBlock("siderostat_motor",() -> new Block(
             BlockBehaviour.Properties.of()
