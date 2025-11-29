@@ -26,13 +26,6 @@ public class SiderostatMenu extends AbstractContainerMenu {
     private static final int invOffset = 84 + 9;
     private static final int hotBarOffset = 142 + 9;
 
-    protected static void checkContainerDataCount(ContainerData containerData, int count){
-        int i = containerData.getCount();
-        if(i < count){
-            throw new IllegalArgumentException("Container data count " + i + " is smaller than expected" + count);
-        }
-    }
-
     public SiderostatMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
         this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(SiderostatBlockEntity.DATA_ACCESS_LENGTH));
     }
@@ -43,7 +36,6 @@ public class SiderostatMenu extends AbstractContainerMenu {
         blockEntity = (SiderostatBlockEntity) entity;
         this.level = player.level();
 
-        checkContainerDataCount(data, SiderostatBlockEntity.DATA_ACCESS_LENGTH);
         this.data = data;
 
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {

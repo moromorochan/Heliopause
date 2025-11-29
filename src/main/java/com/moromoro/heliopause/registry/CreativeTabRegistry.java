@@ -43,7 +43,7 @@ public class CreativeTabRegistry {
                 //output.accept(ItemRegistry.IMITATION_CORE_ITEM.get());
                 //output.accept(ItemRegistry.CHALK_ITEM.get());
                 output.accept(ItemRegistry.COMPASS_ITEM.get());
-                output.accept(ItemRegistry.RULER_ITEM.get());
+                //output.accept(ItemRegistry.RULER_ITEM.get());
                 //output.accept(ItemRegistry.VIAL_ITEM.get());
                 //output.accept(ItemRegistry.LARGE_BOTTLE_ITEM.get());
                 //output.accept(BlockRegistry.PAPERBUSH_BLOCK.get());

@@ -1,0 +1,8 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made by moromorochan with Blockbench",
+	"parent": "heliopause:decoration/circle/multi_circle_default",
+	"textures": {
+		"all": "heliopause:decoration/circle/multi_line_default"
+	}
+}

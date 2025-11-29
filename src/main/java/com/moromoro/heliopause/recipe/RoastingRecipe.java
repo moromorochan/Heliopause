@@ -38,7 +38,7 @@ public class RoastingRecipe implements Recipe<CraftingContainer> {
 
     public  static class Serializer implements RecipeSerializer<RoastingRecipe>{
         public static final Serializer INSTANCE = new Serializer();
-        public static final ResourceLocation ID = new ResourceLocation(Heliopause.MODID,"roasting");
+        public static final ResourceLocation ID = new ResourceLocation(Heliopause.MODID,Type.ID);
 
         //jsonからレシピを読み込み
         @Override

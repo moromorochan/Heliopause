@@ -31,6 +31,7 @@ import static com.moromoro.heliopause.registry.MenuTypeRegistry.MENU_TYPES;
 import static com.moromoro.heliopause.registry.ParticleRegistry.PARTICLE_TYPES;
 import static com.moromoro.heliopause.registry.RecipeSerializerRegistry.RECIPE_SERIALIZERS;
 import static com.moromoro.heliopause.registry.RecipeTypeRegistry.RECIPE_TYPES;
+import static com.moromoro.heliopause.registry.SoundRegistry.SOUNDS;
 
 @Mod(Heliopause.MODID)
 public class Heliopause {
@@ -57,6 +58,7 @@ public class Heliopause {
         CREATIVE_MODE_TABS.register(modEventBus);
         RECIPE_SERIALIZERS.register(modEventBus);
         RECIPE_TYPES.register(modEventBus);
+        SOUNDS.register(modEventBus);
 
         //configファイルの登録
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHolder.SPEC);

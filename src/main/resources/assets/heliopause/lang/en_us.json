@@ -38,12 +38,14 @@
   "item.heliopause.large_bottle": "Large Bottle",
   "item.heliopause.large_bottle.filled": "%1$s Large Bottle",
 
-  "item.heliopause.chalk.tooltip.description1": "Hold %1$s",
-  "item.heliopause.chalk.tooltip.description2": "Hold to select the magic circle to draw",
   "item.heliopause.compass.tooltip.description1": "Hold %1$s",
-  "item.heliopause.compass.tooltip.description2": "draw a alchemy circle",
-  "item.heliopause.ruler.tooltip.description1": "Hold %1$s",
-  "item.heliopause.ruler.tooltip.description2": "draw a magic circle",
+  "item.heliopause.compass.tooltip.description2": "Draw Selected Magic Circle",
+  "item.heliopause.compass.tooltip.description3": "Select the Magic Circle to Draw",
+  "gui.heliopause.compass.description1": "[%1$s] Next",
+  "gui.heliopause.compass.description2": "Draw Symbols",
+  "gui.heliopause.compass.description3": "Draw Circles",
+  "gui.heliopause.compass.description4": "Draw Lines",
+  "gui.heliopause.compass.description5": "Erase Drawn",
 
   "item.heliopause.bottle.tooltip.amount": "Amount: %s/%smb",
   "item.heliopause.bottle.tooltip.description1": "fill item",
@@ -60,6 +62,12 @@
   "recipe.heliopause.roasting": "Roasting",
   "recipe.heliopause.transmutation": "Transmutation",
   "recipe.heliopause.orrery": "Orrery Whirling",
+  "recipe.heliopause.moonlight_pouring": "Moonlight Pouring",
 
+  "heliopause.subtitle.siderostat_winding": "Mainspring winds",
+  "heliopause.subtitle.siderostat_lock": "Siderostat operates",
+  "heliopause.subtitle.ripple": "Imitation planet resonates",
+
+  "keybinding.heliopause.circle_select": "Open Circle Selector",
   "keybinding.heliopause.bottle_drain": "Drain item"
 }

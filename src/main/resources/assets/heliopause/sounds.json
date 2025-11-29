@@ -1,0 +1,49 @@
+{
+  "siderostat_winding": {
+    "sounds": [
+      {
+        "name": "entity/bobber/retrieve1",
+        "pitch": 0.48
+      },
+      {
+        "name": "entity/bobber/retrieve2",
+        "pitch": 0.48
+      }
+    ],
+    "subtitle": "heliopause.subtitle.siderostat_winding"
+  },
+  "siderostat_lock": {
+    "sounds": [
+      {
+        "name": "block/wooden_trapdoor/close1",
+        "volume": 0.9
+      },
+      {
+        "name": "block/wooden_trapdoor/close2",
+        "volume": 0.9
+      },
+      {
+        "name": "block/wooden_trapdoor/close3",
+        "volume": 0.9
+      }
+    ],
+    "subtitle": "heliopause.subtitle.siderostat_lock"
+  },
+  "ripple": {
+    "sounds": [
+      {
+        "name": "heliopause:block/siderostat/ripple_1",
+        "volume": 0.05
+      },
+      {
+        "name": "heliopause:block/siderostat/ripple_2",
+        "volume": 0.05
+      },
+      {
+        "name": "heliopause:block/siderostat/ripple_3",
+        "volume": 0.05
+      }
+    ],
+    "subtitle": "heliopause.subtitle.ripple"
+  }
+}

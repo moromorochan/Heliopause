@@ -1,12 +1,17 @@
 package com.moromoro.heliopause.block;
 
-import com.moromoro.heliopause.blockEntity.RoastingTableBlockEntity;
 import com.moromoro.heliopause.blockEntity.SiderostatBlockEntity;
+import com.moromoro.heliopause.particle.StarRippleParticles;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.registry.BlockRegistry;
+import com.moromoro.heliopause.registry.ParticleRegistry;
+import com.moromoro.heliopause.registry.SoundRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,7 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -26,8 +30,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -37,10 +41,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class SiderostatBlock extends BaseEntityBlock {
+public class SiderostatTopBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING_SIDEROSTAT = DirectionProperty.create("facing", Direction.EAST, Direction.UP, Direction.WEST);
-    public SiderostatBlock(Properties properties) {
+    public SiderostatTopBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any()
             .setValue(FACING_SIDEROSTAT, Direction.WEST));
@@ -77,7 +81,7 @@ public class SiderostatBlock extends BaseEntityBlock {
             return; // 既存のペアがある場合は設置せずキャンセル
         }
 
-        if (!canPlaceAbove && aboveState.getBlock() instanceof SiderostatBlock) {
+        if (!canPlaceAbove && aboveState.getBlock() instanceof SiderostatTopBlock) {
             return; // 既存のペアがある場合は設置せずキャンセル
         }
 
@@ -105,6 +109,7 @@ public class SiderostatBlock extends BaseEntityBlock {
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+
         if(state.getBlock() != newState.getBlock()){
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if(blockEntity instanceof SiderostatBlockEntity siderostatBlockEntity){
@@ -120,10 +125,6 @@ public class SiderostatBlock extends BaseEntityBlock {
             if (otherState.getBlock() instanceof SiderostatBaseBlock) {
                 level.destroyBlock(otherPos, false);
             }
-        }
-        else
-        {
-            super.onRemove(state, level, pos, newState, isMoving);
         }
     }
 
@@ -167,5 +168,32 @@ public class SiderostatBlock extends BaseEntityBlock {
         return createTickerHelper(blockEntityType, BlockEntityRegistry.SIDEROSTAT_BE.get(),
             (tickLevel,pos,tickBlockState,blockEntity) -> blockEntity.tick(tickLevel,pos,tickBlockState,blockEntity)
         );
+    }
+
+    public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
+        // 現在のフレーム時間を取得
+        //float currentFrameTime = (System.nanoTime() / 1_000_000_000.0F) + (RandomSource.create(blockPos.asLong()).nextFloat()*8);
+
+        if (/*currentFrameTime % 8 > 0.5 || */randomSource.nextInt(1000) > 30) {
+            return;
+        }
+        Vec3 centerPos = blockPos.getCenter().add(0,-0.4f + randomSource.nextGaussian() * 0.02f,0);
+        float scale = randomSource.nextInt(4,6)*0.1f;
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        if(blockEntity instanceof SiderostatBlockEntity entity){
+            if(entity.getSynced()&&entity.isAngleVisible(entity.getSpringAmount(),entity.getCanSeeSkies())){
+                // パーティクル生成
+                for (int i = 0; i < 2; i++) {
+                    StarRippleParticles particles = (StarRippleParticles)Minecraft.getInstance().particleEngine.createParticle(
+                        ParticleRegistry.STAR_RIPPLE_PARTICLES.get(),
+                        centerPos.x,centerPos.y,centerPos.z, 0,0,0
+                    );
+                    if(particles!=null) {
+                        particles.setScale(scale);
+                    }
+                }
+                level.playSound(Minecraft.getInstance().getCameraEntity(), blockPos, SoundRegistry.RIPPLE.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+            }
+        }
     }
 }

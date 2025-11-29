@@ -38,12 +38,14 @@
   "item.heliopause.large_bottle": "大瓶",
   "item.heliopause.large_bottle.filled": "%1$s入り大瓶",
 
-  "item.heliopause.chalk.tooltip.description1": "%1$sを長押し",
-  "item.heliopause.chalk.tooltip.description2": "描く魔法陣を選択",
   "item.heliopause.compass.tooltip.description1": "%1$sを長押し",
   "item.heliopause.compass.tooltip.description2": "錬成陣を描く",
-  "item.heliopause.ruler.tooltip.description1": "%1$sを長押し",
-  "item.heliopause.ruler.tooltip.description2": "魔法陣を描く",
+  "item.heliopause.compass.tooltip.description3": "描く魔法陣を選ぶ",
+  "gui.heliopause.compass.description1": "[%1$s] で次を選択",
+  "gui.heliopause.compass.description2": "紋を描く",
+  "gui.heliopause.compass.description3": "同心円を描く",
+  "gui.heliopause.compass.description4": "線分を描く",
+  "gui.heliopause.compass.description5": "描いたものを消す",
 
   "item.heliopause.bottle.tooltip.amount": "充填量: %s/%smb",
   "item.heliopause.bottle.tooltip.description1": "アイテムに充填",
@@ -60,6 +62,12 @@
   "recipe.heliopause.roasting": "焙煎",
   "recipe.heliopause.transmutation": "錬成",
   "recipe.heliopause.orrery": "遷天模倣",
+  "recipe.heliopause.moonlight_pouring": "月明かり注入工程",
 
+  "heliopause.subtitle.siderostat_winding": "ゼンマイが巻かれる",
+  "heliopause.subtitle.siderostat_lock": "シデロスタットが動作する",
+  "heliopause.subtitle.ripple": "模造天体が共鳴する",
+
+  "keybinding.heliopause.circle_select": "陣の選択画面を開く",
   "keybinding.heliopause.bottle_drain": "アイテムから排出"
 }

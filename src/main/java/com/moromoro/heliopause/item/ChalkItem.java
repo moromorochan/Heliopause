@@ -2,13 +2,11 @@ package com.moromoro.heliopause.item;
 
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.registry.BlockRegistry;
-import com.moromoro.heliopause.screen.MagicCircleAssemblyMenu;
+import com.moromoro.heliopause.screen.CircleSelectMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -26,7 +24,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +34,7 @@ public class ChalkItem extends Item implements IhasHoverTexts {
     /*private static final String CORNER_NBT_KEY = "CornerPos";
     private static final int SIDE_LENGTH_LIMIT = 16;*/
 
-    private MagicCircleAssemblyMenu menu;
+    private CircleSelectMenu menu;
 
     public ChalkItem(Properties properties) {
         super(properties);

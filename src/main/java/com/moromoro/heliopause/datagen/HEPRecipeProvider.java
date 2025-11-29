@@ -6,6 +6,7 @@ import com.moromoro.heliopause.registry.ItemRegistry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
@@ -39,8 +40,17 @@ public class HEPRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .unlockedBy("has_gold",has(Tags.Items.INGOTS_GOLD))
             .save(consumer, new ResourceLocation(Heliopause.MODID, ItemRegistry.ALCHEMY_BIRON_INGOT.getId().getPath()) + "_crafting");
 
-        //天青焚火作成
-        //waxRecipes();
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.SIDEROSTAT_TOP.get())
+            .pattern("ABA")
+            .pattern("ACA")
+            .pattern(" D ")
+            .define('A', ItemTags.PLANKS)
+            .define('B',Tags.Items.GLASS_COLORLESS)
+            .define('C',Tags.Items.INGOTS_IRON)
+            .define('D',ItemTags.WOODEN_SLABS)
+            .unlockedBy("has_glass",has(Tags.Items.GLASS_COLORLESS))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, BlockRegistry.SIDEROSTAT_TOP.getId().getPath()));
+
     }
 
     protected static void metalBlockIngotNuggetRecipe(Consumer<FinishedRecipe> consumer, ItemLike BlockItem, ItemLike IngotItem, ItemLike NuggetItem){

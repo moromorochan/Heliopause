@@ -1,9 +1,9 @@
 package com.moromoro.heliopause.datagen;
 
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.block.SiderostatBlock;
+import com.moromoro.heliopause.block.SiderostatTopBlock;
 import com.moromoro.heliopause.block.WrittenBoardBlock;
-import com.moromoro.heliopause.blockStateProperty.WrittenBoardType;
+import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
@@ -33,14 +33,14 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
         cylinderBlockWithItem(BlockRegistry.CONVERGE_CYLINDER);
 
         simpleBlock(BlockRegistry.CENTRAL_STAR.get(),models().getExistingFile(mcLoc("block/air")));
-        simpleBlock(BlockRegistry.MOON.get(), models().getExistingFile(modLoc("block/celestial_bodies/moon")));
+        //simpleBlock(BlockRegistry.MOON.get(), models().getExistingFile(modLoc("block/celestial_bodies/moon")));
 
         simpleBlock(BlockRegistry.SIDEROSTAT_BASE.get(), models().getExistingFile(modLoc("block/siderostat/mount")));
         //simpleBlockItem(BlockRegistry.SIDEROSTAT_BASE.get(), models().getExistingFile(modLoc("item/siderostat")));
         //simpleBlock(BlockRegistry.SIDEROSTAT_ORB.get(), models().getExistingFile(modLoc("block/siderostat/orb")));
         //simpleBlock(BlockRegistry.SIDEROSTAT_TOP.get(), models().getExistingFile(modLoc("block/siderostat/bow")));
         bowBlock(BlockRegistry.SIDEROSTAT_TOP, models().getExistingFile(modLoc("block/siderostat/bow")));
-        simpleBlock(BlockRegistry.SIDEROSTAT_MOTOR.get(), models().getExistingFile(modLoc("block/siderostat/motor")));
+        //simpleBlock(BlockRegistry.SIDEROSTAT_MOTOR.get(), models().getExistingFile(modLoc("block/siderostat/motor")));
 
         simpleBlockWithItem(BlockRegistry.BLACKBOARD.get(),
             models().cubeBottomTop(BlockRegistry.BLACKBOARD.getId().getPath(),
@@ -146,13 +146,13 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
 
     private void bowBlock(RegistryObject<? extends Block> blockRegistryObject, ModelFile model){
         getVariantBuilder(blockRegistryObject.get())
-            .partialState().with(SiderostatBlock.FACING_SIDEROSTAT, Direction.EAST)
+            .partialState().with(SiderostatTopBlock.FACING_SIDEROSTAT, Direction.EAST)
             .modelForState().modelFile(model).rotationY(90).addModel()
 
-            .partialState().with(SiderostatBlock.FACING_SIDEROSTAT, Direction.WEST)
+            .partialState().with(SiderostatTopBlock.FACING_SIDEROSTAT, Direction.WEST)
             .modelForState().modelFile(model).rotationY(90).rotationX(180).addModel()
 
-            .partialState().with(SiderostatBlock.FACING_SIDEROSTAT, Direction.UP)
+            .partialState().with(SiderostatTopBlock.FACING_SIDEROSTAT, Direction.UP)
             .modelForState().modelFile(model).rotationY(90).rotationX(270).addModel();
     }
 
@@ -200,11 +200,11 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
     }
 
     private void writtenBoardBlock(RegistryObject<? extends Block> blockRegistryObject){
-        WrittenBoardType[] types = WrittenBoardType.values();
-        for (WrittenBoardType writtenBoardType : types) {
+        WrittenBoardDrawType[] types = WrittenBoardDrawType.values();
+        for (WrittenBoardDrawType writtenBoardDrawType : types) {
             // モデルを置くパスを用意
             ResourceLocation modelLoc =
-                modLoc("block/"+blockRegistryObject.getId().getPath()+"/"+writtenBoardType.getSerializedName());
+                modLoc("block/"+blockRegistryObject.getId().getPath()+"/"+ writtenBoardDrawType.getSerializedName());
 
             // モデルを生成
             models().withExistingParent(modelLoc.getPath(), modLoc("block/"+blockRegistryObject.getId().getPath()))
@@ -212,7 +212,7 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
 
             // ブロックステートを生成
             getVariantBuilder(blockRegistryObject.get())
-                .partialState().with(WrittenBoardBlock.CIRCLE_TYPE,writtenBoardType)
+                .partialState().with(WrittenBoardBlock.CIRCLE_TYPE, writtenBoardDrawType)
                 .modelForState().modelFile(models().getExistingFile(modelLoc)).addModel();
         }
     }

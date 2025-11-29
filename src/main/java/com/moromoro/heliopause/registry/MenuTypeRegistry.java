@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.screen.CircleSelectMenu;
 import com.moromoro.heliopause.screen.RoastingTableMenu;
 import com.moromoro.heliopause.screen.SiderostatMenu;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -23,6 +24,8 @@ public class MenuTypeRegistry {
             registerMenuType("roasting_menu", RoastingTableMenu::new);
     public static final RegistryObject<MenuType<SiderostatMenu>> SIDEROSTAT_MENU =
         registerMenuType("siderostat_menu", SiderostatMenu::new);
+    public static final RegistryObject<MenuType<CircleSelectMenu>> CIRCLE_SELECT_MENU =
+        registerMenuType("circle_select_menu", CircleSelectMenu::new);
 
     public static void register(IEventBus eventBus){
         MENU_TYPES.register(eventBus);

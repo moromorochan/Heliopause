@@ -1,7 +1,7 @@
 package com.moromoro.heliopause.block;
 
 import com.moromoro.heliopause.blockEntity.WrittenBoardBlockEntity;
-import com.moromoro.heliopause.blockStateProperty.WrittenBoardType;
+import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -18,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class WrittenBoardBlock extends Block implements EntityBlock {
-    public static final EnumProperty<WrittenBoardType> CIRCLE_TYPE = WrittenBoardType.create("type", WrittenBoardType.class);
+    public static final EnumProperty<WrittenBoardDrawType> CIRCLE_TYPE = WrittenBoardDrawType.create("type", WrittenBoardDrawType.class);
     public WrittenBoardBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.defaultBlockState().setValue(CIRCLE_TYPE,WrittenBoardType.CROSS_CIRCLE));
+        this.registerDefaultState(this.defaultBlockState().setValue(CIRCLE_TYPE, WrittenBoardDrawType.CROSS_CIRCLE));
     }
 
     @Override

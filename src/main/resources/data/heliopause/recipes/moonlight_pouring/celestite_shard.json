@@ -1,6 +1,6 @@
 {
   "type": "heliopause:moonlight_pouring",
-  "time": 1000,
+  "time": 600,
   "experience": 0.1,
   "ingredient": {
     "tag":"forge:sand"

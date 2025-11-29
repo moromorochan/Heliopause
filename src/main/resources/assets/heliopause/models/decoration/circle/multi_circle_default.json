@@ -1,0 +1,26 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made by moromorochan with Blockbench",
+	"textures": {
+		"particle": "heliopause:decoration/circle/multi_circle_default",
+		"all": "heliopause:decoration/circle/multi_circle_default"
+	},
+	"elements": [
+		{
+			"from": [0, 0.05, 4],
+			"to": [16, 0.05, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0.05, 12]},
+			"faces": {
+				"up": {"uv": [0, 0, 16, 8], "texture": "#all"}
+			}
+		},
+		{
+			"from": [0, 0.075, 4],
+			"to": [16, 0.075, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0.1, 12]},
+			"faces": {
+				"up": {"uv": [0, 8, 16, 16], "texture": "#all"}
+			}
+		}
+	]
+}

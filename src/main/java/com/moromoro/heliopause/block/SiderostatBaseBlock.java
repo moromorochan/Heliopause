@@ -57,7 +57,7 @@ public class SiderostatBaseBlock extends Block {
             return; // 既存のペアがある場合は設置せずキャンセル
         }
 
-        if (!canPlaceAbove && aboveState.getBlock() instanceof SiderostatBlock) {
+        if (!canPlaceAbove && aboveState.getBlock() instanceof SiderostatTopBlock) {
             return; // 既存のペアがある場合は設置せずキャンセル
         }
 
@@ -92,8 +92,8 @@ public class SiderostatBaseBlock extends Block {
             BlockState otherState = level.getBlockState(otherPos);
 
             // **ペアが適切に存在しているか確認**
-            if (otherState.getBlock() instanceof SiderostatBlock) {
-                level.destroyBlock(otherPos, false);
+            if (otherState.getBlock() instanceof SiderostatTopBlock) {
+                level.destroyBlock(otherPos, true);
             }
         }
     }

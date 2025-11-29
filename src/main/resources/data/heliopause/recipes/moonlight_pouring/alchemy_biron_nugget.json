@@ -1,0 +1,12 @@
+{
+  "type": "heliopause:moonlight_pouring",
+  "time": 60,
+  "experience": 0.1,
+  "ingredient": {
+    "tag": "forge:nuggets/copper"
+  },
+  "result": {
+    "item":"heliopause:alchemy_biron_nugget",
+    "count": 1
+  }
+}

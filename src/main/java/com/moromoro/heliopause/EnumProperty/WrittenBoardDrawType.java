@@ -1,9 +1,9 @@
-package com.moromoro.heliopause.blockStateProperty;
+package com.moromoro.heliopause.EnumProperty;
 
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
-public enum WrittenBoardType implements StringRepresentable {
+public enum WrittenBoardDrawType implements StringRepresentable {
     BLANK_CIRCLE,
     DOUBLE_CIRCLE,
     CROSS_CIRCLE,
@@ -11,8 +11,8 @@ public enum WrittenBoardType implements StringRepresentable {
     DIAMOND,
     DIAMOND_STAR;
 
-    public static EnumProperty<WrittenBoardType> create(String type, Class<WrittenBoardType> writtenBoardTypeClass){
-        return EnumProperty.create(type, writtenBoardTypeClass);
+    public static EnumProperty<WrittenBoardDrawType> create(String drawType, Class<WrittenBoardDrawType> writtenBoardDrawTypeClass){
+        return EnumProperty.create(drawType, writtenBoardDrawTypeClass);
     }
 
     @Override

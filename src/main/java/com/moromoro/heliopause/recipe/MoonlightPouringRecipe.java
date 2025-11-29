@@ -1,6 +1,8 @@
 package com.moromoro.heliopause.recipe;
 
 import com.google.gson.JsonObject;
+import com.moromoro.Heliopause;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -28,12 +30,13 @@ public class MoonlightPouringRecipe implements Recipe<Container> {
     }
 
     public static class Type implements RecipeType<MoonlightPouringRecipe>{
-        public static final MoonlightPouringRecipe.Type INSTANCE = new MoonlightPouringRecipe.Type();
-        //public static final String ID = "moonlight_pouring";
+        public static final Type INSTANCE = new Type();
+        public static final String ID = "moonlight_pouring";
     }
 
     public static class Serializer implements RecipeSerializer<MoonlightPouringRecipe>{
-        public static final MoonlightPouringRecipe.Serializer INSTANCE = new MoonlightPouringRecipe.Serializer();
+        public static final Serializer INSTANCE = new Serializer();
+        public static final ResourceLocation ID = new ResourceLocation(Heliopause.MODID, Type.ID);
 
         // jsonレシピ読み込み
         @Override
@@ -92,6 +95,11 @@ public class MoonlightPouringRecipe implements Recipe<Container> {
 
     public double getCraftExp() {
         return craftExp;
+    }
+
+    @Override
+    public @NotNull NonNullList<Ingredient> getIngredients() {
+        return NonNullList.withSize(1, this.ingredient);
     }
 
     private Ingredient getIngredient() {

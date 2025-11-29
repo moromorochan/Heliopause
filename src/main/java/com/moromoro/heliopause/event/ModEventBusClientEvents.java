@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.event;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.particle.StarRippleParticles;
 import com.moromoro.heliopause.particle.WhirlRingParticles;
 import com.moromoro.heliopause.particle.FluidSpreadParticles;
 import com.moromoro.heliopause.recipe.orreryWhirling.OrreryIngredientLoader;
@@ -8,9 +9,13 @@ import com.moromoro.heliopause.registry.*;
 import com.moromoro.heliopause.render.*;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,7 +34,19 @@ public class ModEventBusClientEvents {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
 
-        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.MOON.get(), RenderType.translucent());
+        //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.MOON.get(), RenderType.translucent());
+    }
+
+    //カスタムモデルの登録
+    @SubscribeEvent
+    public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+        // 天体
+        event.register(new ResourceLocation(Heliopause.MODID, "decoration/phantom/moon"));
+        event.register(new ResourceLocation(Heliopause.MODID,"decoration/siderostat_spring"));
+
+        // 陣
+        event.register(new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_circle_default"));
+        event.register(new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_line_default"));
     }
 
     //エンティティ・ブロックエンティティレンダラの登録
@@ -44,6 +61,7 @@ public class ModEventBusClientEvents {
         event.registerBlockEntityRenderer(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), CentralStarBlockRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.CENTRAL_STAR_BE.get(), CentralStarBlockRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.SIDEROSTAT_BE.get(), SiderostatRenderer::new);
+        event.registerBlockEntityRenderer(BlockEntityRegistry.WRITTEN_BOARD_BE.get(), WrittenBoardRenderer::new);
         //エンティティ
         event.registerEntityRenderer(EntityRegistry.ORRERY_INTERACTION_OPERATOR_E.get(), VoidEntityRenderer::new);
     }
@@ -53,5 +71,6 @@ public class ModEventBusClientEvents {
     public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ParticleRegistry.FLUID_SPREAD_PARTICLES.get(), FluidSpreadParticles.Provider::new);
         event.registerSpriteSet(ParticleRegistry.WHIRL_RING_PARTICLES.get(), WhirlRingParticles.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.STAR_RIPPLE_PARTICLES.get(), StarRippleParticles.Provider::new);
     }
 }

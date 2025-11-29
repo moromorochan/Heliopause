@@ -38,13 +38,13 @@ public class ItemRegistry {
             ITEMS.register("large_bottle",()->new FluidBottle(new Item.Properties(),2000,200));
 
         //ツール
-        public static final RegistryObject<ChalkItem> CHALK_ITEM =
-                ITEMS.register("chalk", () -> new ChalkItem(new Item.Properties()));
+        /*public static final RegistryObject<ChalkItem> CHALK_ITEM =
+                ITEMS.register("chalk", () -> new ChalkItem(new Item.Properties()));*/
 
         public static final RegistryObject<CompassItem> COMPASS_ITEM =
             ITEMS.register("compass",() -> new CompassItem(new Item.Properties()));
-        public static final RegistryObject<RulerItem> RULER_ITEM =
-            ITEMS.register("ruler",() -> new RulerItem(new Item.Properties()));
+        /*public static final RegistryObject<RulerItem> RULER_ITEM =
+            ITEMS.register("ruler",() -> new RulerItem(new Item.Properties()));*/
 
         //模造天体コア
     public static final RegistryObject<Item> IMITATION_CORE_ITEM =

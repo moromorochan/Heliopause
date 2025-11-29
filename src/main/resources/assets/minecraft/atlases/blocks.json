@@ -1,0 +1,16 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "heliopause:decoration/phantom/moon"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "heliopause:decoration/circle/multi_circle_default"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "heliopause:decoration/circle/multi_line_default"
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 package com.moromoro.heliopause.blockEntity;
 
-import com.moromoro.Heliopause;
-import com.moromoro.heliopause.block.SiderostatBlock;
+import com.moromoro.heliopause.block.SiderostatTopBlock;
 import com.moromoro.heliopause.recipe.MoonlightPouringRecipe;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.registry.RecipeTypeRegistry;
+import com.moromoro.heliopause.registry.SoundRegistry;
 import com.moromoro.heliopause.screen.SiderostatMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
@@ -62,14 +61,15 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
     private int craftingTotalTime = 0;
 
     // 視野の状況
+    public static final int SKY_SLICES = 16;
+    public static final double SLICE_ANGLE = 180.0/SKY_SLICES;
     private short canSeeSkies = 0b00000000;
     private static final double[] CHECK_ANGLES = new double[]{
-        11.25, 33.75, 56.25, 78.75, 101.25, 123.75, 146.25, 168.75
+        /*11.25, 33.75, 56.25, 78.75, 101.25, 123.75, 146.25, 168.75*/
+        5.625, 16.875, 28.125, 39.375, 50.625, 61.875, 73.125, 84.375,
+        95.625, 106.875, 118.125, 129.375, 140.625, 151.875, 163.125, 174.375
     };
-    private static final double RAY_MAX_DISTANCE = 5.0 * 16.0;
-    private static final int NEAR_STEP_COUNT = 24;   // 近距離の刻み
-    private static final int CHUNK_SIZE = 16;
-    private static final int FAR_CHUNK_SAMPLES = 5;  // 確認チャンク数
+    private static final double RAY_MAX_DISTANCE = 255;
 
     // 内部アイテム(材料・完成品)
     private final ItemStackHandler itemHandler = new ItemStackHandler(2){
@@ -212,17 +212,6 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-   /* private Function<BlockEntity, CompoundTag> SavePacket() {
-        return blockEntity ->{
-            CompoundTag nbt = new CompoundTag();
-            if(blockEntity instanceof SiderostatBlockEntity entity){
-                nbt.putInt("SpringAmount", entity.springAmount);
-                nbt.putBoolean("AngleSynced", entity.angleSynced);
-            }
-            return nbt;
-        };
-    }*/
-
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         handleUpdateTag(pkt.getTag());
@@ -252,50 +241,67 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
         menu = new SiderostatMenu(containerId, playerInventory, this, this.data);
+        checkCanSeeSkies();
         return menu;
     }
 
-    protected short batchCheckSightBits() {
-        if (level == null) return 0;
+    protected void checkCanSeeSkies() {
+        this.canSeeSkies = 0;
+        if (level == null) {
+            return;
+        }
+        if(!angleSynced || level.isRaining() || level.isThundering()){
+            return;
+        }
+
+        for (double checkAngle : CHECK_ANGLES) {
+            this.canSeeSkies = checkCanSeeSkySlice(checkAngle, this.canSeeSkies);
+        }
+
+        setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+
+    protected short checkCanSeeSkySlice(double angleDeg, short canSeeSkies){
+        if (level == null) {
+            return 0;
+        }
+
+        // 角度を丸める
+        int index = (int)(angleDeg/SLICE_ANGLE);
+
+        if(index<0){
+            index = 0;
+        }
+        if(index >=SKY_SLICES) {
+            index = SKY_SLICES - 1;
+        }
+
+        // 対象を遮蔽判定に設定
+        canSeeSkies = (short) (canSeeSkies & ~(1 << index));
 
         // 原点（ブロック中心）
-        double ox = worldPosition.getX();
-        double oy = worldPosition.getY();
-        double oz = worldPosition.getZ();
+        Vec3 centerPos = worldPosition.getCenter();
 
-        short mask = 0;
+        double checkRad = Math.toRadians(CHECK_ANGLES[index]);
 
-        for (int i = 0; i < CHECK_ANGLES.length; i++) {
-            double deg = CHECK_ANGLES[i];
-            double rad = Math.toRadians(deg);
+        // 東西-天頂方向のみ（Z成分は 0）
+        double normalX = Math.cos(checkRad);
+        double normalY = Math.sin(checkRad);
 
-            // 東西-天頂方向のみ（Z成分は 0）
-            double dx = Math.cos(rad);
-            double dy = Math.sin(rad);
+        Vec3 clipStart = new Vec3(normalX* 0.7, normalY * 0.7, 0).add(centerPos);
+        Vec3 clipEnd = new Vec3(normalX * RAY_MAX_DISTANCE, normalY * RAY_MAX_DISTANCE, 0).add(centerPos);
 
-            Vec3 start = new Vec3(ox + dy* 0.7, oy + dy * 0.7, oz);
-            Vec3 end = new Vec3(ox + dx * RAY_MAX_DISTANCE, oy + dy * RAY_MAX_DISTANCE, oz);
+        // ClipContext のブロックモードは COLLIDER（衝突ボックス）を利用
+        ClipContext context = new ClipContext(clipStart, clipEnd, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, null);
+        BlockHitResult result = level.clip(context);
 
-            // ClipContext のブロックモードは COLLIDER（衝突ボックス）を利用
-            ClipContext context = new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, null);
-            BlockHitResult result = level.clip(context);
-
-            //Heliopause.LOGGER.debug(level.getBlockState());
-            // 遮蔽がないなら
-            if (result.getType() == HitResult.Type.MISS) {
-                mask |= (short) (1 << i);
-            }
+        //Heliopause.LOGGER.debug(level.getBlockState());
+        // 遮蔽がないなら
+        if (result.getType() == HitResult.Type.MISS) {
+            canSeeSkies |= (short) (1 << index);
         }
-
-        // フィールドへ保存して同期
-        this.canSeeSkies = mask;
-        setChanged();
-        if (level != null) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-        }
-
-        return mask;
-
+        return canSeeSkies;
     }
 
     // ゼンマイ巻く
@@ -303,7 +309,8 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
         if(springAmount > 0 && !angleSynced){
             springCharge += 23;
             if(level != null){
-                level.playSound(Minecraft.getInstance().player,worldPosition, SoundEvents.FISHING_BOBBER_RETRIEVE, SoundSource.BLOCKS, 1.0f,0.2f);
+                level.playSound(Minecraft.getInstance().player,worldPosition, SoundRegistry.SIDEROSTAT_WINDING.get(), SoundSource.BLOCKS,1.0f,1.0f);
+                //level.playSound(Minecraft.getInstance().player,worldPosition, SoundEvents.FISHING_BOBBER_RETRIEVE, SoundSource.BLOCKS, 1.0f,0.2f);
             }
             /*angleSynced = false;
             springCharge -= 5;
@@ -322,25 +329,25 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
         // 月の角度を取り出す
         double currentMoonAngle = (level.getTimeOfDay(1.0F) * 360 + 270) % 360;
         boolean isNight = Math.ceil(currentMoonAngle) > 0 && currentMoonAngle < 180;
-        // 昼はインジケータを無効化
-        if(!isNight){
+        // 昼や雨天はインジケータを無効化
+        if(!isNight || level.isRaining() || level.isThundering()){
             canSeeSkies = 0;
         }
         // ブロックステートから稼働状態を取り出す
-        Direction state = blockState.getValue(SiderostatBlock.FACING_SIDEROSTAT);
+        Direction state = blockState.getValue(SiderostatTopBlock.FACING_SIDEROSTAT);
 
         // 夜の始まりに自動で起動
         if (springAmount <= 0 && state == Direction.EAST && isNight){
-            BlockState newState = blockState.setValue(SiderostatBlock.FACING_SIDEROSTAT,Direction.UP);
+            BlockState newState = blockState.setValue(SiderostatTopBlock.FACING_SIDEROSTAT,Direction.UP);
             level.setBlock(pos, newState, 3);
-            level.playSound(Minecraft.getInstance().player, pos, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 1.0f,1.0f);
+            level.playSound(Minecraft.getInstance().player, pos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
             angleSynced = true;
         }
         // ゼンマイが巻かれ始めたとき
         else if(springCharge > 0 && state == Direction.WEST){
-            BlockState newState = blockState.setValue(SiderostatBlock.FACING_SIDEROSTAT,Direction.UP);
+            BlockState newState = blockState.setValue(SiderostatTopBlock.FACING_SIDEROSTAT,Direction.UP);
             level.setBlock(pos, newState, 3);
-            level.playSound(Minecraft.getInstance().player, pos, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 1.0f,1.0f);
+            level.playSound(Minecraft.getInstance().player, pos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
         }
         // 稼働状態で
         else if(state == Direction.UP){
@@ -370,16 +377,17 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
                     if(springAmount <= 0){
                         springAmount = 0;
                         springCharge = 0;
-                        BlockState newState = blockState.setValue(SiderostatBlock.FACING_SIDEROSTAT,Direction.EAST);
+                        BlockState newState = blockState.setValue(SiderostatTopBlock.FACING_SIDEROSTAT,Direction.EAST);
                         level.setBlock(pos, newState, 3);
-                        level.playSound(Minecraft.getInstance().player, pos, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 1.0f,1.0f);
+                        level.playSound(Minecraft.getInstance().player, pos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
                     }
                 }
             }
             // 揃っているとき
             else{
-                // 視野チェック
-                canSeeSkies = batchCheckSightBits();
+                // 視線方向の視野チェック
+                canSeeSkies = checkCanSeeSkySlice(currentMoonAngle, canSeeSkies);
+                canSeeSkies = checkCanSeeSkySlice(currentMoonAngle + SLICE_ANGLE, canSeeSkies);
 
                 // 合わせる
                 springAmount = (int)Math.floor(currentMoonAngle);
@@ -435,10 +443,10 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
 
             // 夜明け、ゼンマイが最大角度になったら停止
-            if(springAmount > 180 && !isNight){
-                BlockState newState = blockState.setValue(SiderostatBlock.FACING_SIDEROSTAT,Direction.WEST);
+            if(springAmount >= 180 /*&& !isNight*/){
+                BlockState newState = blockState.setValue(SiderostatTopBlock.FACING_SIDEROSTAT,Direction.WEST);
                 level.setBlock(pos, newState, 3);
-                level.playSound(Minecraft.getInstance().player, pos, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 1.0f,1.0f);
+                level.playSound(Minecraft.getInstance().player, pos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
 
                 // 停止状態に
                 springAmount = 180;
@@ -448,11 +456,18 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
         }
     }
 
-    private boolean isAngleVisible(double angleDeg, short sight){
+    // 角度と視野から支障物判定
+    public boolean isAngleVisible(double angleDeg, short sight){
+        // 角度が外ならfalse
+        if(angleDeg < 0 || angleDeg > 180){
+            return false;
+        }
         // 11.25度刻みのスライス
-        int index = (int)(angleDeg/22.5);
+        int index = (int)(angleDeg/SLICE_ANGLE);
         // 180度は最後のスライスに含める
-        if(index >=8)index = 7;
+        if(index >=SKY_SLICES) {
+            --index;
+        }
         // ビット判定
         return (sight & (1 << index)) != 0;
     }

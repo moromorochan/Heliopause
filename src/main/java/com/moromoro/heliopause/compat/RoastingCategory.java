@@ -1,8 +1,5 @@
 package com.moromoro.heliopause.compat;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.recipe.RoastingRecipe;
 import com.moromoro.heliopause.registry.BlockRegistry;
@@ -17,22 +14,17 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.api.recipe.vanilla.IJeiFuelingRecipe;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class RoastingCategory implements IRecipeCategory<RoastingRecipe> {
-
-    public static final ResourceLocation UID = new ResourceLocation(Heliopause.MODID,"roasting");
+    //public static final ResourceLocation UID = new ResourceLocation(Heliopause.MODID,"roasting");
     public static final ResourceLocation TEXTURE = new ResourceLocation(Heliopause.MODID,
             "textures/gui/container/alchemy_roasting_table.png");
 
-    public static final RecipeType<RoastingRecipe> ROASTING_TYPE =new RecipeType<>(UID, RoastingRecipe.class);
+    public static final RecipeType<RoastingRecipe> ROASTING_TYPE =new RecipeType<>(RoastingRecipe.Serializer.ID, RoastingRecipe.class);
 
     private final IDrawable background;
     private final IDrawable icon;

@@ -7,7 +7,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -91,14 +90,6 @@ public class BlockRegistry {
                 BlockBehaviour.Properties.of()
             ));
 
-    // 描かれた黒板
-    public static final RegistryObject<Block> WRITTEN_BOARD =
-        registerBlock("written_board",
-                ()-> new WrittenBoardBlock(
-                    BlockBehaviour.Properties.of()
-                )
-            );
-
     //流体ケージ
     public static final RegistryObject<Block> FLUID_CAGE =
         registerBlock("fluid_cage",() -> new FluidCageBlock(
@@ -113,29 +104,30 @@ public class BlockRegistry {
            BlockBehaviour.Properties.of()
                .strength(1.5f)
                .sound(SoundType.WOOD)
+               .noLootTable()
         ));
     //シデロスタット(オーブ)
-    /*public static final RegistryObject<SiderostatBlock> SIDEROSTAT_ORB =
-        registerBlock("siderostat_orb",() -> new SiderostatBlock(
+    /*public static final RegistryObject<SiderostatTopBlock> SIDEROSTAT_ORB =
+        registerBlock("siderostat_orb",() -> new SiderostatTopBlock(
             BlockBehaviour.Properties.of()
                 .strength(1.5f)
                 //.noLootTable()
                 .sound(SoundType.COPPER)
         ));*/
-    //シデロスタット(弓・オーブ)
+    //シデロスタット(弓)
     public static final RegistryObject<Block> SIDEROSTAT_TOP =
-        registerBlock("siderostat",() -> new SiderostatBlock(
+        registerBlock("siderostat",() -> new SiderostatTopBlock(
             BlockBehaviour.Properties.of()
                 .strength(1.5f)
                 .sound(SoundType.WOOD)
-                .noLootTable()
+                //.noLootTable()
         ));
     //シデロスタット(装飾部)
-    public static final RegistryObject<Block> SIDEROSTAT_MOTOR =
+    /*public static final RegistryObject<Block> SIDEROSTAT_MOTOR =
         registerBlock("siderostat_motor",() -> new Block(
             BlockBehaviour.Properties.of()
                 .noLootTable()
-        ));
+        ));*/
 
     //黒板
     public static final RegistryObject<Block> BLACKBOARD =
@@ -145,6 +137,14 @@ public class BlockRegistry {
                 .sound(SoundType.BONE_BLOCK)
                 .requiresCorrectToolForDrops()
         ));
+
+    // 描かれた黒板
+    public static final RegistryObject<Block> WRITTEN_BOARD =
+        registerBlock("written_board",
+            ()-> new WrittenBoardBlock(
+                BlockBehaviour.Properties.copy(BLACKBOARD.get())
+            )
+        );
 
     //液体散布器
         //オーブ
@@ -252,7 +252,7 @@ public class BlockRegistry {
     //見た目用ブロック作成
 
     // 月
-    public static final RegistryObject<Block> MOON =
+    /*public static final RegistryObject<Block> MOON =
         registerBlock("imitation_moon",
             () -> new Block(
                 BlockBehaviour.Properties.of()
@@ -260,5 +260,5 @@ public class BlockRegistry {
                     .instabreak()
                     .pushReaction(PushReaction.IGNORE)
                     .lightLevel(blockState -> 15)
-            ));
+            ));*/
 }
