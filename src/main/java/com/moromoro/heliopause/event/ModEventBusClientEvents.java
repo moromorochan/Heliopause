@@ -37,18 +37,6 @@ public class ModEventBusClientEvents {
         //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.MOON.get(), RenderType.translucent());
     }
 
-    //カスタムモデルの登録
-    @SubscribeEvent
-    public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        // 天体
-        event.register(new ResourceLocation(Heliopause.MODID, "decoration/phantom/moon"));
-        event.register(new ResourceLocation(Heliopause.MODID,"decoration/siderostat_spring"));
-
-        // 陣
-        event.register(new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_circle_default"));
-        event.register(new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_line_default"));
-    }
-
     //エンティティ・ブロックエンティティレンダラの登録
     @SubscribeEvent
     public static void registerBER(EntityRenderersEvent.RegisterRenderers event){

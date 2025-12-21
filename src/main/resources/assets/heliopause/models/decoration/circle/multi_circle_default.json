@@ -1,5 +1,4 @@
 {
-	"format_version": "1.21.6",
 	"credit": "Made by moromorochan with Blockbench",
 	"textures": {
 		"particle": "heliopause:decoration/circle/multi_circle_default",
@@ -11,7 +10,7 @@
 			"to": [16, 0.05, 12],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0.05, 12]},
 			"faces": {
-				"up": {"uv": [0, 0, 16, 8], "texture": "#all"}
+				"up": {"uv": [0, 0, 16, 8], "texture": "#all", "tintindex": 0}
 			}
 		},
 		{

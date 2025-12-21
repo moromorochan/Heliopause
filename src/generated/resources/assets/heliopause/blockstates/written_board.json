@@ -3,6 +3,9 @@
     "type=blank_circle": {
       "model": "heliopause:block/written_board/blank_circle"
     },
+    "type=child_node": {
+      "model": "heliopause:block/written_board/child_node"
+    },
     "type=cross_circle": {
       "model": "heliopause:block/written_board/cross_circle"
     },
@@ -11,9 +14,6 @@
     },
     "type=diamond_star": {
       "model": "heliopause:block/written_board/diamond_star"
-    },
-    "type=double_circle": {
-      "model": "heliopause:block/written_board/double_circle"
     },
     "type=square": {
       "model": "heliopause:block/written_board/square"

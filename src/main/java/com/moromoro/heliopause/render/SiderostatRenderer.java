@@ -2,6 +2,7 @@ package com.moromoro.heliopause.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.EnumProperty.SiderostatTopState;
 import com.moromoro.heliopause.block.SiderostatTopBlock;
 import com.moromoro.heliopause.blockEntity.SiderostatBlockEntity;
 import com.moromoro.heliopause.registry.BlockRegistry;
@@ -66,12 +67,13 @@ public class SiderostatRenderer<T extends SiderostatBlockEntity> implements Bloc
         //super.render(entity, partialTicks, poseStack, bufferSource, combinedLight, combinedOverlay);
         Minecraft instance = Minecraft.getInstance();
         if(instance.level!=null){
+            // 描画用位置
             // 描画用角度
             float currentBowAngle = 0;
             // ブロックステートを取得して起動状態か確認
-            BlockState blockState = instance.level.getBlockState(entity.getBlockPos());
+            BlockState blockState = instance.level.getBlockState(entity.getBlockPos().above());
             if(blockState.getBlock() instanceof SiderostatTopBlock) {
-                if(blockState.getValue(SiderostatTopBlock.FACING_SIDEROSTAT)== Direction.UP){
+                if(blockState.getValue(SiderostatTopBlock.FACING_SIDEROSTAT)== SiderostatTopState.MOVING){
                     if(entity.getSynced()){
                         // 角度を更新
                         currentBowAngle = instance.level.getSunAngle(partialTicks) + (float) (Math.toRadians(90));
@@ -81,7 +83,7 @@ public class SiderostatRenderer<T extends SiderostatBlockEntity> implements Bloc
                         if(moonStrength > 0){
                             // 月を描画
                             poseStack.pushPose();
-                            renderMoon(poseStack, bufferSource, partialTicks, moonStrength, entity.getBlockPos(), combinedLight, combinedOverlay);
+                            renderMoon(poseStack, bufferSource, partialTicks, moonStrength  * 0.84f, entity.getBlockPos(), combinedLight, combinedOverlay);
                             poseStack.popPose();
                         }
                     }else{
@@ -149,21 +151,23 @@ public class SiderostatRenderer<T extends SiderostatBlockEntity> implements Bloc
 
         // 時刻から回転角度を設定
         double rotationOffset = (localRotation / 3) % (2*Math.PI);
-        // 時刻から上下動を設定
-        double waveOffset = 0.05 + (Math.cos(localRotation) / 60) % (2*Math.PI);
 
-        double scaleOffset = 1 + (Math.cos(localRotation / 2) % (2*Math.PI))*0.02  * 0.84 * MoonStrength;
+        double scaleOffset = (Math.cos(localRotation / 2) % (2*Math.PI)) * 0.02;
+
+        // 時刻から上下動を設定
+        double waveOffset = /*-scaleOffset * 0.5 + */(Math.cos(localRotation) / 60) % (2*Math.PI);
+
 
         //位置調整
         //poseStack.translate(0.5, (0.5 * 1.26 - 0.5) * scaleOffset + waveOffset, 0.5);
         // 中心へ移動
-        poseStack.translate(0.5,0.5,0.5);
+        poseStack.translate(0.5,1.5,0.5);
         //傾きの設定
         poseStack.mulPose(new Quaternionf().rotateTo(1, 1, 1, 0, 1, 0));
         //回転
         poseStack.mulPose(new Quaternionf().rotateAxis((float) rotationOffset, 1, 1, 1));
         //スケール調整
-        poseStack.scale((float) scaleOffset, (float) scaleOffset, (float) scaleOffset);
+        poseStack.scale((float)(1 + scaleOffset) * MoonStrength, (float)(1 + scaleOffset) * MoonStrength, (float)(1 + scaleOffset) * MoonStrength);
         // 中心から戻す
         poseStack.translate(-0.5,-0.5,-0.5);
         // 位置調整
@@ -189,7 +193,7 @@ public class SiderostatRenderer<T extends SiderostatBlockEntity> implements Bloc
         // 角度を計算
         //float currentMoonAngle = level.getSunAngle(partialTicks) + (float) (Math.toRadians(90));
 
-        poseStack.translate(0.5,0.5,0.5);
+        poseStack.translate(0.5,1.5,0.5);
         poseStack.mulPose(new Quaternionf().rotateZ(currentMoonAngle));
         poseStack.translate(-0.5,-0.5,-0.5);
         blockRenderer.renderSingleBlock(bowBlockState, poseStack, bufferSource, combinedLight, combinedOverlay, ModelData.EMPTY, RenderType.cutout());
@@ -202,7 +206,7 @@ public class SiderostatRenderer<T extends SiderostatBlockEntity> implements Bloc
         // 角度を計算
         //float currentMoonAngle = level.getSunAngle(partialTicks)*10;
 
-        poseStack.translate(0.5,-0.5,0.5);
+        poseStack.translate(0.5,0.5,0.5);
         poseStack.mulPose(new Quaternionf().rotateZ(currentMoonAngle*10));
         poseStack.translate(-0.5,-0.5,-0.5);
         blockRenderer.getModelRenderer().renderModel(

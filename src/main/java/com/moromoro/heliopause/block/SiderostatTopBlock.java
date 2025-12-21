@@ -1,5 +1,6 @@
 package com.moromoro.heliopause.block;
 
+import com.moromoro.heliopause.EnumProperty.SiderostatTopState;
 import com.moromoro.heliopause.blockEntity.SiderostatBlockEntity;
 import com.moromoro.heliopause.particle.StarRippleParticles;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -41,13 +43,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class SiderostatTopBlock extends BaseEntityBlock {
+public class SiderostatTopBlock extends Block {
 
-    public static final DirectionProperty FACING_SIDEROSTAT = DirectionProperty.create("facing", Direction.EAST, Direction.UP, Direction.WEST);
+    public static final EnumProperty<SiderostatTopState> FACING_SIDEROSTAT = SiderostatTopState.create("charge_state", SiderostatTopState.class);//DirectionProperty.create("facing", Direction.EAST, Direction.UP, Direction.WEST);
     public SiderostatTopBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any()
-            .setValue(FACING_SIDEROSTAT, Direction.WEST));
+            .setValue(FACING_SIDEROSTAT, SiderostatTopState.EMPTY));
     }
 
     @Override
@@ -57,7 +59,7 @@ public class SiderostatTopBlock extends BaseEntityBlock {
 
     @Override
     public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
-        if(state.getValue(FACING_SIDEROSTAT) == Direction.UP){
+        if(state.getValue(FACING_SIDEROSTAT) == SiderostatTopState.MOVING){
             return RenderShape.INVISIBLE;
         }
         return RenderShape.MODEL;
@@ -109,15 +111,9 @@ public class SiderostatTopBlock extends BaseEntityBlock {
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        super.onRemove(state, level, pos, newState, isMoving);
 
         if(state.getBlock() != newState.getBlock()){
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if(blockEntity instanceof SiderostatBlockEntity siderostatBlockEntity){
-                siderostatBlockEntity.drops();
-            }
-
-            super.onRemove(state, level, pos, newState, isMoving);
-
             BlockPos otherPos = pos.below();
             BlockState otherState = level.getBlockState(otherPos);
 
@@ -131,27 +127,22 @@ public class SiderostatTopBlock extends BaseEntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if(!level.isClientSide()){
-            BlockEntity entity = level.getBlockEntity(pos);
-            if(entity instanceof SiderostatBlockEntity){
+            BlockPos basePos = pos.below();
+            BlockEntity entity = level.getBlockEntity(basePos);
+            if(entity instanceof SiderostatBlockEntity menuEntity){
                 //ネットワークフックでのGUI表示は1.20.1まで
-                NetworkHooks.openScreen(((ServerPlayer)player),(SiderostatBlockEntity)entity,pos);
+                NetworkHooks.openScreen((ServerPlayer)player, menuEntity, basePos);
             }else{
-                throw new IllegalStateException("Container provider is missing! BlockPos:"+pos);
+                throw new IllegalStateException("Container provider is missing! BlockPos:"+basePos);
             }
         }
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new SiderostatBlockEntity(blockPos, blockState);
-    }
-
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context)
     {
-        return Objects.requireNonNull(super.getStateForPlacement(context)).setValue(FACING_SIDEROSTAT, Direction.WEST);
+        return Objects.requireNonNull(super.getStateForPlacement(context)).setValue(FACING_SIDEROSTAT, SiderostatTopState.EMPTY);
     }
 
     @Override
@@ -159,15 +150,6 @@ public class SiderostatTopBlock extends BaseEntityBlock {
     {
         super.createBlockStateDefinition(builder);
         builder.add(FACING_SIDEROSTAT);
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        if(level.isClientSide()){return null;}
-        return createTickerHelper(blockEntityType, BlockEntityRegistry.SIDEROSTAT_BE.get(),
-            (tickLevel,pos,tickBlockState,blockEntity) -> blockEntity.tick(tickLevel,pos,tickBlockState,blockEntity)
-        );
     }
 
     public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
@@ -179,7 +161,7 @@ public class SiderostatTopBlock extends BaseEntityBlock {
         }
         Vec3 centerPos = blockPos.getCenter().add(0,-0.4f + randomSource.nextGaussian() * 0.02f,0);
         float scale = randomSource.nextInt(4,6)*0.1f;
-        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        BlockEntity blockEntity = level.getBlockEntity(blockPos.below());
         if(blockEntity instanceof SiderostatBlockEntity entity){
             if(entity.getSynced()&&entity.isAngleVisible(entity.getSpringAmount(),entity.getCanSeeSkies())){
                 // パーティクル生成

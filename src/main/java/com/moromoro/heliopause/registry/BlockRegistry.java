@@ -131,7 +131,7 @@ public class BlockRegistry {
 
     //黒板
     public static final RegistryObject<Block> BLACKBOARD =
-        registerBlock("blackboard",() -> new Block(
+        registerBlock("blackboard",() -> new BlackBoardBlock(
             BlockBehaviour.Properties.of()
                 .strength(1.5f)
                 .sound(SoundType.BONE_BLOCK)

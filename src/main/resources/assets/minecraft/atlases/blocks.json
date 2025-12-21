@@ -11,6 +11,14 @@
     {
       "type": "minecraft:single",
       "resource": "heliopause:decoration/circle/multi_line_default"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "heliopause:decoration/circle/arrow_default"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "heliopause:decoration/circle/multi_line_dotted"
     }
   ]
 }

@@ -15,8 +15,10 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector2d;
@@ -63,6 +65,8 @@ public class MoonlightPouringCategory implements IRecipeCategory<MoonlightPourin
         cachedArrow.draw(guiGraphics,81-13,48-10);
         // 月のアニメーション
         drawMoon(guiGraphics);
+        // レシピの処理時間
+        drawRecipeTime(recipe, guiGraphics);
     }
 
     private void drawMoon(GuiGraphics graphics) {
@@ -82,6 +86,16 @@ public class MoonlightPouringCategory implements IRecipeCategory<MoonlightPourin
         }
         //graphics.blit(TEXTURE, (int)(pos.x - STAR_WIDTH/2.0), (int)(pos.y - STAR_HEIGHT/2.0), imageWidth,ARROW_HEIGHT+1, STAR_WIDTH, STAR_HEIGHT);
         cachedMoon.draw(graphics,(int)(pos.x - STAR_WIDTH/2.0), (int)(pos.y - STAR_HEIGHT/2.0));
+    }
+
+    private void drawRecipeTime(MoonlightPouringRecipe recipe, GuiGraphics guiGraphics) {
+        int recipeTimeSec = recipe.getCraftTime() /20;
+        guiGraphics.drawString(
+            Minecraft.getInstance().font, Component.translatable("gui.jei.category.smelting.time.seconds", recipeTimeSec),
+            81 + 10,
+            62 + 10,
+            0x808080,false
+        );
     }
 
     @Override
@@ -107,8 +121,8 @@ public class MoonlightPouringCategory implements IRecipeCategory<MoonlightPourin
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, MoonlightPouringRecipe recipe, IFocusGroup focuses) {
         // 材料スロット
-            builder.addSlot(RecipeIngredientRole.INPUT, 80-13, 21-1).addIngredients(recipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT, 80-13, 21-1).addIngredients(recipe.getIngredients().get(0));
         // 結果スロット
-            builder.addSlot(RecipeIngredientRole.OUTPUT, 80-13,62-1).addItemStack(recipe.getResultItem(null));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 80-13,62-1).addItemStack(recipe.getResultItem(null));
     }
 }

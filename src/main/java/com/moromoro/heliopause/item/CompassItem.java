@@ -12,17 +12,16 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -35,6 +34,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static com.moromoro.heliopause.blockEntity.WrittenBoardBlockEntity.PREVIEW_LIMIT_SIZE;
 
 // 錬成陣を開始する道具
 public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
@@ -119,7 +121,7 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
         Level level = context.getLevel();
         //Direction direction = context.getClickedFace();
         ItemStack itemStack = context.getItemInHand();
-        // シフトを押しているならスキップ
+        // 選択画面ならスキップ
         if(KeyMapRegistry.CIRCLE_SELECT.isPressed()){
             this.use(level,player, context.getHand());
             return InteractionResult.CONSUME;
@@ -137,7 +139,7 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
                 this.selectIndex = nbt.getInt(SELECT);
                 switch (this.selectIndex) {
                     case 0:
-                        drawSymbol(level, pos, WrittenBoardDrawType.CROSS_CIRCLE);
+                        drawSymbol(level, pos, null);
                         break;
                     case 1:
                         drawCircle(level, pos, blockState, context);
@@ -146,7 +148,7 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
                         drawLine(level, pos, blockState, context);
                         break;
                     case 3:
-                        eraseDrawn(level, pos, blockState);
+                        eraseDrawn(level, pos, blockState, context);
                 }
 
                 return InteractionResult.sidedSuccess(level.isClientSide);
@@ -156,13 +158,37 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
         return super.useOn(context);
     }
 
-    private void drawSymbol(Level level, BlockPos pos, WrittenBoardDrawType drawType) {
-        // 既に何か描かれているなら記号を入れる
-        /*if(blockState.getBlock() instanceof WrittenBoardBlock){
+    private void drawSymbol(Level level, BlockPos pos, @Nullable WrittenBoardDrawType drawType) {
+        BlockState oldBlockState = level.getBlockState(pos);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
 
-        }*/
-        BlockState newBlockState = BlockRegistry.WRITTEN_BOARD.get().defaultBlockState().setValue(WrittenBoardBlock.CIRCLE_TYPE, drawType);
-        level.setBlock(pos, newBlockState, 3);
+        // シンボルがないならCROSS_CIRCLE
+        if(oldBlockState.is(BlockRegistry.BLACKBOARD.get())){
+            BlockState newBlockState = BlockRegistry.WRITTEN_BOARD.get().defaultBlockState()
+                .setValue(WrittenBoardBlock.CIRCLE_TYPE, Objects.requireNonNullElse(drawType, WrittenBoardDrawType.CROSS_CIRCLE));
+            level.setBlock(pos, newBlockState, 3);
+        }
+        // シンボルがあるなら順に置き換え
+        else if(oldBlockState.is(BlockRegistry.WRITTEN_BOARD.get())){
+            // ルートノードではない場合は置き換えない
+            if (!(blockEntity instanceof WrittenBoardBlockEntity boardBlockEntity) || !boardBlockEntity.isRoot(level)) {
+                return;
+            }
+            BlockState newBlockState = BlockRegistry.WRITTEN_BOARD.get().defaultBlockState();
+            if (drawType != null) {
+                newBlockState = newBlockState.setValue(WrittenBoardBlock.CIRCLE_TYPE, drawType);
+            } else {
+                WrittenBoardDrawType[] circleTypes = WrittenBoardDrawType.values();
+                int poseState = oldBlockState.getValue(WrittenBoardBlock.CIRCLE_TYPE).ordinal();
+                // 子ノードはスキップ
+                do {
+                    poseState++;
+                } while(circleTypes[(poseState + circleTypes.length) % circleTypes.length].equals(WrittenBoardDrawType.CHILD_NODE));
+
+                newBlockState = newBlockState.setValue(WrittenBoardBlock.CIRCLE_TYPE, circleTypes[(poseState + circleTypes.length) % circleTypes.length]);
+            }
+            level.setBlock(pos, newBlockState, 3);
+        }
     }
 
     private void drawCircle(Level level, BlockPos pos, BlockState blockState, UseOnContext context) {
@@ -173,10 +199,11 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
 
             BlockEntity blockEntity = level.getBlockEntity(firstPos);
             if(blockEntity instanceof WrittenBoardBlockEntity boardEntity){
-                double circleRadius = Math.sqrt(pos.distSqr(firstPos));
-                if(boardEntity.setCircleRadius(circleRadius, false)){
+                double circleRadius = pos.getCenter().distanceTo(firstPos.getCenter());
+                boardEntity.drawCircle(circleRadius, false);
+                /*if(){
                     drawSymbol(level, firstPos, WrittenBoardDrawType.CROSS_CIRCLE);
-                }
+                }*/
             }
         }
     }
@@ -189,28 +216,45 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
 
             BlockEntity blockEntity = level.getBlockEntity(firstPos);
             if(blockEntity instanceof WrittenBoardBlockEntity boardEntity){
-                if(level.getBlockState(pos).is(BlockRegistry.BLACKBOARD.get())){
-                    drawSymbol(level, pos, WrittenBoardDrawType.DOUBLE_CIRCLE);
-                }
-                boardEntity.setLinePairPos(pos, false);
+                /*if(level.getBlockState(pos).is(BlockRegistry.BLACKBOARD.get())){
+                    drawSymbol(level, pos, WrittenBoardDrawType.CHILD_NODE);
+                }*/
+                boardEntity.drawLine(pos, false);
                 /*if(){
 
                 }*/
-            }
+            }/*else{
+                //クリック位置からPREVIEW_LIMIT_SIZEまで走査
+                for(int localX = -PREVIEW_LIMIT_SIZE; localX < PREVIEW_LIMIT_SIZE; localX++){
+                    for(int localZ = -PREVIEW_LIMIT_SIZE; localZ < PREVIEW_LIMIT_SIZE; localZ++){
+                        if(level.getBlockEntity(firstPos.offset(localX,0,localZ)) instanceof WrittenBoardBlockEntity entity){
+                            // ヒット判定
+                            entity.drawLineFromPos(context.getClickedPos(), WrittenBoardBlockEntity.CLICK_SIZE, false);
+                        }
+                    }
+                }
+            }*/
         }
     }
 
-    private void eraseDrawn(Level level, BlockPos pos, BlockState blockState) {
-        // エンティティ、かつ描かれているものがひとつなら
-        if(blockState.getBlock() instanceof WrittenBoardBlock){
-            // 消す
-            level.setBlock(pos, BlockRegistry.BLACKBOARD.get().defaultBlockState(), 3);
+    private void eraseDrawn(Level level, BlockPos blockPos, BlockState blockState, UseOnContext context) {
+        // ブロックエンティティがあり、クリック位置が判定サイズ内なら
+        if(level.getBlockEntity(blockPos) instanceof WrittenBoardBlockEntity entity
+            && WrittenBoardBlock.checkPosInNode(blockState, blockPos, context.getClickLocation())){
+            // ノードを消す
+            entity.eraseNode(1);
         }
-
-        // エンティティでないなら、親エンティティを参照できるか確認
-            // 範囲に存在しうる描画を探す
-
-            // 存在すれば消す
+        // 選択がノードでないなら、親ブロックエンティティを参照できるか確認
+        else{
+            //クリック位置からPREVIEW_LIMIT_SIZEまで走査
+            Iterable<BlockPos.MutableBlockPos> localPosIterable = BlockPos.spiralAround(blockPos,PREVIEW_LIMIT_SIZE, Direction.NORTH, Direction.EAST);
+            for (BlockPos.MutableBlockPos localPos : localPosIterable) {
+                if(level.getBlockEntity(localPos) instanceof WrittenBoardBlockEntity entity){
+                    // ヒット判定
+                    entity.eraseFromPos(context.getClickLocation(), WrittenBoardBlockEntity.CLICK_SIZE);
+                }
+            }
+        }
     }
 
     private void changeSelect(ItemStack stack){
@@ -225,6 +269,11 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
             selectIndex -= selectMax;
         }
         nbt.putInt(SELECT,selectIndex);
+    }
+
+    public int getSelectIndex(ItemStack stack) {
+        CompoundTag nbt = stack.getOrCreateTag();
+        return nbt.getInt(SELECT);
     }
 
     // 二つの座標挙動
@@ -256,13 +305,17 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
             if (tag.isEmpty()) {
                 itemStack.setTag(null);
             }
+            // 高さが違うなら除外
+            if(y1 != pos.getY()){
+                return null;
+            }
             itemStack.setTag(tag);
             context.getPlayer().setItemInHand(context.getHand(),itemStack);
             return new BlockPos(x1, y1, z1);
         }
     }
 
-    @Override
+    /*@Override
     public UseAnim getUseAnimation(ItemStack itemStack) {
         return UseAnim.BOW;
     }
@@ -274,8 +327,6 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
             if (itemStack.is(this)) {
                 return;
             }
-                /*Minecraft instance = Minecraft.getInstance();
-                instance.mouseHandler.grabMouse();*/
         }
     }
 
@@ -290,7 +341,7 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
     @Override
     public int getUseDuration(ItemStack itemStack) {
         return drawingTotalTime;
-    }
+    }*/
 
     @Override
     public void renderHoverMenu(RenderGuiOverlayEvent event, ClientLevel clientLevel, ItemStack itemStack, HitResult hitResult) {
@@ -313,6 +364,8 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
             //instance.mouseHandler.releaseMouse();
 
         }*/
+
+        if(itemStack.getItem() instanceof CompassItem compassItem){
         instance.options.keyInventory.setDown(true);
 
         Window window = event.getWindow();
@@ -334,9 +387,12 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
             graphics.blit(BACKGROUND,x + 5 + slot * 30,y + 3, 0, 0, TEX_HEIGHT, 25,25,128,128);
             graphics.renderItem(slotStack,x + 10 + slot * 30,y + 8);
         }
-        graphics.blit(BACKGROUND,x + 5 + this.selectIndex * 30,y + 3, 0, 25, TEX_HEIGHT, 25,25,128,128);
 
-        Component description = switch (this.selectIndex) {
+        int localSelectIndex = compassItem.getSelectIndex(itemStack);
+
+        graphics.blit(BACKGROUND,x + 5 + localSelectIndex * 30,y + 3, 0, 25, TEX_HEIGHT, 25,25,128,128);
+
+        Component description = switch (localSelectIndex) {
             case 0 -> Component.translatable("gui.heliopause.compass.description2");
             case 1 -> Component.translatable("gui.heliopause.compass.description3");
             case 2 -> Component.translatable("gui.heliopause.compass.description4");
@@ -349,5 +405,7 @@ public class CompassItem extends Item implements IhasHoverTexts,IhasHoverMenu {
             instance.getWindow().getGuiScaledHeight()/2+56,
             0xFFFFFF
         );
+        }
     }
+
 }

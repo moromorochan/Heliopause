@@ -1,0 +1,12 @@
+{
+  "type": "heliopause:moonlight_pouring",
+  "experience": 0.1,
+  "ingredient": {
+    "item": "minecraft:mangrove_propagule"
+  },
+  "result": {
+    "count": 1,
+    "item": "minecraft:mangrove_leaves"
+  },
+  "time": 400
+}

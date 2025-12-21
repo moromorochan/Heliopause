@@ -74,12 +74,12 @@ public class BlockEntityRegistry {
                 ).build(null)
             );
 
-    // シデロスタットオーブ
+    // シデロスタット
     public static final RegistryObject<BlockEntityType<SiderostatBlockEntity>> SIDEROSTAT_BE =
         BLOCKENTITIES.register("siderostat",() ->
             BlockEntityType.Builder.of(
                 SiderostatBlockEntity::new,
-                BlockRegistry.SIDEROSTAT_TOP.get()
+                BlockRegistry.SIDEROSTAT_BASE.get()
             ).build(null)
             );
         //模造天体コア

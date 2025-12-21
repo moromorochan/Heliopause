@@ -1,0 +1,12 @@
+{
+  "type": "heliopause:moonlight_pouring",
+  "experience": 0.1,
+  "ingredient": {
+    "item": "minecraft:azalea"
+  },
+  "result": {
+    "count": 1,
+    "item": "minecraft:azalea_leaves"
+  },
+  "time": 400
+}

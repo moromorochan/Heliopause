@@ -1,0 +1,12 @@
+{
+  "type": "heliopause:moonlight_pouring",
+  "experience": 0.1,
+  "ingredient": {
+    "item": "minecraft:dark_oak_sapling"
+  },
+  "result": {
+    "count": 1,
+    "item": "minecraft:dark_oak_leaves"
+  },
+  "time": 400
+}

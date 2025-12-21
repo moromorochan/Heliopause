@@ -162,7 +162,7 @@ public class SiderostatMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos().above()),
             player, BlockRegistry.SIDEROSTAT_TOP.get());
     }
 

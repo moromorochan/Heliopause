@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.datagen;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.EnumProperty.SiderostatTopState;
 import com.moromoro.heliopause.block.SiderostatTopBlock;
 import com.moromoro.heliopause.block.WrittenBoardBlock;
 import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
@@ -146,13 +147,13 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
 
     private void bowBlock(RegistryObject<? extends Block> blockRegistryObject, ModelFile model){
         getVariantBuilder(blockRegistryObject.get())
-            .partialState().with(SiderostatTopBlock.FACING_SIDEROSTAT, Direction.EAST)
+            .partialState().with(SiderostatTopBlock.FACING_SIDEROSTAT, SiderostatTopState.FULL)
             .modelForState().modelFile(model).rotationY(90).addModel()
 
-            .partialState().with(SiderostatTopBlock.FACING_SIDEROSTAT, Direction.WEST)
+            .partialState().with(SiderostatTopBlock.FACING_SIDEROSTAT, SiderostatTopState.EMPTY)
             .modelForState().modelFile(model).rotationY(90).rotationX(180).addModel()
 
-            .partialState().with(SiderostatTopBlock.FACING_SIDEROSTAT, Direction.UP)
+            .partialState().with(SiderostatTopBlock.FACING_SIDEROSTAT, SiderostatTopState.MOVING)
             .modelForState().modelFile(model).rotationY(90).rotationX(270).addModel();
     }
 

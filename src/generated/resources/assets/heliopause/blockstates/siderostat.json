@@ -1,17 +1,17 @@
 {
   "variants": {
-    "facing=east": {
-      "model": "heliopause:block/siderostat/bow",
-      "y": 90
-    },
-    "facing=up": {
-      "model": "heliopause:block/siderostat/bow",
-      "x": 270,
-      "y": 90
-    },
-    "facing=west": {
+    "charge_state=empty": {
       "model": "heliopause:block/siderostat/bow",
       "x": 180,
+      "y": 90
+    },
+    "charge_state=full": {
+      "model": "heliopause:block/siderostat/bow",
+      "y": 90
+    },
+    "charge_state=moving": {
+      "model": "heliopause:block/siderostat/bow",
+      "x": 270,
       "y": 90
     }
   }

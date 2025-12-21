@@ -1,12 +1,12 @@
 {
   "type": "heliopause:moonlight_pouring",
-  "time": 600,
   "experience": 0.1,
   "ingredient": {
-    "tag":"forge:sand"
+    "tag": "forge:sand"
   },
   "result": {
-    "item":"heliopause:celestite_shard",
-    "count": 1
-  }
+    "count": 1,
+    "item": "heliopause:celestite_shard"
+  },
+  "time": 600
 }
