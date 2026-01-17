@@ -4,6 +4,7 @@ import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.CrucibleBlockEntity;
 import com.moromoro.heliopause.blockEntity.FluidSpreaderOrbBlockEntity;
 import com.moromoro.heliopause.entity.OrreryInteractionOperatorEntity;
+import com.moromoro.heliopause.entity.StellarIngredientEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -16,12 +17,12 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class EntityRegistry {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Heliopause.MODID);
-
+    // エンティティの作成
     public static void register(IEventBus eventBus){
         ENTITIES.register(eventBus);
     }
 
-    // エンティティの作成
+    // クリック判定エンティティ
     public static final RegistryObject<EntityType<OrreryInteractionOperatorEntity>> ORRERY_INTERACTION_OPERATOR_E =
         ENTITIES.register("orrery_interaction_operator",() ->
             EntityType.Builder.<OrreryInteractionOperatorEntity>of(
@@ -29,5 +30,15 @@ public class EntityRegistry {
                 )
                 .sized(0.8f,0.2f)
                 .build(new ResourceLocation(Heliopause.MODID, "orrery_interaction_operator").toString())
+        );
+
+    // 材料保持エンティティ
+    public static final RegistryObject<EntityType<StellarIngredientEntity>> STELLAR_INGREDIENT_E =
+        ENTITIES.register("stellar_ingredient_entity",() ->
+            EntityType.Builder.<StellarIngredientEntity>of(
+                    StellarIngredientEntity::new, MobCategory.MISC
+                )
+                .sized(StellarIngredientEntity.SIZE,StellarIngredientEntity.SIZE)
+                .build(new ResourceLocation(Heliopause.MODID, "stellar_ingredient_entity").toString())
         );
 }

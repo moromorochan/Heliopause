@@ -21,4 +21,8 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> RIPPLE =
         SOUNDS.register("ripple",
             () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(Heliopause.MODID,"ripple"), 160.0F));
+
+    public static final RegistryObject<SoundEvent> ORRERY_ROTATE =
+        SOUNDS.register("orrery_rotate",
+            () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(Heliopause.MODID, "orrery_rotate"),200.0F));
 }

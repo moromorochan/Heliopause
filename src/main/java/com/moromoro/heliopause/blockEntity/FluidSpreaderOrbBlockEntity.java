@@ -3,10 +3,7 @@ package com.moromoro.heliopause.blockEntity;
 import com.moromoro.heliopause.ingredient.CircumstellarIngredient;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,12 +58,12 @@ public class FluidSpreaderOrbBlockEntity extends CentralStarBlockEntity{
                 continue;
             }
             //円盤の処理
-            if(ingredient.getDisk_shaped()){
+            if(ingredient.isDiskShaped()){
                 for (int j = i+1; j < ingredients.size(); j++) {
                     //外側と合成
                     if(ingredients.get(j)!=null){
                         CircumstellarIngredient outerIngredient = ingredients.get(j);
-                        if(outerIngredient.getDisk_shaped()){
+                        if(outerIngredient.isDiskShaped()){
                             //それぞれの環の影響圏を取得
                             float innerWidth =
                                 calcRingWidth(
@@ -76,7 +73,7 @@ public class FluidSpreaderOrbBlockEntity extends CentralStarBlockEntity{
                             float outerWidth =
                                 calcRingWidth(
                                     outerIngredient.getItemStack().getCount()==0? outerIngredient.getFluidStack().getAmount(): outerIngredient.getItemStack().getCount() * 1000,
-                                    outerIngredient.getOrbitalRadius()
+                                    ingredient.getOrbitalRadius()
                                 )/2f;
                             //重なっているなら合成し、処理を終了
                             if(innerWidth+outerWidth >= outerIngredient.getOrbitalRadius() - ingredient.getOrbitalRadius()){
@@ -133,7 +130,7 @@ public class FluidSpreaderOrbBlockEntity extends CentralStarBlockEntity{
             //オーブの処理
             else{
                 //位置を取得
-                Vec3 ingredientPos = this.getBlockPos().getCenter().add(getCartesianCoordinates(ingredient.getOrbitalRadius(),ingredient.getRevolutionOffset()));
+                Vec3 ingredientPos = this.getBlockPos().getCenter().add(getCartesianCoordinates(ingredient.getOrbitalRadius(), ingredient.getRevolutionOffset()));
                 //質量(量)を取得
                 int ingredientAmount = ingredient.getFluidStack().getAmount();
                 //重力圏の半径を取得

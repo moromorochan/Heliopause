@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.datagen;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.item.ImitationCoreItem;
 import com.moromoro.heliopause.recipe.MoonlightPouringRecipe;
 import com.moromoro.heliopause.recipe.MoonlightPouringRecipeBuilder;
 import com.moromoro.heliopause.registry.BlockRegistry;
@@ -47,6 +48,23 @@ public class HEPRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .unlockedBy("has_gold", has(Tags.Items.INGOTS_GOLD))
             .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+ ItemRegistry.ALCHEMY_BIRON_INGOT.getId().getPath()));
 */
+        // 黒板
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.BLACKBOARD.get(),16)
+            .pattern("AAA")
+            .pattern("BBB")
+            .define('A', Items.CHARCOAL)
+            .define('B', ItemTags.LOGS)
+            .unlockedBy("has_charcoal", has(Items.CHARCOAL))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+ BlockRegistry.BLACKBOARD.getId().getPath()));
+
+        // コンパス
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ItemRegistry.COMPASS_ITEM.get())
+            .pattern(" A ")
+            .pattern("A B")
+            .define('A', ItemRegistry.ALCHEMY_BIRON_INGOT.get())
+            .define('B', Items.CALCITE)
+            .unlockedBy("has_charcoal", has(Items.CHARCOAL))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+ ItemRegistry.COMPASS_ITEM.getId().getPath()));
 
         // シデロスタット
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.SIDEROSTAT_TOP.get())
@@ -59,6 +77,15 @@ public class HEPRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .define('D', ItemTags.WOODEN_SLABS)
             .unlockedBy("has_glass", has(Tags.Items.GLASS_COLORLESS))
             .save(consumer, new ResourceLocation(Heliopause.MODID,"crafting/"+ BlockRegistry.SIDEROSTAT_TOP.getId().getPath()));
+
+        //るつぼ
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.CRUCIBLE.get())
+            .pattern("A A")
+            .pattern("A A")
+            .pattern("AAA")
+            .define('A', ItemRegistry.ALCHEMY_BIRON_INGOT.get())
+            .unlockedBy("has_biron", has(ItemRegistry.ALCHEMY_BIRON_INGOT.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+BlockRegistry.CRUCIBLE.getId().getPath()));
 
         // 月明かり注入
         // 天青石
@@ -103,6 +130,22 @@ public class HEPRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .save(consumer, new ResourceLocation(Heliopause.MODID, MoonlightPouringRecipe.Type.ID +"/"+ sapling.toString()));
         }
 
+        // 方解石
+        MoonlightPouringRecipeBuilder.moonlightPouring(
+            Ingredient.of(ItemRegistry.CELESTITE.get()),
+            Items.CALCITE,1,
+            600,0.1f
+        ).unlockedBy("has_celestite", has(ItemRegistry.CELESTITE.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, MoonlightPouringRecipe.Type.ID + "/" + Items.CALCITE));
+
+        // 衛星コア
+        /*MoonlightPouringRecipeBuilder.moonlightPouring(
+                Ingredient.of(ItemRegistry.IMITATION_CORE_ITEM.get()),
+                ImitationCoreItem.getImitationCoreWithTag("satellite"),
+                600,0.1f
+            ).unlockedBy("has_imitation_core", has(ItemRegistry.IMITATION_CORE_ITEM.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, MoonlightPouringRecipe.Type.ID + "/" + ItemRegistry.IMITATION_CORE_ITEM.getId().getPath()+"_satellite"));
+*/
     }
 
     protected static void metalBlockIngotNuggetRecipe(Consumer<FinishedRecipe> consumer, ItemLike BlockItem, ItemLike IngotItem, ItemLike NuggetItem) {

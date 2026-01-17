@@ -30,7 +30,7 @@ public class HEPBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(BlockRegistry.PAPERBUSH_BLOCK.get());
 
         this.dropSelf(BlockRegistry.ALCHEMY_CAMPFIRE.get());//TODO キャンプファイヤーのドロップに合わせる
-        /*this.add(BlockRegistry.MOON.get(), block ->
+        /*this.add(BlockRegistry.SIDEROSTAT_MOON.get(), block ->
             LootTable.lootTable().withPool(
                 LootPool.lootPool()
                     .name("main")
@@ -51,6 +51,7 @@ public class HEPBlockLootTables extends BlockLootSubProvider {
 
         this.dropSelf(BlockRegistry.BLACKBOARD.get());
         this.dropOther(BlockRegistry.WRITTEN_BOARD.get(), BlockRegistry.BLACKBOARD.get());
+        this.dropOther(BlockRegistry.ORRERY_CIRCLE_BOARD.get(), BlockRegistry.BLACKBOARD.get());
 
     }
 

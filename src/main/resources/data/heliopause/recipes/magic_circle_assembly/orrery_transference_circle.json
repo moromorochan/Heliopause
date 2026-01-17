@@ -1,0 +1,84 @@
+{
+  "type": "heliopause:magic_circle_assembly",
+  "trigger": {
+    "type": "place_on",
+    "block": "heliopause:crucible"
+  },
+  "result": {
+    "block": "heliopause:orrery_circle_board"
+  },
+  "parts": [
+    {
+      "type": "circle",
+      "key": "a",
+      "center": "ORIGIN",
+      "contains": [
+        "A","B","C","D"
+      ]
+    },
+    {
+      "type": "circle",
+      "key": "b",
+      "center": "ORIGIN",
+      "contains": [
+        "E","F","G","H"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "A",
+      "contains": [
+        "E"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "B",
+      "contains": [
+        "F"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "C",
+      "contains": [
+        "G"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "D",
+      "contains": [
+        "H"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "E",
+      "contains": [
+        "A"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "F",
+      "contains": [
+        "B"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "G",
+      "contains": [
+        "C"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "H",
+      "contains": [
+        "D"
+      ]
+    }
+  ]
+}

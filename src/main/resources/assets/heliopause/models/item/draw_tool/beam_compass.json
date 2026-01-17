@@ -2,8 +2,8 @@
 	"format_version": "1.21.6",
 	"credit": "Made by moromorochan with Blockbench",
 	"textures": {
-		"0": "heliopause:item/gauge_compass",
-		"particle": "heliopause:item/gauge_compass"
+		"0": "heliopause:item/beam_compass",
+		"particle": "heliopause:item/beam_compass"
 	},
 	"elements": [
 		{

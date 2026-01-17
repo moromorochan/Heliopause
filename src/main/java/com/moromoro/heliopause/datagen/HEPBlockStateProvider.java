@@ -3,10 +3,9 @@ package com.moromoro.heliopause.datagen;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.EnumProperty.SiderostatTopState;
 import com.moromoro.heliopause.block.SiderostatTopBlock;
-import com.moromoro.heliopause.block.WrittenBoardBlock;
+import com.moromoro.heliopause.block.AbstractWrittenBoardBlock;
 import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.registry.BlockRegistry;
-import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
@@ -30,11 +29,14 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
         litableBlockWithItem(BlockRegistry.ROASTING_TABLE,false);
         customModelBlockWithItem(BlockRegistry.ALCHEMY_CAMPFIRE);
 
+        // モデルなしブロック
+        simpleBlock(BlockRegistry.STELLAR_INGREDIENT_BLOCK.get(), models().getExistingFile(mcLoc("block/air")));
+
         simpleBlockWithItem(BlockRegistry.PENETRATOR.get(), models().getExistingFile(modLoc("block/penetrator")));
         cylinderBlockWithItem(BlockRegistry.CONVERGE_CYLINDER);
 
         simpleBlock(BlockRegistry.CENTRAL_STAR.get(),models().getExistingFile(mcLoc("block/air")));
-        //simpleBlock(BlockRegistry.MOON.get(), models().getExistingFile(modLoc("block/celestial_bodies/moon")));
+        //simpleBlock(BlockRegistry.SIDEROSTAT_MOON.get(), models().getExistingFile(modLoc("block/celestial_bodies/moon")));
 
         simpleBlock(BlockRegistry.SIDEROSTAT_BASE.get(), models().getExistingFile(modLoc("block/siderostat/mount")));
         //simpleBlockItem(BlockRegistry.SIDEROSTAT_BASE.get(), models().getExistingFile(modLoc("item/siderostat")));
@@ -50,6 +52,7 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
                 modLoc("block/blackboard/top")
                 ));
         writtenBoardBlock(BlockRegistry.WRITTEN_BOARD);
+        largeWrittenBoardBlock(BlockRegistry.ORRERY_CIRCLE_BOARD);
     }
 
     private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
@@ -205,15 +208,55 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
         for (WrittenBoardDrawType writtenBoardDrawType : types) {
             // モデルを置くパスを用意
             ResourceLocation modelLoc =
-                modLoc("block/"+blockRegistryObject.getId().getPath()+"/"+ writtenBoardDrawType.getSerializedName());
+                modLoc("block/"+ blockRegistryObject.getId().getPath() +"/"+ writtenBoardDrawType.getSerializedName());
+            // シンボル名
+            String symbolName = writtenBoardDrawType.getSerializedName();
+            // 大きいシンボルは代用
+            if(WrittenBoardDrawType.isLargeNode(writtenBoardDrawType)){
+                //continue;
+                symbolName = WrittenBoardDrawType.BLANK_CIRCLE.getSerializedName();
+            }
+            // テクスチャパスを用意
+            ResourceLocation textureLoc =
+                modLoc("block/written_board/"+ symbolName);
 
             // モデルを生成
-            models().withExistingParent(modelLoc.getPath(), modLoc("block/"+blockRegistryObject.getId().getPath()))
-                .texture("layer", modelLoc.getPath()).renderType("cutout");
+            models().withExistingParent(modelLoc.getPath(), modLoc("block/written_board"))
+                .texture("layer", textureLoc.getPath()).renderType("cutout");
 
             // ブロックステートを生成
             getVariantBuilder(blockRegistryObject.get())
-                .partialState().with(WrittenBoardBlock.CIRCLE_TYPE, writtenBoardDrawType)
+                .partialState().with(AbstractWrittenBoardBlock.CIRCLE_TYPE, writtenBoardDrawType)
+                .modelForState().modelFile(models().getExistingFile(modelLoc)).addModel();
+        }
+    }
+
+    private void largeWrittenBoardBlock(RegistryObject<? extends Block> blockRegistryObject){
+        WrittenBoardDrawType[] types = WrittenBoardDrawType.values();
+        for (WrittenBoardDrawType writtenBoardDrawType : types) {
+            // モデルを置くパスを用意
+            ResourceLocation modelLoc =
+                modLoc("block/"+ blockRegistryObject.getId().getPath() +"/"+ writtenBoardDrawType.getSerializedName());
+            // シンボル名
+            String symbolName = blockRegistryObject.getId().getPath();
+            String blockName = "large_written_board";
+            // 大きいシンボル以外は代用
+            if(!WrittenBoardDrawType.isLargeNode(writtenBoardDrawType)){
+                //continue;
+                symbolName = WrittenBoardDrawType.BLANK_CIRCLE.getSerializedName();
+                blockName = "written_board";
+            }
+            // テクスチャパスを用意
+            ResourceLocation textureLoc =
+                modLoc("block/written_board/"+ symbolName);
+
+            // モデルを生成
+            models().withExistingParent(modelLoc.getPath(), modLoc("block/" + blockName))
+                .texture("layer", textureLoc.getPath()).renderType("cutout");
+
+            // ブロックステートを生成
+            getVariantBuilder(blockRegistryObject.get())
+                .partialState().with(AbstractWrittenBoardBlock.CIRCLE_TYPE, writtenBoardDrawType)
                 .modelForState().modelFile(models().getExistingFile(modelLoc)).addModel();
         }
     }

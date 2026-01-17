@@ -72,7 +72,7 @@ public class CentralStarBlockRenderer<T extends CentralStarBlockEntity> implemen
         return size;
     }
 
-    public float calcOffsetY(float orbSize) {
+    public static float calcOffsetY(float orbSize) {
         return 1f/16f;
     }
 
@@ -187,7 +187,7 @@ public class CentralStarBlockRenderer<T extends CentralStarBlockEntity> implemen
             int colorIndex = 1;
 
             for (CircumstellarIngredient ingredient : ingredients) {
-                if (!ingredient.getDisk_shaped() && shouldRenderSatellite(entity, ingredient, partialTicks)) {
+                if (!ingredient.isDiskShaped() && shouldRenderSatellite(entity, ingredient, partialTicks)) {
                     //Heliopause.LOGGER.debug("shouldRenderSatellite passed");
                     if (ingredient/*.getFluidStack()*/.isValid()) {
                         //衛星の位置を取得
@@ -195,11 +195,11 @@ public class CentralStarBlockRenderer<T extends CentralStarBlockEntity> implemen
                         float smoothRevolution = getSmoothRevolution(entity, ingredient, partialTicks, orbitalRadius);
                         Vec3 satPos = getSatPos(smoothRevolution, orbitalRadius);
                         //自転オフセットを公転から用意する
-                        float satRot = -(/*ingredient.getRotationRatio()*/(ingredient.getSlotId() * 3 + 3) * smoothRevolution) % 360;
-                        switch (ingredient.getIngredient().getType()){
+                        float satRot = -(/*ingredient.getRotationRatio()*/(ingredient.getOrbitalRadius() * 3 + 3) * smoothRevolution) % 360;
+                        /*switch (ingredient.getIngredient().getType()){
                             case "fluid" ->{
                                 //衛星のサイズを計算
-                                float satSize = ingredient.getSatRadius(entity.getTankCapacity(0));
+                                float satSize = ingredient.getSatRadius();
                                 satPos = satPos.add(new Vec3(0, calcOffsetY(satSize), 0));
 
                                 //衛星の位置から光の影響を取得
@@ -217,7 +217,7 @@ public class CentralStarBlockRenderer<T extends CentralStarBlockEntity> implemen
                             default -> {
                                 Heliopause.LOGGER.warn("Unexpected ingredient on circle. type: {}", centerIngredient.getType());
                             }
-                        }
+                        }*/
                         if (Minecraft.getInstance().options.renderDebug) {//有効範囲のデバッグ表示/追加UI表示
                             int circleColor = FastColor.ARGB32.color(255, (colorIndex & 0x1) != 0 ? 255 : 0, (colorIndex & 0x2) != 0 ? 255 : 0, (colorIndex & 0x4) != 0 ? 255 : 0);
 
@@ -230,7 +230,7 @@ public class CentralStarBlockRenderer<T extends CentralStarBlockEntity> implemen
                     float ringRadius = ingredient.getOrbitalRadius();
                     float ringWidthHalf = T.calcRingWidth(ingredient.getAmount(), ringRadius) / 2f;
                     float ringRevolution = -ingredient.getRevolutionOffset()+90;
-                    float ringSpreadHalf = -(float) ingredient.getRotationRatio() / 2;
+                    float ringSpreadHalf = -(float) /*ingredient.getRotationRatio()*/5 / 2;
                     float innerRadius = ringRadius - ringWidthHalf;
                     float outerRadius = ringRadius + ringWidthHalf;
                     int circleColor = FastColor.ARGB32.color(255, (colorIndex & 0x1) != 0 ? 255 : 0, (colorIndex & 0x2) != 0 ? 255 : 0, (colorIndex & 0x4) != 0 ? 255 : 0);
@@ -270,9 +270,9 @@ public class CentralStarBlockRenderer<T extends CentralStarBlockEntity> implemen
     //衛星がそれぞれ画面内にあるかの判定
     protected boolean shouldRenderSatellite(T entity, CircumstellarIngredient ingredient, float partialTicks){
         //形状を確認 円盤ならスキップ
-        if(!ingredient.getDisk_shaped()) {
+        if(!ingredient.isDiskShaped()) {
             //衛星のサイズを計算
-            float satSize = ingredient.getSatRadius(entity.getTankCapacity(0));
+            float satSize = CircumstellarIngredient.getSatRadius(ingredient.getStellarStack());
             //衛星の位置を取得
             float orbitalRadius = ingredient.getOrbitalRadius();
             float smoothRevolution = getSmoothRevolution(entity, ingredient, partialTicks, orbitalRadius);

@@ -4,6 +4,9 @@
     "heliopause:glowstone_alloy_block",
     "heliopause:copper_pipe",
     "heliopause:alchemy_stove",
-    "heliopause:crucible"
+    "heliopause:crucible",
+    "heliopause:blackboard",
+    "heliopause:written_board",
+    "heliopause:orrery_circle_board"
   ]
 }

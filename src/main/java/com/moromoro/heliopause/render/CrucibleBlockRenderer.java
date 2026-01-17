@@ -28,9 +28,9 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
     public CrucibleBlockRenderer(BlockEntityRendererProvider.Context context){
     }
     //ブロックの端から液面の端までの距離
-    private static final float MARGIN = (float) (CrucibleBlock.INNER.min(Direction.Axis.X) /16f);
+    private static final float MARGIN = 2f/16;//(float) (CrucibleBlock.INNER.min(Direction.Axis.X) /16f);
     private static final float FLUID_TOP = 13f;
-    private static final float FLUID_BOTTOM =(float) (CrucibleBlock.INNER.min(Direction.Axis.Y));
+    private static final float FLUID_BOTTOM = 2f;//(float) (CrucibleBlock.INNER.min(Direction.Axis.Y));
 
     private static HashMap<BlockPos,FluidStack> fluidList = new HashMap<>();
 

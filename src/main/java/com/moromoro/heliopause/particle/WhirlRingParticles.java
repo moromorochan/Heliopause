@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.moromoro.heliopause.generic.PolarCoordinates;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -17,6 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Math;
 import org.joml.Quaternionf;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 //周転するリングの表現に使用するパーティクル
@@ -33,13 +35,14 @@ public class WhirlRingParticles extends TextureSheetParticle {
 
     private float cameraDistance;//カメラからの距離, 小さくて遠ければパーティクルを消す
 
-    public static final float LENGTH_INTENSITY = 0.3f;
+    protected float lengthIntensity;
     protected WhirlRingParticles(ClientLevel clientLevel, double posX, double posY, double posZ, double velocityX, double velocityY, double velocityZ, SpriteSet spriteSet) {
         super(clientLevel, posX, posY, posZ, velocityX, velocityY, velocityZ);
 
         this.lifetime = 90;
-        cameraDistance=0;
-        lightIntensity=0;
+        cameraDistance = 0;
+        lightIntensity = 0;
+        lengthIntensity =0.3f;
 
         axisZError= 0;
 
@@ -71,6 +74,10 @@ public class WhirlRingParticles extends TextureSheetParticle {
         this.axisZError = 0.1f * (0.5f - RandomSource.create(
             FastColor.ARGB32.color(255, (int) (rColor*255), (int) (gColor*255), (int) (bColor*255))
         ).nextFloat());
+    }
+
+    public void setLengthIntensity(float lengthIntensity){
+        this.lengthIntensity = lengthIntensity;
     }
 
     //軌道要素を設定する
@@ -151,7 +158,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
     }
 
     private float getQuadLengthHalf(){
-       return (Math.max(quadSize,LENGTH_INTENSITY * orbitRadius) * this.alpha);
+       return (Math.max(quadSize, lengthIntensity * orbitRadius) * this.alpha);
     }
 
     private Quaternionf getOrbitalPlane(float partialTicks) {
@@ -159,7 +166,7 @@ public class WhirlRingParticles extends TextureSheetParticle {
         orbitalPlane.rotateZ(orbitAxisYaw);
         orbitalPlane.rotateX(orbitAxisPitch);
         //回転
-        orbitalPlane.rotateZ(Math.toRadians(orbitRotation + Mth.lerp(getOrbitSpeed(),0,partialTicks)));
+        orbitalPlane.rotateZ((float) PolarCoordinates.revolutionProcess(orbitRadius, orbitRotation, centripetalForce, partialTicks)/*orbitRotation + Mth.lerp(getOrbitSpeed(),0,partialTicks)*/);
         return orbitalPlane;
     }
 
@@ -171,12 +178,12 @@ public class WhirlRingParticles extends TextureSheetParticle {
     }
 
     private @NotNull Vec3 getVisualPos() {
-        //極座標を取得
-        float radius = this.orbitRadius;
-        float revolution = Math.toRadians(this.orbitRotation);
-
-        //極座標から直交座標へ変換 見た目上の位置を取得
-        return new Vec3(-radius * Math.sin(revolution), 0, -radius * Math.cos(revolution)).add(getPos());
+        //軌道平面を取得
+        Quaternionf orbitalPlane = getOrbitalPlane(0);
+        //見た目上の位置を取得
+        Vector3f planePos = new Vector3f(0, orbitRadius, 0);
+        planePos.rotate(orbitalPlane);
+        return new Vec3(planePos).add(getPos());
     }
 
     @Override
@@ -198,15 +205,15 @@ public class WhirlRingParticles extends TextureSheetParticle {
 
         if (!this.removed) {
             //回転
-            this.orbitRotation += getOrbitSpeed();
+            this.orbitRotation = (float) PolarCoordinates.revolutionProcess(orbitRadius, orbitRotation, centripetalForce, 1);//getOrbitSpeed();
 
             //
         }
     }
     //半径と向心力に基づいた軌道角速度を出す
-    private float getOrbitSpeed() {
-        return Mth.sqrt(centripetalForce/orbitRadius)/orbitRadius;
-    }
+    /*private float getOrbitSpeed() {
+        return Mth.sqrt(centripetalForce *0.01f/orbitRadius)/orbitRadius;
+    }*/
 
     public void setLightIntensity(int intensity){
         this.lightIntensity=intensity;

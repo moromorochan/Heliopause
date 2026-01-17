@@ -2,8 +2,8 @@
 	"format_version": "1.9.0",
 	"credit": "Made by moromorochan with Blockbench",
 	"textures": {
-		"1": "heliopause:decoration/phantom/moon",
-		"particle": "heliopause:decoration/phantom/moon"
+		"1": "heliopause:decoration/siderostat/moon",
+		"particle": "heliopause:decoration/siderostat/moon"
 	},
 	"elements": [
 		{

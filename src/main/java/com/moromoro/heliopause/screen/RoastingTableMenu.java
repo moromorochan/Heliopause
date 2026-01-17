@@ -1,6 +1,5 @@
 package com.moromoro.heliopause.screen;
 
-import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.RoastingTableBlockEntity;
 import com.moromoro.heliopause.recipe.RoastingRecipe;
 import com.moromoro.heliopause.registry.BlockRegistry;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
-import org.jline.utils.Log;
 
 import java.util.Optional;
 

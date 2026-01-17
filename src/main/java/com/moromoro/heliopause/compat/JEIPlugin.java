@@ -1,9 +1,12 @@
 package com.moromoro.heliopause.compat;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.recipe.MagicCircleAssemblyRecipe;
 import com.moromoro.heliopause.recipe.MoonlightPouringRecipe;
+import com.moromoro.heliopause.recipe.OrreryTransferenceRecipe;
 import com.moromoro.heliopause.recipe.RoastingRecipe;
 import com.moromoro.heliopause.registry.BlockRegistry;
+import com.moromoro.heliopause.registry.ItemRegistry;
 import com.moromoro.heliopause.screen.RoastingTableScreen;
 import com.moromoro.heliopause.screen.SiderostatScreen;
 import mezz.jei.api.IModPlugin;
@@ -15,6 +18,8 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -30,18 +35,30 @@ public class JEIPlugin implements IModPlugin {
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new RoastingCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new MoonlightPouringCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new MagicCircleAssemblyCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new OrreryTransferenceCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     //レシピの登録
     @Override
-    public void registerRecipes(IRecipeRegistration registration) {
-        RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
+    public void registerRecipes(@NotNull IRecipeRegistration registration) {
+        Level level = Minecraft.getInstance().level;
+        if (level == null) {
+            return;
+        }
+        RecipeManager recipeManager = level.getRecipeManager();
 
         List<RoastingRecipe> roastingRecipes = recipeManager.getAllRecipesFor(RoastingRecipe.Type.INSTANCE);
         registration.addRecipes(RoastingCategory.ROASTING_TYPE, roastingRecipes);
 
         List<MoonlightPouringRecipe> moonlightPouringRecipes = recipeManager.getAllRecipesFor(MoonlightPouringRecipe.Type.INSTANCE);
         registration.addRecipes(MoonlightPouringCategory.MOONLIGHT_POURING_TYPE, moonlightPouringRecipes);
+
+        List<MagicCircleAssemblyRecipe> magicCircleAssemblyRecipes = recipeManager.getAllRecipesFor(MagicCircleAssemblyRecipe.Type.INSTANCE);
+        registration.addRecipes(MagicCircleAssemblyCategory.MAGIC_CIRCLE_ASSEMBLY_TYPE, magicCircleAssemblyRecipes);
+
+        List<OrreryTransferenceRecipe> orreryTransferenceRecipes = recipeManager.getAllRecipesFor(OrreryTransferenceRecipe.Type.INSTANCE);
+        registration.addRecipes(OrreryTransferenceCategory.ORRERY_TRANSFERENCE_TYPE, orreryTransferenceRecipes);
     }
 
     //クリックしたときにレシピを表示させる範囲の設定
@@ -62,5 +79,12 @@ public class JEIPlugin implements IModPlugin {
         //IModPlugin.super.registerRecipeCatalysts(registration);
         registration.addRecipeCatalyst(BlockRegistry.ROASTING_TABLE.get().asItem().getDefaultInstance(), RoastingCategory.ROASTING_TYPE);
         registration.addRecipeCatalyst(BlockRegistry.SIDEROSTAT_TOP.get().asItem().getDefaultInstance(),MoonlightPouringCategory.MOONLIGHT_POURING_TYPE);
+
+        registration.addRecipeCatalyst(ItemRegistry.COMPASS_ITEM.get().getDefaultInstance(), MagicCircleAssemblyCategory.MAGIC_CIRCLE_ASSEMBLY_TYPE);
+        registration.addRecipeCatalyst(BlockRegistry.BLACKBOARD.get().asItem().getDefaultInstance(), MagicCircleAssemblyCategory.MAGIC_CIRCLE_ASSEMBLY_TYPE);
+
+        //registration.addRecipeCatalyst(ItemRegistry.IMITATION_CORE_ITEM.get().getDefaultInstance(), OrreryTransferenceCategory.ORRERY_TRANSFERENCE_TYPE);
+        registration.addRecipeCatalyst(BlockRegistry.CRUCIBLE.get().asItem().getDefaultInstance(), OrreryTransferenceCategory.ORRERY_TRANSFERENCE_TYPE);
+        registration.addRecipeCatalyst(BlockRegistry.ORRERY_CIRCLE_BOARD.get().asItem().getDefaultInstance(), OrreryTransferenceCategory.ORRERY_TRANSFERENCE_TYPE);
     }
 }

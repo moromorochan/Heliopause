@@ -4,19 +4,11 @@ import com.moromoro.Heliopause;
 import com.moromoro.heliopause.particle.StarRippleParticles;
 import com.moromoro.heliopause.particle.WhirlRingParticles;
 import com.moromoro.heliopause.particle.FluidSpreadParticles;
-import com.moromoro.heliopause.recipe.orreryWhirling.OrreryIngredientLoader;
 import com.moromoro.heliopause.registry.*;
 import com.moromoro.heliopause.render.*;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -34,7 +26,7 @@ public class ModEventBusClientEvents {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
 
-        //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.MOON.get(), RenderType.translucent());
+        //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.SIDEROSTAT_MOON.get(), RenderType.translucent());
     }
 
     //エンティティ・ブロックエンティティレンダラの登録
@@ -50,8 +42,12 @@ public class ModEventBusClientEvents {
         event.registerBlockEntityRenderer(BlockEntityRegistry.CENTRAL_STAR_BE.get(), CentralStarBlockRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.SIDEROSTAT_BE.get(), SiderostatRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.WRITTEN_BOARD_BE.get(), WrittenBoardRenderer::new);
+        event.registerBlockEntityRenderer(BlockEntityRegistry.ORRERY_CIRCLE_BOARD_BE.get(), OrreryCircleBoardRenderer::new);
+        event.registerBlockEntityRenderer(BlockEntityRegistry.STELLAR_INGREDIENT_BE.get(), StellarIngredientBlockRenderer::new);
+
         //エンティティ
         event.registerEntityRenderer(EntityRegistry.ORRERY_INTERACTION_OPERATOR_E.get(), VoidEntityRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.STELLAR_INGREDIENT_E.get(), StellarIngredientEntityRenderer::new);
     }
 
     //パーティクルの登録

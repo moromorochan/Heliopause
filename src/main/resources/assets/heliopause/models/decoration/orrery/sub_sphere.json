@@ -1,0 +1,35 @@
+{
+	"credit": "Made by moromorochan with Blockbench",
+	"textures": {
+		"particle": "heliopause:decoration/orrery/item_sphere",
+		"all": "heliopause:decoration/orrery/item_sphere"
+	},
+	"elements": [
+		{
+			"from": [10, 10, 10],
+			"to": [6, 6, 6],
+			"rotation": {"angle": 0, "axis": "z", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [1, 1, 6, 6], "rotation": 180, "texture": "#all"},
+				"east": {"uv": [0, 6, 5, 11], "rotation": 180, "texture": "#all"},
+				"south": {"uv": [0, 6, 5, 11], "rotation": 270, "texture": "#all"},
+				"west": {"uv": [1, 1, 6, 6], "rotation": 270, "texture": "#all"},
+				"up": {"uv": [0, 6, 5, 11], "texture": "#all"},
+				"down": {"uv": [1, 1, 6, 6], "rotation": 270, "texture": "#all"}
+			}
+		},
+		{
+			"from": [6.25, 6.25, 6.25],
+			"to": [9.75, 9.75, 9.75],
+			"rotation": {"angle": 0, "axis": "z", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [11, 6, 15, 10], "texture": "#all"},
+				"east": {"uv": [11, 0, 15, 4], "texture": "#all"},
+				"south": {"uv": [11, 0, 15, 4], "rotation": 90, "texture": "#all"},
+				"west": {"uv": [11, 6, 15, 10], "rotation": 90, "texture": "#all"},
+				"up": {"uv": [11, 0, 15, 4], "rotation": 180, "texture": "#all"},
+				"down": {"uv": [11, 6, 15, 10], "rotation": 90, "texture": "#all"}
+			}
+		}
+	]
+}

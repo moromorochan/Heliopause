@@ -1,11 +1,11 @@
 package com.moromoro.heliopause.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.moromoro.Heliopause;
 import com.moromoro.heliopause.EnumProperty.SiderostatTopState;
 import com.moromoro.heliopause.block.SiderostatTopBlock;
 import com.moromoro.heliopause.blockEntity.SiderostatBlockEntity;
 import com.moromoro.heliopause.registry.BlockRegistry;
+import com.moromoro.heliopause.registry.CustomModelRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,8 +15,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
@@ -36,12 +34,8 @@ public class SiderostatRenderer<T extends SiderostatBlockEntity> implements Bloc
     public SiderostatRenderer(BlockEntityRendererProvider.Context context) {
         //super(context);
         this.blockRenderer = Minecraft.getInstance().getBlockRenderer();
-        this.springModel = Minecraft.getInstance().getModelManager().getModel(
-            new ResourceLocation(Heliopause.MODID, "decoration/siderostat_spring")
-        );
-        this.moonPhantomModel = Minecraft.getInstance().getModelManager().getModel(
-            new ResourceLocation(Heliopause.MODID, "decoration/phantom/moon")
-        );
+        this.springModel = Minecraft.getInstance().getModelManager().getModel(CustomModelRegistry.SIDEROSTAT_SPRING);
+        this.moonPhantomModel = Minecraft.getInstance().getModelManager().getModel(CustomModelRegistry.SIDEROSTAT_MOON);
     }
 
     /*private BakedModel fetchModel(){
@@ -156,7 +150,6 @@ public class SiderostatRenderer<T extends SiderostatBlockEntity> implements Bloc
 
         // 時刻から上下動を設定
         double waveOffset = /*-scaleOffset * 0.5 + */(Math.cos(localRotation) / 60) % (2*Math.PI);
-
 
         //位置調整
         //poseStack.translate(0.5, (0.5 * 1.26 - 0.5) * scaleOffset + waveOffset, 0.5);

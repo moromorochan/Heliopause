@@ -21,7 +21,7 @@ public class OrreryIngredientLoader extends SimpleJsonResourceReloadListener {
     }
 
     public static OrreryIngredient getMaterialProperties(ResourceLocation id) {
-        return ORRERY_INGREDIENTS.getOrDefault(id, new OrreryIngredient("undef", id,0));
+        return OrreryIngredient.empty();//ORRERY_INGREDIENTS.getOrDefault(id, new OrreryIngredient("undef", id,0));
     }
 
     //ディレクトリの読み込み
@@ -59,7 +59,7 @@ public class OrreryIngredientLoader extends SimpleJsonResourceReloadListener {
             outerProperties = new float[]{0.0F};
         }
 
-        OrreryIngredient ingredient = new OrreryIngredient(type,id,0);
+        OrreryIngredient ingredient = OrreryIngredient.empty();//new OrreryIngredient(type,id,0);
         ingredient.setProperties(innerProperties,outerProperties);
         ingredient.setResistance(resistance);
 

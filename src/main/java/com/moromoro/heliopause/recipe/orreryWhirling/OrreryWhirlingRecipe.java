@@ -140,7 +140,8 @@ public class OrreryWhirlingRecipe implements Recipe<Container> {
             ResourceLocation id = new ResourceLocation(json.get("id").getAsString());
             int amount = json.has("amount") ? json.get("amount").getAsInt() : 1;
 
-            return new OrreryIngredient(type, id, amount);
+            //return new OrreryIngredient(type, id, amount);
+            return OrreryIngredient.empty();
         }
     }
 
@@ -156,7 +157,7 @@ public class OrreryWhirlingRecipe implements Recipe<Container> {
         List<CircumstellarIngredient> circumStellarIngredients = data.second;
         List<OrreryIngredient> inputIngredients = new ArrayList<>();
         for (CircumstellarIngredient circumStellarIngredient : circumStellarIngredients) {
-            inputIngredients.add(circumStellarIngredient.getIngredient());
+            //inputIngredients.add(circumStellarIngredient.getIngredient());
         }
         //レシピの要求を量の多い順にソート
         List<OrreryIngredient> requiredIngredients = new ArrayList<>(this.ingredients);

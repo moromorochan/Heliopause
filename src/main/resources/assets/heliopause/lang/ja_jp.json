@@ -10,6 +10,7 @@
   "block.heliopause.fluid_spreader_tower_orb": "流体散布塔",
   "block.heliopause.blackboard": "黒板",
   "block.heliopause.written_board": "描かれた黒板",
+  "block.heliopause.orrery_circle_board": "遷天模倣の魔法陣",
   "block.heliopause.siderostat_base": "シデロスタット",
   "block.heliopause.siderostat": "シデロスタット",
 
@@ -29,6 +30,8 @@
   "item.heliopause.glowstone_alloy_ingot": "グロウストーン合金インゴット",
   "item.heliopause.glowstone_alloy_nugget": "グロウストーン合金塊",
 
+  "item.heliopause.optical_glass": "光学ガラス",
+
   "item.heliopause.chalk": "チョーク",
   "item.heliopause.compass": "作陣用コンパス",
   "item.heliopause.ruler": "作陣用定規",
@@ -38,14 +41,15 @@
   "item.heliopause.large_bottle": "大瓶",
   "item.heliopause.large_bottle.filled": "%1$s入り大瓶",
 
-  "item.heliopause.compass.tooltip.description1": "%1$sを長押し",
-  "item.heliopause.compass.tooltip.description2": "錬成陣を描く",
-  "item.heliopause.compass.tooltip.description3": "描く魔法陣を選ぶ",
-  "gui.heliopause.compass.description1": "[%1$s] で次を選択",
-  "gui.heliopause.compass.description2": "紋を描く",
-  "gui.heliopause.compass.description3": "同心円を描く",
-  "gui.heliopause.compass.description4": "線分を描く",
-  "gui.heliopause.compass.description5": "描いたものを消す",
+  "item.heliopause.compass.tooltip.hold_key": "%1$sを長押し",
+  "item.heliopause.compass.tooltip.open_select": "道具を変更",
+  "item.heliopause.compass.tooltip.select_tool": "[%1$s] で次を選択",
+  "item.heliopause.compass.tooltip.draw_symbol": "紋を描く",
+  "item.heliopause.compass.tooltip.select_center": "円の中心を決定",
+  "item.heliopause.compass.tooltip.draw_circle": "円を描く",
+  "item.heliopause.compass.tooltip.select_begin": "線の始端を決定",
+  "item.heliopause.compass.tooltip.draw_line": "線を描く",
+  "item.heliopause.compass.tooltip.erase_drawn": "描いたものを消す",
 
   "item.heliopause.bottle.tooltip.amount": "充填量: %s/%smb",
   "item.heliopause.bottle.tooltip.description1": "アイテムに充填",
@@ -58,11 +62,20 @@
   "item.heliopause.celestite_shard": "天青石の欠片",
 
   "item.heliopause.imitation_core": "模造天体コア",
+  "item.heliopause.imitation_core.description_empty": "折り紙風船",
+  "item.heliopause.imitation_core.description_satellite": "衛星",
+  "item.heliopause.imitation_core.description_crimson_planet": "真紅の惑星",
 
   "recipe.heliopause.roasting": "焙煎",
   "recipe.heliopause.transmutation": "錬成",
-  "recipe.heliopause.orrery": "遷天模倣",
   "recipe.heliopause.moonlight_pouring": "月明かり注入工程",
+
+  "recipe.heliopause.magic_circle_assembly": "魔法陣の構築",
+  "recipe.heliopause.magic_circle_assembly_trigger_place_on": "設置",
+  "recipe.heliopause.magic_circle_assembly_trigger_use": "使用",
+  "recipe.heliopause.magic_circle_assembly_trigger_consume": "消費",
+
+  "recipe.heliopause.orrery": "遷天模倣工程",
 
   "heliopause.subtitle.siderostat_winding": "ゼンマイが巻かれる",
   "heliopause.subtitle.siderostat_lock": "シデロスタットが動作する",

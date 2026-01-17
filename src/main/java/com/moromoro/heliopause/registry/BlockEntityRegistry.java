@@ -74,12 +74,29 @@ public class BlockEntityRegistry {
                 ).build(null)
             );
 
+    public static final RegistryObject<BlockEntityType<OrreryCircleBoardBlockEntity>> ORRERY_CIRCLE_BOARD_BE =
+        BLOCKENTITIES.register("orrery_circle_board", () ->
+                BlockEntityType.Builder.of(
+                    OrreryCircleBoardBlockEntity::new,
+                    BlockRegistry.ORRERY_CIRCLE_BOARD.get()
+                ).build(null)
+            );
+
     // シデロスタット
     public static final RegistryObject<BlockEntityType<SiderostatBlockEntity>> SIDEROSTAT_BE =
         BLOCKENTITIES.register("siderostat",() ->
             BlockEntityType.Builder.of(
                 SiderostatBlockEntity::new,
                 BlockRegistry.SIDEROSTAT_BASE.get()
+            ).build(null)
+            );
+
+    // 材料保持ブロック
+    public static final RegistryObject<BlockEntityType<StellarIngredientBlockEntity>> STELLAR_INGREDIENT_BE =
+        BLOCKENTITIES.register("stellar_ingredient_block",() ->
+            BlockEntityType.Builder.of(
+                StellarIngredientBlockEntity::new,
+                BlockRegistry.STELLAR_INGREDIENT_BLOCK.get()
             ).build(null)
             );
         //模造天体コア

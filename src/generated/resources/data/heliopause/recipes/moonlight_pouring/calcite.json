@@ -1,0 +1,12 @@
+{
+  "type": "heliopause:moonlight_pouring",
+  "experience": 0.1,
+  "ingredient": {
+    "item": "heliopause:celestite_shard"
+  },
+  "result": {
+    "count": 1,
+    "item": "minecraft:calcite"
+  },
+  "time": 600
+}

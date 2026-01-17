@@ -2,6 +2,8 @@
   "values": [
     "heliopause:fluid_cage",
     "heliopause:alchemy_roasting_table",
-    "heliopause:fluid_spreader_tower"
+    "heliopause:fluid_spreader_tower",
+    "heliopause:siderostat_base",
+    "heliopause:siderostat"
   ]
 }

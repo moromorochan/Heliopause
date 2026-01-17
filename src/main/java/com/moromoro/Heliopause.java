@@ -1,14 +1,17 @@
 package com.moromoro;
 
+import com.google.gson.Gson;
 import com.mojang.logging.LogUtils;
 import com.moromoro.heliopause.event.TooltipEventHandler;
 import com.moromoro.heliopause.item.FluidBottle;
+import com.moromoro.heliopause.recipe.ImitationCoreAssemblyRecipe;
 import com.moromoro.heliopause.registry.*;
 import com.moromoro.heliopause.screen.RoastingTableScreen;
 import com.moromoro.heliopause.screen.SiderostatScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -95,6 +98,14 @@ public class Heliopause {
 
             //キーコンフィグの追加
 
+            // 模造天体のデータ登録
+            /*Minecraft.getInstance().execute(() -> {
+                if(Minecraft.getInstance().getResourceManager() instanceof ReloadableResourceManager manager){
+                    manager.registerReloadListener(
+                        new ImitationCoreAssemblyRecipe(new Gson(), "imitation_core")
+                    );
+                }
+            });*/
 
             // アイテムの色を登録
             registerItemColors(ItemRegistry.VIAL_ITEM.get(),1);

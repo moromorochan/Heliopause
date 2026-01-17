@@ -1,0 +1,36 @@
+{
+	"credit": "Made by moromorochan with Blockbench",
+	"texture_size": [32, 24],
+	"textures": {
+		"0": "heliopause:decoration/imitation_star/rocky",
+		"particle": "heliopause:decoration/imitation_star/rocky"
+	},
+	"elements": [
+		{
+			"from": [3, 3, 3],
+			"to": [13, 13, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 6.66667, 5, 13.33333], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [0, 0, 5, 6.66667], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [0, 0, 5, 6.66667], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"west": {"uv": [0, 6.66667, 5, 13.33333], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"up": {"uv": [0, 0, 5, 6.66667], "rotation": 180, "texture": "#0", "tintindex": 0},
+				"down": {"uv": [0, 6.66667, 5, 13.33333], "rotation": 90, "texture": "#0", "tintindex": 0}
+			}
+		},
+		{
+			"from": [2.5, 2.5, 13.5],
+			"to": [13.5, 13.5, 2.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [5, 0, 11, 8], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [5, 0, 11, 8], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"south": {"uv": [5, 8, 11, 16], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"west": {"uv": [5, 8, 11, 16], "texture": "#0", "tintindex": 0},
+				"up": {"uv": [5, 0, 11, 8], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"down": {"uv": [5, 8, 11, 16], "rotation": 180, "texture": "#0", "tintindex": 0}
+			}
+		}
+	]
+}

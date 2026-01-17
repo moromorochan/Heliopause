@@ -48,7 +48,7 @@ public class ItemRegistry {
 
         //模造天体コア
     public static final RegistryObject<Item> IMITATION_CORE_ITEM =
-            ITEMS.register("imitation_core", () -> new Item(new Item.Properties()));
+            ITEMS.register("imitation_core", () -> new ImitationCoreItem(new Item.Properties()));
 
         //金属
     public static final RegistryObject<Item> ALCHEMY_BIRON_INGOT =
@@ -59,6 +59,10 @@ public class ItemRegistry {
             ITEMS.register("glowstone_alloy_ingot", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> GLOWSTONE_ALLOY_NUGGET =
             ITEMS.register("glowstone_alloy_nugget", () -> new Item(new Item.Properties()));
+
+        // 素材
+    public static final RegistryObject<Item> OPTICAL_GLASS =
+            ITEMS.register("optical_glass", () -> new Item(new Item.Properties()));
 
     //鉱石
     public static final RegistryObject<Item> CELESTITE =

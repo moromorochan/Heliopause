@@ -28,7 +28,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -102,7 +101,7 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
         super.saveAdditional(nbt);
         if(!centerBlockState.isAir()){
             nbt.put("CenterBlockState", NbtUtils.writeBlockState(centerBlockState));
-            nbt.put("CenterIngredient", new OrreryIngredient(centerBlockState.getBlock()).toNBT());
+            //nbt.put("CenterIngredient", new OrreryIngredient(centerBlockState.getBlock()).toNBT());
         }else{
             nbt.put("CenterIngredient",centerIngredient.toNBT());
         }
@@ -119,8 +118,7 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
                 continue;
             }
             CompoundTag ingredientsNbt = new CompoundTag();
-            ingredient.writeToNBT(ingredientsNbt);
-            ingredientsList.add(ingredientsNbt);
+            ingredientsList.add(CircumstellarIngredient.writeToNBT(ingredientsNbt, ingredient));
         }
         return ingredientsList;
     }
@@ -143,7 +141,7 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
         if (nbt.contains("CenterIngredient")) {
             setCenterIngredient(OrreryIngredient.fromNBT(nbt.getCompound("CenterIngredient")));
         }else{
-            setCenterIngredient(new OrreryIngredient(centerBlockState.getBlock()));
+            //setCenterIngredient(new OrreryIngredient(centerBlockState.getBlock()));
         }
         // IngredientsをNBTから読み込む
         ingredients.clear();
@@ -298,7 +296,7 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
                         if(processTimer >= processingTime) {
                             OrreryIngredient resultIngredient = recipe.getResult();
                             applyResult(resultIngredient);
-                            consumeIngredients(recipe);
+                            //consumeIngredients(recipe);
                         }
                         processTimer += tickCounter;
                         tickCounter = CHECK_COUNT - Math.min( CHECK_COUNT, processingTime - processTimer);
@@ -321,7 +319,7 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
                     break;
                 }
                 setCenterBlockState(block.defaultBlockState());
-                setCenterIngredient(new OrreryIngredient(block));
+                //setCenterIngredient(new OrreryIngredient(block));
                 break;
             }
             case "fluid" :{
@@ -359,7 +357,7 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
         setChanged();
     }
 
-    private void consumeIngredients(OrreryWhirlingRecipe recipe) {
+    /*private void consumeIngredients(OrreryWhirlingRecipe recipe) {
         // レシピ側の要求材料リストを、CircumstellarIngredient型から OrreryIngredient 型に変換して取得
         List<OrreryIngredient> requiredIngredients = recipe.getOrreryIngredients();
 
@@ -395,16 +393,16 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
         }
         // 材料消費後、ブロックエンティティの状態更新を反映
         setChanged();
-    }
+    }*/
 
     protected void setIngredientsBehavior(Level level, BlockPos pos, RandomSource randomSource) {
         //星周天体の生成
         for (CircumstellarIngredient ingredient : ingredients) {
             float orbitalRadius = ingredient.getOrbitalRadius();
             //オーブ
-            if(!ingredient.getDisk_shaped()){
+            if(!ingredient.isDiskShaped()){
                 //公転を計算
-                ingredient.setRevolutionOffset(calcRevProcess(orbitalRadius,ingredient.getRevolutionOffset()));
+                ingredient.setRevolutionOffset(calcRevProcess(orbitalRadius, ingredient.getRevolutionOffset()));
                 setChanged();
             }
             //円盤
@@ -416,12 +414,12 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
                     float innerRevProcess = calcRevProcess(orbitalRadius-(this.ringWidth/2),0);
                     float outerRevProcess = calcRevProcess(orbitalRadius-(this.ringWidth/2),0);
                     //広がりを設定(Degree)
-                    if(ingredient.getRotationRatio()<360){
+                    /*if(ingredient.getRotationRatio()<360){
                         //差を用意
                         ingredient.setRotationRatio(ingredient.getRotationRatio()+1+Math.round(Math.abs(innerRevProcess-outerRevProcess)));
                     }else if(ingredient.getRotationRatio()>360){
                         ingredient.setRotationRatio(360);
-                    }
+                    }*/
 
                     //公転
                     ingredient.setRevolutionOffset(calcRevProcess(orbitalRadius, ingredient.getRevolutionOffset()));
@@ -429,10 +427,10 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
 
                     //パーティクル生成
                     if(!ingredient.getFluidStack().isEmpty()){
-                        createFluidDiskParticle(pos, ingredient.getFluidStack(), ingredient.getRevolutionOffset(), ingredient.getRotationRatio(), randomSource);
+                        createFluidDiskParticle(pos, ingredient.getFluidStack(), ingredient.getRevolutionOffset(), /*ingredient.getRotationRatio()*/360, randomSource);
                     }
                     else if(!ingredient.getItemStack().isEmpty()/* && ingredient.getFractableItemAmount()!=0*/){
-                        createItemDiskParticle(pos, ingredient.getItemStack(), ingredient.getRevolutionOffset(), ingredient.getRotationRatio(), randomSource);
+                        createItemDiskParticle(pos, ingredient.getItemStack(), ingredient.getRevolutionOffset(), /*ingredient.getRotationRatio()*/360, randomSource);
                     }
                 }
             }
@@ -453,89 +451,89 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
         return (float) max((1f/16f), Math.sqrt(ingredientAmount*0.005f/Math.PI + ringRadius*ringRadius) - ringRadius);
     }
 
-    public void setCircumstellars(Player player, InteractionHand hand, int operatorPosX, int operatorPosZ) {
-        if(level== null){return;}
-        if(player==null){return;}
-        //操作位置を取得
-        Vec3 operatorPos = this.getBlockPos().offset(operatorPosX,0,operatorPosZ).getCenter();//getOperatorPos(player);
-        //if(operatorPos == null){return;}
-        //操作位置を極座標に変換
-        Pair<Float,Float> polarPos = getPolarCoordinates(operatorPos);
-        ItemStack inputStack = player.getItemInHand(hand);
-        //対象スロットを取得
-        int SlotId = CircumstellarIngredient.getSlotFromRadius(polarPos.getA());
-
-        // 既存の素材をスロットから取得
-        Optional<CircumstellarIngredient> existingIngredientOpt = ingredients.stream()
-            .filter(i -> i.getSlotId() == SlotId)
-            .findFirst();
-        CircumstellarIngredient newIngredient = CircumstellarIngredient.empty(SlotId);//new OrreryIngredient(inputStack.copyWithCount(1));
-
-        /*switch (operator){
-            //右クリック時
-            case 0:*/
-                //瓶による操作(液体)
-                /*if(inputStack.getItem() instanceof FluidBottle fluidBottle){
-                    circumstellarInteractionFlag = true;
-                    ItemStack fluidBottleStack = player.getItemInHand(hand);
-                    UseOnContext context = new UseOnContext(level,player,InteractionHand.MAIN_HAND,fluidBottleStack,new BlockHitResult(operatorPos, Direction.UP,this.getBlockPos(),true));
-                    fluidBottleStack.useOn(context);
-                    //ブロックエンティティ内の液体を星周天体に渡す
-                    if(!this.tank.isEmpty()){
-                        FluidStack drainStack = this.tank.drain(MAX_INGREDIENT_AMOUNT,FluidAction.EXECUTE);
-                        //jsonから球/円盤を取得
-                        boolean isDiskShape = false;//(仮)
-                        if(!isDiskShape){
-                            int rotationRatio = -(int)( (MAX_INGREDIENT_AMOUNT/(float) drainStack.getAmount()) + RandomSource.create().nextInt((int) 4,(int) 7));
-                            newIngredient = (new CircumstellarIngredient(SlotId, polarPos.getB(), rotationRatio, new OrreryIngredient(drainStack), false));
-                        }else {
-                            newIngredient = (new CircumstellarIngredient(SlotId, polarPos.getB(), 0, new OrreryIngredient(drainStack), true));
-                        }
-                    }
-                    setChanged();
-                    circumstellarInteractionFlag = false;
-                }*/
-                //アイテムによる操作(粉末/その他)
-                /*else */if(/*jsonから適合性を取得*/true){
-                    //jsonからアイテムの流体としての量を決定
-                    //int itemVolume = 900;//(仮)
-                    boolean stellarShape = false;//(仮)
-                    newIngredient = (new CircumstellarIngredient(SlotId, polarPos.getB(), 0, new OrreryIngredient(inputStack.copyWithCount(1)), stellarShape));
-                    //効果音を再生
-                    playItemSound(level,new BlockPos((int) operatorPos.x, (int) operatorPos.y, (int) operatorPos.z), inputStack);
-                    //アイテムを消費
-                    inputStack.shrink(1);
-                    setChanged();
-                }
-
-                // スロットに既に素材がある場合、種類をチェック
-                if (existingIngredientOpt.isPresent()&& newIngredient.isValid()) {
-                    CircumstellarIngredient existingIngredient = existingIngredientOpt.get();
-
-                    // 種類が違う場合、操作をキャンセル
-                    if (!existingIngredient.getIngredient().isSame(newIngredient.getIngredient())) {
-                        return;
-                    }
-                    // 種類が同じなら数量を追加
-                    existingIngredient.addAmount(newIngredient.getAmount());
-                    setChanged();
-                    return;
-                }
-                //スロットが空の場合、新たに追加
-                else{
-                    ingredients.add(newIngredient);
-                }
-            /*    break;
-            //左クリック時
-            case 1:
-                break;
-            //例外
-            default:
-                break;
-        }*/
-        //スロット順にソート
-        ingredients.sort(Comparator.comparing(CircumstellarIngredient::getOrbitalRadius));
-    }
+//    public void setCircumstellars(Player player, InteractionHand hand, int operatorPosX, int operatorPosZ) {
+//        if(level== null){return;}
+//        if(player==null){return;}
+//        //操作位置を取得
+//        Vec3 operatorPos = this.getBlockPos().offset(operatorPosX,0,operatorPosZ).getCenter();//getOperatorPos(player);
+//        //if(operatorPos == null){return;}
+//        //操作位置を極座標に変換
+//        Pair<Float,Float> polarPos = getPolarCoordinates(operatorPos);
+//        ItemStack inputStack = player.getItemInHand(hand);
+//        //対象スロットを取得
+//        int SlotId = CircumstellarIngredient.getSlotFromRadius(polarPos.getA());
+//
+//        // 既存の素材をスロットから取得
+//        Optional<CircumstellarIngredient> existingIngredientOpt = ingredients.stream()
+//            .filter(i -> i.getSlotId() == SlotId)
+//            .findFirst();
+//        CircumstellarIngredient newIngredient = CircumstellarIngredient.empty(SlotId);//new OrreryIngredient(inputStack.copyWithCount(1));
+//
+//        /*switch (operator){
+//            //右クリック時
+//            case 0:*/
+//                //瓶による操作(液体)
+//                /*if(inputStack.getItem() instanceof FluidBottle fluidBottle){
+//                    circumstellarInteractionFlag = true;
+//                    ItemStack fluidBottleStack = player.getItemInHand(hand);
+//                    UseOnContext context = new UseOnContext(level,player,InteractionHand.MAIN_HAND,fluidBottleStack,new BlockHitResult(operatorPos, Direction.UP,this.getBlockPos(),true));
+//                    fluidBottleStack.useOn(context);
+//                    //ブロックエンティティ内の液体を星周天体に渡す
+//                    if(!this.tank.isEmpty()){
+//                        FluidStack drainStack = this.tank.drain(MAX_INGREDIENT_AMOUNT,FluidAction.EXECUTE);
+//                        //jsonから球/円盤を取得
+//                        boolean isDiskShape = false;//(仮)
+//                        if(!isDiskShape){
+//                            int rotationRatio = -(int)( (MAX_INGREDIENT_AMOUNT/(float) drainStack.getAmount()) + RandomSource.create().nextInt((int) 4,(int) 7));
+//                            newIngredient = (new CircumstellarIngredient(SlotId, polarPos.getB(), rotationRatio, new OrreryIngredient(drainStack), false));
+//                        }else {
+//                            newIngredient = (new CircumstellarIngredient(SlotId, polarPos.getB(), 0, new OrreryIngredient(drainStack), true));
+//                        }
+//                    }
+//                    setChanged();
+//                    circumstellarInteractionFlag = false;
+//                }*/
+//                //アイテムによる操作(粉末/その他)
+//                /*else */if(/*jsonから適合性を取得*/true){
+//                    //jsonからアイテムの流体としての量を決定
+//                    //int itemVolume = 900;//(仮)
+//                    boolean stellarShape = false;//(仮)
+//                    newIngredient = (new CircumstellarIngredient(SlotId, polarPos.getB(), new OrreryIngredient(inputStack.copyWithCount(1)), stellarShape));
+//                    //効果音を再生
+//                    playItemSound(level,new BlockPos((int) operatorPos.x, (int) operatorPos.y, (int) operatorPos.z), inputStack);
+//                    //アイテムを消費
+//                    inputStack.shrink(1);
+//                    setChanged();
+//                }
+//
+//                // スロットに既に素材がある場合、種類をチェック
+//                if (existingIngredientOpt.isPresent()&& newIngredient.isValid()) {
+//                    CircumstellarIngredient existingIngredient = existingIngredientOpt.get();
+//
+//                    // 種類が違う場合、操作をキャンセル
+//                    if (!existingIngredient.getIngredient().isSame(newIngredient.getIngredient())) {
+//                        return;
+//                    }
+//                    // 種類が同じなら数量を追加
+//                    existingIngredient.addAmount(newIngredient.getAmount());
+//                    setChanged();
+//                    return;
+//                }
+//                //スロットが空の場合、新たに追加
+//                else{
+//                    ingredients.add(newIngredient);
+//                }
+//            /*    break;
+//            //左クリック時
+//            case 1:
+//                break;
+//            //例外
+//            default:
+//                break;
+//        }*/
+//        //スロット順にソート
+//        ingredients.sort(Comparator.comparing(CircumstellarIngredient::getOrbitalRadius));
+//    }
 
     public List<CircumstellarIngredient> getCircumstellars(){
         return ingredients;
@@ -703,8 +701,8 @@ public class CentralStarBlockEntity extends AbstractFluidConcealBlockEntity {
                     float orbitPosX = (float) (centerPosX + Math.cos(randAngle) * orbitRadius);
                     float orbitPosZ = (float) (centerPosZ + Math.sin(randAngle) * orbitRadius);
                     //軌道速度(パーティクルの初速度にするもの)を取得
-                    float centripetalForce = 0.1f;
-                    float orbitSpeed = Mth.sqrt(centripetalForce/orbitRadius)/orbitRadius;
+                    float DEFAULT_CENT_FORCE = 0.1f;
+                    float orbitSpeed = Mth.sqrt(DEFAULT_CENT_FORCE/orbitRadius)/orbitRadius;
                     float orbitVelX = (float) (Math.cos(randAngle-Math.toRadians(90)) * orbitSpeed);
                     float orbitVelZ = (float) (Math.sin(randAngle-Math.toRadians(90)) * orbitSpeed);
                     FluidSpreadParticles spreadParticle = (FluidSpreadParticles) Minecraft.getInstance().particleEngine.createParticle(

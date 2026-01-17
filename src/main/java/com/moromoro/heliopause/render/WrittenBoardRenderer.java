@@ -3,9 +3,10 @@ package com.moromoro.heliopause.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
-import com.moromoro.heliopause.block.WrittenBoardBlock;
-import com.moromoro.heliopause.blockEntity.WrittenBoardBlockEntity;
+import com.moromoro.heliopause.block.AbstractWrittenBoardBlock;
+import com.moromoro.heliopause.blockEntity.AbstractWrittenBoardBlockEntity;
 import com.moromoro.heliopause.item.CompassItem;
+import com.moromoro.heliopause.registry.CustomModelRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -34,16 +35,16 @@ import org.joml.Vector3f;
 
 import java.util.List;
 
-import static com.moromoro.heliopause.registry.CustomModelRegistry.DECOR_MODELS;
 
-public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements BlockEntityRenderer<T> {
+public class WrittenBoardRenderer<T extends AbstractWrittenBoardBlockEntity> implements BlockEntityRenderer<T> {
     private final BlockRenderDispatcher blockRenderer;
     private static final float ARROW_PADDING = 7.5f/16f;
-    private static final ResourceLocation DEFAULT_CIRCLE = DECOR_MODELS.get("circle_default");
+    private static final ResourceLocation DEFAULT_CIRCLE = CustomModelRegistry.CIRCLE_DEFAULT;//DECOR_MODELS.get("circle_default");
+    private static final ResourceLocation DOTTED_CIRCLE = CustomModelRegistry.CIRCLE_DOTTED;
     //private final BakedModel defaultCircleModel;
-    private static final ResourceLocation DEFAULT_LINE = DECOR_MODELS.get("line_default");
-    private static final ResourceLocation DOTTED_LINE = DECOR_MODELS.get("line_dotted");
-    private static final ResourceLocation DEFAULT_ARROW = DECOR_MODELS.get("arrow_default");
+    private static final ResourceLocation DEFAULT_LINE = CustomModelRegistry.LINE_DEFAULT;//DECOR_MODELS.get("line_default");
+    private static final ResourceLocation DOTTED_LINE = CustomModelRegistry.LINE_DOTTED;//DECOR_MODELS.get("line_dotted");
+    private static final ResourceLocation DEFAULT_ARROW = CustomModelRegistry.ARROW_DEFAULT;//DECOR_MODELS.get("arrow_default");
         //private final BakedModel defaultLineModel;
     public WrittenBoardRenderer(BlockEntityRendererProvider.Context context){
         super();
@@ -58,19 +59,21 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
         BlockPos entityPos = entity.getBlockPos();
         Minecraft instance = Minecraft.getInstance();
         if(instance.level == null){return;}
+        BlockPos rootPos = entity.getRootPos(instance.level, entityPos);
         // デバッグカラー
         float[] debugColor = {1f,1f,1f};
         if(instance.options.renderDebug){
             combinedLight = 0xF000F0;
-            BlockPos rootPos = entity.getRootPos(instance.level, entityPos);
             debugColor[0] = RandomSource.create(rootPos.getX()).nextInt(0,255)/255f;/*(rootPos.getX() % 16 + 16) / 32f*/;
             debugColor[1] = RandomSource.create(rootPos.getY()).nextInt(0,255)/255f;//(rootPos.getY() % 16 + 16) / 32f;
             debugColor[2] = RandomSource.create(rootPos.getZ()).nextInt(0,255)/255f;//(rootPos.getZ() % 16 + 16) / 32f;
             // ノードにオーバーレイ
-            renderDebugNode(poseStack, bufferSource, combinedLight, combinedOverlay, debugColor, instance, entityPos);
+            renderDebugNode(poseStack, bufferSource, combinedOverlay, debugColor);
         }
 
-        // ヒットボックスの描画
+        //VertexConsumer cutoutBuffer = bufferSource.getBuffer(RenderType.cutout());
+
+        // ヒットボックスと書きかけの描画
         // カメラエンティティを取得
         Entity cameraEntity = instance.getCameraEntity();
         if (cameraEntity instanceof Player player) {
@@ -80,25 +83,57 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
                 // 位置を取得
                 Vec3 pointPos = getPointPos(entityPos, player, partialTicks);
                 if(pointPos != null){
+                    // ノードの選択描画
+                    renderNodeHitBox(poseStack, bufferSource, instance, entityPos, entity, pointPos);
+
+                    BlockPos pointBlockPos = BlockPos.containing(pointPos).below();
+
                     switch (compassItem.getSelectIndex(itemStack)){
-                        // コンパス・ゲージコンパス
-                        case 0, 1:{
-                            // ノードの選択描画
-                            renderNodeHitBox(poseStack, bufferSource, instance, entityPos, entity, pointPos);
+                        // コンパス
+                        case 0:{
+                            break;
+                        }
+                        // ビームコンパス
+                        case 1:{
+                            // 書きかけの描画
+                            BlockPos firstPos = compassItem.getPosFromTag(itemStack.getTag());
+                            if(firstPos!= null && firstPos.equals(entityPos)){
+                                double length = firstPos.getCenter().distanceTo(pointBlockPos.getCenter());
+                                float[] renderColor = new float[]{0.5f,0.5f,1.0f};
+                                if(!entity.drawCircle(length, true)){
+                                    renderColor = new float[]{1.0f,0.5f,0.5f};
+                                    renderCircle(poseStack, bufferSource, blockRenderer, 0xF000F0, combinedOverlay, renderColor, instance, entityPos, length, DOTTED_CIRCLE);
+                                }else{
+                                    renderCircle(poseStack, bufferSource, blockRenderer, 0xF000F0, combinedOverlay, renderColor, instance, entityPos, length, DEFAULT_CIRCLE);
+                                }
+                                renderDebugNode(poseStack,bufferSource, combinedOverlay, renderColor);
+                                for (BlockPos nodePos : AbstractWrittenBoardBlockEntity.getCircleLatticePos(firstPos, length)) {
+                                    renderDebugNode(poseStack,bufferSource, combinedOverlay, renderColor, entityPos, nodePos);
+                                }
+                            }
                             break;
                         }
                         // 定規
                         case 2:{
-                            // ノードの選択描画
-                            renderNodeHitBox(poseStack, bufferSource, instance, entityPos, entity, pointPos);
-                            // 線の選択描画
-                            renderLineHitBox(poseStack, bufferSource, instance, entityPos, entity, pointPos);
+                            // 書きかけの描画
+                            BlockPos firstPos = compassItem.getPosFromTag(itemStack.getTag());
+                            if(firstPos!= null && firstPos.equals(entityPos)){
+                                float[] renderColor = new float[]{0.5f,0.5f,1.0f};
+                                // 角度を計算
+                                float angle = Math.atan2(firstPos.getZ() - pointBlockPos.getZ(), pointBlockPos.getX() - firstPos.getX());
+                                if(!entity.drawLine(pointBlockPos, true)){
+                                    renderColor = new float[]{1.0f,0.5f,0.5f};
+                                    renderLine(poseStack, bufferSource, blockRenderer, 0xF000F0, combinedOverlay, renderColor, instance, firstPos, pointBlockPos, angle, DOTTED_LINE, null);
+                                }else{
+                                    renderLine(poseStack, bufferSource, blockRenderer, 0xF000F0, combinedOverlay, renderColor, instance, firstPos, pointBlockPos, angle, DEFAULT_LINE, null);
+                                }
+                                renderDebugNode(poseStack,bufferSource, combinedOverlay, renderColor);
+                                renderDebugNode(poseStack,bufferSource, combinedOverlay, renderColor, entityPos, pointBlockPos);
+                            }
                             break;
                         }
                         // 黒板消し
                         case 3:{
-                            // ノードの選択描画
-                            renderNodeHitBox(poseStack, bufferSource, instance, entityPos, entity, pointPos);
                             // 円の選択描画
                             renderCircleHitBox(poseStack, bufferSource, instance, entityPos, entity, pointPos);
                             // 線の選択描画
@@ -110,23 +145,31 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
             }
         }
 
+        ResourceLocation circleType = DEFAULT_CIRCLE;
+        ResourceLocation lineType = DEFAULT_LINE;
+        // 描画の種類を取得
+        if(instance.level.getBlockEntity(rootPos) instanceof AbstractWrittenBoardBlockEntity rootEntity){
+            circleType = rootEntity.getCircleType();
+            lineType = rootEntity.getLineType();
+        }
+
         // 同心円の描画
         for (double circleRadius : entity.getCircleRadii()) {
-            renderCircle(poseStack, bufferSource, combinedLight, combinedOverlay, debugColor, instance, entityPos, circleRadius);
+            renderCircle(poseStack, bufferSource, blockRenderer, combinedLight, combinedOverlay, debugColor, instance, entityPos, circleRadius, circleType);
         }
 
         // 線分の描画
         for (BlockPos pairPos : entity.getLinePairs()) {
             // 相手のブロックエンティティ
             Level level = entity.getLevel();
-            if (level != null && level.getBlockEntity(pairPos) instanceof WrittenBoardBlockEntity pairEntity) {
+            if (level != null && level.getBlockEntity(pairPos) instanceof AbstractWrittenBoardBlockEntity pairEntity) {
                 // 角度を計算
                 float angle = Math.atan2(entityPos.getZ() - pairPos.getZ(), pairPos.getX() - entityPos.getX());
                 //ネットワークが同じ場合
                 if(pairEntity.getRootPos(level, pairPos).equals(entity.getRootPos(level, entityPos))){
                     // 実線
                     if (!(angle <= 0)) {
-                        renderLine(poseStack, bufferSource, combinedLight, combinedOverlay, debugColor, instance, entityPos, pairPos, angle, DEFAULT_LINE, null);
+                        renderLine(poseStack, bufferSource, blockRenderer, combinedLight, combinedOverlay, debugColor, instance, entityPos, pairPos, angle, lineType, null);
                     }
                 }
                 // 相手が親ではないなら描画
@@ -134,18 +177,18 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
                     // 親と子の場合
                     if(entity.isRoot(level)){
                         // 矢印
-                        renderLine(poseStack, bufferSource, combinedLight, combinedOverlay, debugColor, instance, entityPos, pairPos, angle, DEFAULT_LINE, DEFAULT_ARROW);
+                        renderLine(poseStack, bufferSource, blockRenderer, combinedLight, combinedOverlay, debugColor, instance, entityPos, pairPos, angle, DEFAULT_LINE, DEFAULT_ARROW);
                     }
                     // 子同士の場合
                     else if(angle > 0){
                         // 線・デバッグカラー無し
-                        renderLine(poseStack, bufferSource, combinedLight, combinedOverlay, new float[]{1f, 1f, 1f}, instance, entityPos, pairPos, angle, DOTTED_LINE, null);
+                        renderLine(poseStack, bufferSource, blockRenderer, combinedLight, combinedOverlay, new float[]{1f, 1f, 1f}, instance, entityPos, pairPos, angle, DOTTED_LINE, null);
                     }
                 }else{
                     // 親同士の場合
                     if(entity.isRoot(level)){
                         // 線・デバッグカラー無し
-                        renderLine(poseStack, bufferSource, combinedLight, combinedOverlay, new float[]{1f, 1f, 1f}, instance, entityPos, pairPos, angle, DOTTED_LINE, null);
+                        renderLine(poseStack, bufferSource, blockRenderer, combinedLight, combinedOverlay, new float[]{1f, 1f, 1f}, instance, entityPos, pairPos, angle, DOTTED_LINE, null);
                     }
                 }
             }
@@ -153,7 +196,7 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
     }
 
     // 視線の交差位置を取得
-    private @Nullable Vec3 getPointPos(BlockPos entityPos, Player playerEntity, float partialTicks) {
+    public static @Nullable Vec3 getPointPos(BlockPos entityPos, Player playerEntity, float partialTicks) {
 
         // 面の高さ
         double surfaceHeight = entityPos.getCenter().y + 0.5;
@@ -176,20 +219,55 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
         return eyePos.add(lookVec.scale(lookLength));
     }
 
+    /*@Override
+    public boolean shouldRender(@NotNull T entity, Vec3 viewPosition) {
+        BlockPos entityPos = entity.getBlockPos();
+        Minecraft instance = Minecraft.getInstance();
+        if(instance.level == null){return false;}
+        // 描きかけ表示があるなら常に描画
+        // カメラエンティティを取得
+        Entity cameraEntity = instance.getCameraEntity();
+        if (cameraEntity instanceof Player player) {
+            // アイテムを手に持ってるか確認
+            ItemStack itemStack = player.getMainHandItem();
+            if (itemStack.getItem() instanceof CompassItem compassItem) {
+                // 位置を取得
+                Vec3 pointPos = getPointPos(entityPos, player, 0);
+                if(pointPos != null){
+                    switch (compassItem.getSelectIndex(itemStack)) {
+                        // コンパス・黒板消し
+                        case 0,3: {
+                            break;
+                        }
+                        // ビームコンパス・定規
+                        case 1,2:{
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return BlockEntityRenderer.super.shouldRender(entity, viewPosition);
+    }*/
+
     // ノードのデバッグ描画
-    private void renderDebugNode(PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay, float[] debugColor, Minecraft instance, BlockPos entityPos) {
+    private void renderDebugNode(PoseStack poseStack, MultiBufferSource bufferSource, int combinedOverlay, float[] renderColor, @Nullable BlockPos entityPos, @Nullable BlockPos nodePos) {
         poseStack.pushPose();
-        //Vec3 centerPos = entityPos.getCenter();
         poseStack.translate(0.5f,1f,0.5f);
+        if(entityPos != null && nodePos != null){
+            Vec3 posDiff = nodePos.getCenter().subtract(entityPos.getCenter());
+            poseStack.translate(posDiff.x(),posDiff.y(),posDiff.z());
+        }
         //AABB debugCube = new AABB(6.5f/16, 17f/16, 6.5f/16, 9.5f/16, 21f/16, 9.5f/16);
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.debugQuads());
 
         // 色
         Matrix4f mat = poseStack.last().pose();
-        int r = (int) (Math.clamp(debugColor[0], 0f, 1f) * 255);
-        int g = (int) (Math.clamp(debugColor[1], 0f, 1f) * 255);
-        int b = (int) (Math.clamp(debugColor[2], 0f, 1f) * 255);
+        int r = (int) (Math.clamp(renderColor[0], 0f, 1f) * 255);
+        int g = (int) (Math.clamp(renderColor[1], 0f, 1f) * 255);
+        int b = (int) (Math.clamp(renderColor[2], 0f, 1f) * 255);
 
         // 座標
         float widthHalf = 3.5f/16;
@@ -210,14 +288,18 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
         poseStack.popPose();
     }
 
-    private void renderNodeHitBox(PoseStack poseStack, MultiBufferSource bufferSource, Minecraft instance, BlockPos entityPos, WrittenBoardBlockEntity entity, Vec3 pointPos) {
+    private void renderDebugNode(PoseStack poseStack, MultiBufferSource bufferSource, int combinedOverlay, float[] renderColor){
+        renderDebugNode(poseStack,bufferSource, combinedOverlay, renderColor, null, null);
+    }
+
+    private void renderNodeHitBox(PoseStack poseStack, MultiBufferSource bufferSource, Minecraft instance, BlockPos entityPos, AbstractWrittenBoardBlockEntity entity, Vec3 pointPos) {
         if(instance.level == null){
             return;
         }
         // ヒット位置がノード判定内なら
         BlockState hitBlockState = instance.level.getBlockState(BlockPos.containing(pointPos.add(0,-0.5,0)));
-        if(hitBlockState.getBlock() instanceof WrittenBoardBlock && WrittenBoardBlock.checkPosInNode(hitBlockState, entityPos, pointPos)) {
-            float halfNodeSize = (float) (WrittenBoardDrawType.getNodeSize(hitBlockState.getValue(WrittenBoardBlock.CIRCLE_TYPE)) /2);
+        if(hitBlockState.getBlock() instanceof AbstractWrittenBoardBlock writtenBoardBlock && AbstractWrittenBoardBlock.checkPosInNode(hitBlockState, entityPos, pointPos)) {
+            float halfNodeSize = (float) (WrittenBoardDrawType.getNodeSize(hitBlockState.getValue(AbstractWrittenBoardBlock.CIRCLE_TYPE)) /2);
 
             VertexConsumer buffer = bufferSource.getBuffer(RenderType.LINES);
             poseStack.pushPose();
@@ -264,7 +346,7 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
             poseStack.popPose();
 
             // ノードが子ノードなら
-            /*if(WrittenBoardDrawType.isChildNode(hitBlockState.getValue(WrittenBoardBlock.CIRCLE_TYPE))){
+            /*if(WrittenBoardDrawType.isChildNode(hitBlockState.getValue(AbstractWrittenBoardBlock.CIRCLE_TYPE))){
                 // pointPosをブロックエンティティの中心に
                 Vec3 nodeCenter = entity.getBlockPos().getCenter();
                 // 線の選択描画
@@ -275,12 +357,12 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
     }
 
     // 線分の描画
-    private void renderLine(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay, float[] debugColor, Minecraft instance, BlockPos entityPos, BlockPos linePos, float angle, ResourceLocation LINE_ROC, @Nullable ResourceLocation ARROW_LOC) {
+    public static void renderLine(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, BlockRenderDispatcher blockRenderer, int combinedLight, int combinedOverlay, float[] debugColor, Minecraft instance, BlockPos entityPos, BlockPos linePos, float angle, ResourceLocation lineResource, @Nullable ResourceLocation arrowResource) {
         // 長さ
         float lineLength = (float) java.lang.Math.sqrt(entityPos.distSqr(linePos));
 
         // 矢印があれば描画
-        if(ARROW_LOC!= null){
+        if(arrowResource!= null){
             poseStack.pushPose();
             poseStack.translate(0,1.0005f,0);
             poseStack.rotateAround(
@@ -293,7 +375,7 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
 
             blockRenderer.getModelRenderer().renderModel(
                 poseStack.last(), bufferSource.getBuffer(RenderType.cutout()), null,
-                Minecraft.getInstance().getModelManager().getModel(ARROW_LOC),
+                Minecraft.getInstance().getModelManager().getModel(arrowResource),
                 debugColor[0],debugColor[1],debugColor[2], visualLight, combinedOverlay
             );
 
@@ -312,7 +394,7 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
             new Quaternionf().rotateY(angle),0.5f,0.5f,0.5f
         );
         // パディングの分ずらす
-        if(ARROW_LOC!= null){
+        if(arrowResource!= null){
             poseStack.translate(ARROW_PADDING,0,0);
         }
         poseStack.scale(scale,1,1);
@@ -326,22 +408,22 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
 
             blockRenderer.getModelRenderer().renderModel(
                 poseStack.last(), bufferSource.getBuffer(RenderType.cutout()), null,
-                Minecraft.getInstance().getModelManager().getModel(LINE_ROC),
+                Minecraft.getInstance().getModelManager().getModel(lineResource),
                 debugColor[0],debugColor[1],debugColor[2], visualLight, combinedOverlay
             );
         }
         poseStack.popPose();
     }
 
-    private void renderLineHitBox(PoseStack poseStack, MultiBufferSource bufferSource, Minecraft instance, BlockPos entityPos, WrittenBoardBlockEntity entity, Vec3 pointPos) {
+    private void renderLineHitBox(PoseStack poseStack, MultiBufferSource bufferSource, Minecraft instance, BlockPos entityPos, AbstractWrittenBoardBlockEntity entity, Vec3 pointPos) {
         List<BlockPos> linePairs = entity.getLinePairs();
         Vec3 surfacePosition = entityPos.getCenter().multiply(1,0,1);
         Vec3 surfaceLocation = pointPos.multiply(1,0,1);
         // 距離を取得
         double distance = surfacePosition.distanceTo(surfaceLocation);
-        List<BlockPos> selectPairs = WrittenBoardBlockEntity.getLineFromPos(linePairs,WrittenBoardBlockEntity.CLICK_SIZE,surfacePosition,surfaceLocation,distance);
+        List<BlockPos> selectPairs = AbstractWrittenBoardBlockEntity.getLineFromPos(linePairs, AbstractWrittenBoardBlockEntity.CLICK_SIZE,surfacePosition,surfaceLocation,distance);
 
-        final float halfWidth = (float) WrittenBoardBlockEntity.CLICK_SIZE;
+        final float halfWidth = (float) AbstractWrittenBoardBlockEntity.CLICK_SIZE;
         final float HEIGHT = 1/16f;
         final float halfHeight = HEIGHT / 2f;
 
@@ -405,9 +487,9 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
     }
 
     // 同心円の描画
-    private void renderCircle(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay, float[] circleColor, Minecraft instance, BlockPos entityPos, double circleRadius) {
+    public static void renderCircle(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, BlockRenderDispatcher blockRenderer, int combinedLight, int combinedOverlay, float[] circleColor, Minecraft instance, BlockPos entityPos, double circleRadius, ResourceLocation circleResource) {
         // 円周長
-        float circumLength = (float) ((circleRadius + 0.125) * 2 * Math.PI);
+        float circumLength = (float) ((circleRadius + AbstractWrittenBoardBlockEntity.CLICK_SIZE) * 2 * Math.PI);
         // 円周の長さから配列数を決める
         int divideCount = (int)Math.ceil(circumLength / 4) * 4;
         float scale = circumLength / divideCount;
@@ -425,20 +507,20 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
                     Math.cos(angle) * circleRadius).add(entityPos.getCenter())), combinedLight);
             blockRenderer.getModelRenderer().renderModel(
                 poseStack.last(), bufferSource.getBuffer(RenderType.cutout()), null,
-                Minecraft.getInstance().getModelManager().getModel(DEFAULT_CIRCLE),
+                Minecraft.getInstance().getModelManager().getModel(circleResource),
                 circleColor[0],circleColor[1],circleColor[2], visualLight, combinedOverlay
             );
             poseStack.popPose();
         }
     }
 
-    private void renderCircleHitBox(PoseStack poseStack, MultiBufferSource bufferSource, Minecraft instance, BlockPos entityPos, WrittenBoardBlockEntity entity, Vec3 pointPos) {
+    private void renderCircleHitBox(PoseStack poseStack, MultiBufferSource bufferSource, Minecraft instance, BlockPos entityPos, AbstractWrittenBoardBlockEntity entity, Vec3 pointPos) {
         List<Double> circleRadii = entity.getCircleRadii();
         Vec3 surfacePosition = entityPos.getCenter().multiply(1,0,1);
         Vec3 surfaceLocation = pointPos.multiply(1,0,1);
         // 距離を取得
         double distance = surfacePosition.distanceTo(surfaceLocation);
-        double selectRadius = WrittenBoardBlockEntity.getCircleFromPos(circleRadii,WrittenBoardBlockEntity.CLICK_SIZE, distance);
+        double selectRadius = AbstractWrittenBoardBlockEntity.getCircleFromPos(circleRadii, AbstractWrittenBoardBlockEntity.CLICK_SIZE, distance);
         if(selectRadius == 0){
             return;
         }
@@ -448,8 +530,8 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
         int divideCount = (int)Math.ceil(selectCircumLength / 4) * 4;
 
         double[] boundaryRadii = new double[]{
-            selectRadius - WrittenBoardBlockEntity.CLICK_SIZE,
-            selectRadius + WrittenBoardBlockEntity.CLICK_SIZE
+            selectRadius - AbstractWrittenBoardBlockEntity.CLICK_SIZE,
+            selectRadius + AbstractWrittenBoardBlockEntity.CLICK_SIZE
         };
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.LINES);
         for (double circleRadius : boundaryRadii) {
@@ -492,7 +574,7 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
     }
 
     //ブロックの光レベルの取得
-    private static int calcLight(int combinedLight, int levelLight){
+    public static int calcLight(int combinedLight, int levelLight){
         int skyLight = combinedLight >> 20 & 15;
         int blockLight = combinedLight >> 4 & 15;
         //計算
@@ -500,7 +582,7 @@ public class WrittenBoardRenderer<T extends WrittenBoardBlockEntity> implements 
         return (skyLight << 20| maxBlockLight << 4);
     }
 
-    protected int getVisualPosLight(@Nullable ClientLevel level, Vec3 visualPos) {
+    protected static int getVisualPosLight(@Nullable ClientLevel level, Vec3 visualPos) {
         if(level == null){
             return 0;
         }

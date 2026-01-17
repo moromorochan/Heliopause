@@ -22,6 +22,8 @@ public class HEPItemModelProvider extends net.minecraftforge.client.model.genera
         simpleItem(ItemRegistry.GLOWSTONE_ALLOY_INGOT);
         simpleItem(ItemRegistry.GLOWSTONE_ALLOY_NUGGET);
         simpleItem(ItemRegistry.CELESTITE);
+        simpleItem(ItemRegistry.IMITATION_CORE_ITEM);
+        simpleItem(ItemRegistry.OPTICAL_GLASS);
         //simpleItem(ItemRegistry.CHALK_ITEM);
         //simpleItem(ItemRegistry.VIAL_ITEM);
         //simpleItem(ItemRegistry.LARGE_BOTTLE_ITEM);

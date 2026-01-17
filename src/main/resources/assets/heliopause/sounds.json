@@ -45,5 +45,13 @@
       }
     ],
     "subtitle": "heliopause.subtitle.ripple"
+  },
+  "orrery_rotate": {
+    "sounds": [
+      {
+        "name": "heliopause:block/orrery/orrery_rotate",
+        "volume": 0.05
+      }
+    ]
   }
 }

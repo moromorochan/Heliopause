@@ -24,14 +24,19 @@ public class HEPBlockTagGenerator extends BlockTagsProvider {
                 BlockRegistry.GLOWSTONE_ALLOY_BLOCK.get(),
                 BlockRegistry.COPPER_PIPE.get(),
                 BlockRegistry.ALCHEMY_STOVE.get(),
-                BlockRegistry.CRUCIBLE.get()
+                BlockRegistry.CRUCIBLE.get(),
+                BlockRegistry.BLACKBOARD.get(),
+                BlockRegistry.WRITTEN_BOARD.get(),
+                BlockRegistry.ORRERY_CIRCLE_BOARD.get()
             );
 
         this.tag(BlockTags.MINEABLE_WITH_AXE)
             .add(
                 BlockRegistry.FLUID_CAGE.get(),
                 BlockRegistry.ROASTING_TABLE.get(),
-                BlockRegistry.FLUID_SPREADER_TOWER.get()
+                BlockRegistry.FLUID_SPREADER_TOWER.get(),
+                BlockRegistry.SIDEROSTAT_BASE.get(),
+                BlockRegistry.SIDEROSTAT_TOP.get()
             );
 
         this.tag(BlockTags.CAMPFIRES)

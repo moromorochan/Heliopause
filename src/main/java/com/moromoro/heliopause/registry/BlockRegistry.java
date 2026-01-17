@@ -65,6 +65,17 @@ public class BlockRegistry {
                         .noLootTable()
             ));
 
+    // 材料保持ブロック
+    public static final RegistryObject<Block> STELLAR_INGREDIENT_BLOCK =
+        registerBlock("stellar_ingredient_block", ()-> new StellarIngredientBlock(
+            BlockBehaviour.Properties.of()
+               .strength(0)
+               .noCollission()
+               .noOcclusion()
+               .noParticlesOnBreak()
+               .noLootTable()
+        ));
+
     //模造天体コア
     /*public static final RegistryObject<Block> COMET_CORE =
             BLOCKS.register("comet_core",() -> new CometCoreBlock(
@@ -142,6 +153,14 @@ public class BlockRegistry {
     public static final RegistryObject<Block> WRITTEN_BOARD =
         registerBlock("written_board",
             ()-> new WrittenBoardBlock(
+                BlockBehaviour.Properties.copy(BLACKBOARD.get())
+            )
+        );
+
+    // 遷天模倣陣
+    public static final RegistryObject<Block> ORRERY_CIRCLE_BOARD =
+        registerBlock("orrery_circle_board",
+            ()-> new OrreryCircleBoardBlock(
                 BlockBehaviour.Properties.copy(BLACKBOARD.get())
             )
         );
@@ -252,7 +271,7 @@ public class BlockRegistry {
     //見た目用ブロック作成
 
     // 月
-    /*public static final RegistryObject<Block> MOON =
+    /*public static final RegistryObject<Block> SIDEROSTAT_MOON =
         registerBlock("imitation_moon",
             () -> new Block(
                 BlockBehaviour.Properties.of()

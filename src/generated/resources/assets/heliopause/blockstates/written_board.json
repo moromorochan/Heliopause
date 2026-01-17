@@ -15,6 +15,9 @@
     "type=diamond_star": {
       "model": "heliopause:block/written_board/diamond_star"
     },
+    "type=large_symbol": {
+      "model": "heliopause:block/written_board/large_symbol"
+    },
     "type=square": {
       "model": "heliopause:block/written_board/square"
     }

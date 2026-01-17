@@ -57,7 +57,7 @@ public class OrrerySpaceBlock extends Block {
             Heliopause.LOGGER.debug("right clicked!");
             if(level.getBlockEntity(blockPos.offset(16 - blockState.getValue(CoordinateX), 0, 16 - blockState.getValue(CoordinateZ)))
                 instanceof CentralStarBlockEntity entity){
-                entity.setCircumstellars(player, hand, 16 - blockState.getValue(CoordinateX),16 - blockState.getValue(CoordinateZ));
+                //entity.setCircumstellars(player, hand, 16 - blockState.getValue(CoordinateX),16 - blockState.getValue(CoordinateZ));
             }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);

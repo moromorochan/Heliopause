@@ -4,6 +4,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 public enum WrittenBoardDrawType implements StringRepresentable {
+    LARGE_SYMBOL,
     BLANK_CIRCLE,
     CROSS_CIRCLE,
     SQUARE,
@@ -22,15 +23,17 @@ public enum WrittenBoardDrawType implements StringRepresentable {
 
     public static double getNodeSize(WrittenBoardDrawType type){
         return switch (type){
+            case LARGE_SYMBOL -> 31f/16f;
             case BLANK_CIRCLE, CROSS_CIRCLE, SQUARE, DIAMOND, DIAMOND_STAR -> 13f/16f;
             case CHILD_NODE -> 7f/16f;
         };
     }
 
+    public static boolean isLargeNode(WrittenBoardDrawType type){
+        return (type == LARGE_SYMBOL);
+    }
+
     public static boolean isChildNode(WrittenBoardDrawType type){
-        return switch (type){
-            case BLANK_CIRCLE, CROSS_CIRCLE, SQUARE, DIAMOND, DIAMOND_STAR -> false;
-            case CHILD_NODE -> true;
-        };
+        return (type == CHILD_NODE);
     }
 }

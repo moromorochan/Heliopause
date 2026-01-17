@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class CrucibleBlockEntity extends AbstractFluidTankEntity {
     public CrucibleBlockEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityRegistry.CRUCIBLE_BE.get(), pos, state,1000);
+        super(BlockEntityRegistry.CRUCIBLE_BE.get(), pos, state,2000);
     }
 
     @Override

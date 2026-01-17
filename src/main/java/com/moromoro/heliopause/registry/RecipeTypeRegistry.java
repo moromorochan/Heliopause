@@ -1,9 +1,7 @@
 package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.recipe.CampfireAlchemyRecipe;
-import com.moromoro.heliopause.recipe.MoonlightPouringRecipe;
-import com.moromoro.heliopause.recipe.RoastingRecipe;
+import com.moromoro.heliopause.recipe.*;
 import com.moromoro.heliopause.recipe.orreryWhirling.OrreryWhirlingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -24,6 +22,15 @@ public class RecipeTypeRegistry {
 
     public static final RegistryObject<RecipeType<MoonlightPouringRecipe>> MOONLIGHT_POURING =
         RECIPE_TYPES.register("moonlight_pouring", () -> MoonlightPouringRecipe.Type.INSTANCE);
+
+    public static final RegistryObject<RecipeType<MagicCircleAssemblyRecipe>> MAGIC_CIRCLE_ASSEMBLY =
+        RECIPE_TYPES.register("magic_circle_assembly",() -> MagicCircleAssemblyRecipe.Type.INSTANCE);
+
+    public static final RegistryObject<RecipeType<ImitationCoreAssemblyRecipe>> IMITATION_CORE_ASSEMBLY =
+        RECIPE_TYPES.register("imitation_core_assembly",() -> ImitationCoreAssemblyRecipe.Type.INSTANCE);
+
+    public static final RegistryObject<RecipeType<OrreryTransferenceRecipe>> ORRERY_TRANSFERENCE =
+        RECIPE_TYPES.register("orrery_transference",() -> OrreryTransferenceRecipe.Type.INSTANCE);
 
     //public static final RegistryObject<RecipeType<>> ORRERY_WHIRLING =
 
