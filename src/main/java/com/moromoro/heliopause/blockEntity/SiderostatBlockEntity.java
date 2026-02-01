@@ -421,7 +421,7 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
             return;
         }
         // 月の角度を取り出す
-        double currentMoonAngle = (level.getTimeOfDay(1.0F) * 360 + 270) % 360;
+        double currentMoonAngle = getCurrentMoonAngle(level);
         boolean isNight = Math.ceil(currentMoonAngle) > 0 && currentMoonAngle < 180;
         // 昼や雨天はインジケータを無効化
         if(!isNight || level.isRaining() || level.isThundering()){
@@ -465,7 +465,7 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
                 if(!powered && isNight && springAmount < currentMoonAngle){
                     ++springAmount;
                     // 追いついたらSync
-                    if(springAmount > currentMoonAngle){
+                    if(springAmount >= currentMoonAngle){
                         angleSynced = true;
                     }
                     //level.playSound(Minecraft.getInstance().player, pos, SoundEvents.DISPENSER_FAIL, SoundSource.BLOCKS, 0.5f,0.5f);
@@ -519,6 +519,10 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
                 angleSynced = false;
             }
         }
+    }
+
+    public static double getCurrentMoonAngle(Level level) {
+        return (level.getTimeOfDay(1.0F) * 360 + 270) % 360;
     }
 
     private void operateRecipe(Level level, double currentMoonAngle) {

@@ -2,13 +2,16 @@ package com.moromoro.heliopause.datagen;
 
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.registry.BlockRegistry;
+import com.moromoro.heliopause.registry.TagRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.text.html.HTML;
 import java.util.concurrent.CompletableFuture;
 
 public class HEPBlockTagGenerator extends BlockTagsProvider {
@@ -17,7 +20,7 @@ public class HEPBlockTagGenerator extends BlockTagsProvider {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.@NotNull Provider provider) {
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
             .add(
                 BlockRegistry.ALCHEMY_BIRON_BLOCK.get(),
@@ -42,6 +45,21 @@ public class HEPBlockTagGenerator extends BlockTagsProvider {
         this.tag(BlockTags.CAMPFIRES)
             .add(
                 BlockRegistry.ALCHEMY_CAMPFIRE.get()
+            );
+
+        this.tag(TagRegistry.Blocks.WOODEN_LENS_BARREL)
+            .add(
+                BlockRegistry.WOODEN_LENS_BARREL_BLOCK.get(),
+                BlockRegistry.WOODEN_MAIN_MIRROR_BLOCK.get(),
+                BlockRegistry.WOODEN_SECOND_MIRROR_BLOCK.get()
+            );
+        this.tag(TagRegistry.Blocks.MAIN_MIRROR)
+            .add(
+              BlockRegistry.WOODEN_MAIN_MIRROR_BLOCK.get()
+            );
+        this.tag(TagRegistry.Blocks.SECOND_MIRROR)
+            .add(
+                BlockRegistry.WOODEN_SECOND_MIRROR_BLOCK.get()
             );
     }
 }

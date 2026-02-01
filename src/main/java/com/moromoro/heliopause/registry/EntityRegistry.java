@@ -3,6 +3,7 @@ package com.moromoro.heliopause.registry;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.CrucibleBlockEntity;
 import com.moromoro.heliopause.blockEntity.FluidSpreaderOrbBlockEntity;
+import com.moromoro.heliopause.entity.LensBarrelEntity;
 import com.moromoro.heliopause.entity.OrreryInteractionOperatorEntity;
 import com.moromoro.heliopause.entity.StellarIngredientEntity;
 import net.minecraft.resources.ResourceLocation;
@@ -39,6 +40,17 @@ public class EntityRegistry {
                     StellarIngredientEntity::new, MobCategory.MISC
                 )
                 .sized(StellarIngredientEntity.SIZE,StellarIngredientEntity.SIZE)
+                .build(new ResourceLocation(Heliopause.MODID, "stellar_ingredient_entity").toString())
+        );
+
+    // 組み立てた鏡筒エンティティ
+    public static final RegistryObject<EntityType<LensBarrelEntity>> LENS_BARREL_E =
+        ENTITIES.register("lens_barrel_entity",() ->
+            EntityType.Builder.<LensBarrelEntity>of(
+                    LensBarrelEntity::new, MobCategory.MISC
+                )
+                //.updateInterval(100)
+                //.sized(LensBarrelEntity.SIZE,LensBarrelEntity.SIZE)
                 .build(new ResourceLocation(Heliopause.MODID, "stellar_ingredient_entity").toString())
         );
 }

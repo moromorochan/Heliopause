@@ -10,9 +10,20 @@
   "block.heliopause.fluid_spreader_tower_orb": "流体散布塔",
   "block.heliopause.blackboard": "黒板",
   "block.heliopause.written_board": "描かれた黒板",
-  "block.heliopause.orrery_circle_board": "遷天模倣の魔法陣",
+  "block.heliopause.orrery_circle_board": "遷天模倣陣",
   "block.heliopause.siderostat_base": "シデロスタット",
   "block.heliopause.siderostat": "シデロスタット",
+
+  "block.heliopause.alt_azimuth_circle_board": "星明かり収斂陣",
+  "block.heliopause.concentrator": "経緯台",
+  "gui.heliopause.concentrator.compass.north": "北",
+  "gui.heliopause.concentrator.compass.east": "東",
+  "gui.heliopause.concentrator.compass.south": "南",
+  "gui.heliopause.concentrator.compass.west": "西",
+
+  "block.heliopause.wooden_lens_barrel": "木の鏡筒",
+  "block.heliopause.wooden_main_mirror": "木の鏡筒の主鏡",
+  "block.heliopause.wooden_second_mirror": "木の鏡筒の副鏡",
 
   "block.heliopause.alchemy_biron_block": "錬金赤銅ブロック",
   "block.heliopause.glowstone_alloy_block": "グロウストーン合金ブロック",

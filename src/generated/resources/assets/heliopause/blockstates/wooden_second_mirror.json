@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "bottom=false,top=false": {
+      "model": "heliopause:block/lens_barrel/wooden_secondary_middle"
+    },
+    "bottom=false,top=true": {
+      "model": "heliopause:block/lens_barrel/wooden_secondary_top"
+    },
+    "bottom=true,top=false": {
+      "model": "heliopause:block/lens_barrel/wooden_secondary_bottom"
+    },
+    "bottom=true,top=true": {
+      "model": "heliopause:block/lens_barrel/wooden_secondary_single"
+    }
+  }
+}

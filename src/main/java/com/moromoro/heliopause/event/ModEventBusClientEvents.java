@@ -44,10 +44,13 @@ public class ModEventBusClientEvents {
         event.registerBlockEntityRenderer(BlockEntityRegistry.WRITTEN_BOARD_BE.get(), WrittenBoardRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.ORRERY_CIRCLE_BOARD_BE.get(), OrreryCircleBoardRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.STELLAR_INGREDIENT_BE.get(), StellarIngredientBlockRenderer::new);
+        event.registerBlockEntityRenderer(BlockEntityRegistry.ALT_AZIMUTH_CIRCLE_BOARD_BE.get(), AltAzimuthCircleBoardBlockRenderer::new);
+        //event.registerBlockEntityRenderer(BlockEntityRegistry.CONCENTRATOR_BE.get(), ConcentratorBlockRenderer::new);
 
         //エンティティ
-        event.registerEntityRenderer(EntityRegistry.ORRERY_INTERACTION_OPERATOR_E.get(), VoidEntityRenderer::new);
+        //event.registerEntityRenderer(EntityRegistry.ORRERY_INTERACTION_OPERATOR_E.get(), VoidEntityRenderer::new);
         event.registerEntityRenderer(EntityRegistry.STELLAR_INGREDIENT_E.get(), StellarIngredientEntityRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.LENS_BARREL_E.get(), LensBarrelEntityRenderer::new);
     }
 
     //パーティクルの登録

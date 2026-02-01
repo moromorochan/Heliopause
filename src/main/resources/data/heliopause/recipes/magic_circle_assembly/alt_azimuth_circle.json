@@ -2,10 +2,10 @@
   "type": "heliopause:magic_circle_assembly",
   "trigger": {
     "type": "place_on",
-    "block": "heliopause:crucible"
+    "block": "heliopause:concentrator"
   },
   "result": {
-    "block": "heliopause:starlight_concentrator_base"
+    "block": "heliopause:alt_azimuth_circle_board"
   },
   "parts": [
     {

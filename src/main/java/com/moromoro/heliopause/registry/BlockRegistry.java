@@ -165,6 +165,36 @@ public class BlockRegistry {
             )
         );
 
+    // 経緯台陣
+    public static final RegistryObject<Block> ALT_AZIMUTH_CIRCLE_BOARD =
+        registerBlock("alt_azimuth_circle_board",
+            ()-> new AltAzimuthCircleBoardBlock(
+                BlockBehaviour.Properties.copy(BLACKBOARD.get())
+            )
+        );
+
+    // 星明かり収斂器架台
+    public static final RegistryObject<Block> CONCENTRATOR =
+        registerBlock("concentrator",
+            ()-> new ConcentratorBlock(
+                BlockBehaviour.Properties.of()
+                    .strength(1.5f)
+                    .sound(SoundType.NETHERITE_BLOCK)
+                    .noOcclusion()
+            )
+            );
+
+    /*public static final RegistryObject<Block> STARLIGHT_CONCENTRATOR_INTERFACE =
+        registerBlock("starlight_concentrator_interface",
+            ()-> new ConcentratorInterfaceBlock(
+                BlockBehaviour.Properties.of()
+                    .strength(1.5f)
+                    .noLootTable()
+                    .noOcclusion()
+                    .noParticlesOnBreak()
+                )
+            );*/
+
     //液体散布器
         //オーブ
     public static final RegistryObject<Block> FLUID_SPREADER_ORB =
@@ -207,6 +237,23 @@ public class BlockRegistry {
                 .lightLevel(blockState -> blockState.getValue(RoastingTableBlock.LIT) ? 5 : 0)
         ));
 
+    // 鏡筒 木製
+    public static final RegistryObject<LensBarrelBlock> WOODEN_LENS_BARREL_BLOCK =
+        registerBlock("wooden_lens_barrel", () -> new LensBarrelBlock(
+                BlockBehaviour.Properties.of()
+                    .strength(1.0F)
+                    .sound(SoundType.CHERRY_WOOD)
+                    .noOcclusion()
+            )
+        );
+    public static final RegistryObject<LensBarrelBlock> WOODEN_MAIN_MIRROR_BLOCK =
+        registerBlock("wooden_main_mirror", () -> new LensBarrelBlock(
+            BlockBehaviour.Properties.copy(WOODEN_LENS_BARREL_BLOCK.get())));
+    public static final RegistryObject<LensBarrelBlock> WOODEN_SECOND_MIRROR_BLOCK =
+        registerBlock("wooden_second_mirror", () -> new LensBarrelBlock(
+            BlockBehaviour.Properties.copy(WOODEN_LENS_BARREL_BLOCK.get())));
+
+    /*
     //液体注入器
     public static final RegistryObject<Block> PENETRATOR =
         registerBlock("penetrator", () -> new Block(
@@ -238,6 +285,7 @@ public class BlockRegistry {
                 .strength(2.0f)
                 .sound(SoundType.NETHERITE_BLOCK)
         ));
+*/
 
     //錬金赤銅ブロック
     public static final RegistryObject<Block> ALCHEMY_BIRON_BLOCK =
@@ -256,6 +304,8 @@ public class BlockRegistry {
                                     .lightLevel(state -> 9)
                     )
             );
+
+    /*
     //ミツマタの苗木と葉
     public static final RegistryObject<Block> PAPERBUSH_BLOCK =
         registerBlock("paperbush", () -> new PaperBushPlantBlock(
@@ -267,7 +317,7 @@ public class BlockRegistry {
                             BlockBehaviour.Properties.of().sound(SoundType.AZALEA_LEAVES)
                     )
             );
-
+*/
     //見た目用ブロック作成
 
     // 月
@@ -280,4 +330,5 @@ public class BlockRegistry {
                     .pushReaction(PushReaction.IGNORE)
                     .lightLevel(blockState -> 15)
             ));*/
+
 }

@@ -82,6 +82,23 @@ public class BlockEntityRegistry {
                 ).build(null)
             );
 
+    public static final RegistryObject<BlockEntityType<AltAzimuthCircleBoardBlockEntity>> ALT_AZIMUTH_CIRCLE_BOARD_BE =
+        BLOCKENTITIES.register("alt_azimuth_circle_board", () ->
+            BlockEntityType.Builder.of(
+                AltAzimuthCircleBoardBlockEntity::new,
+                BlockRegistry.ALT_AZIMUTH_CIRCLE_BOARD.get()
+            ).build(null)
+        );
+
+    // 星明かり収斂器架台
+    public static final RegistryObject<BlockEntityType<ConcentratorBlockEntity>> CONCENTRATOR_BE =
+        BLOCKENTITIES.register("concentrator", () ->
+            BlockEntityType.Builder.of(
+                ConcentratorBlockEntity::new,
+                BlockRegistry.CONCENTRATOR.get()
+            ).build(null)
+        );
+
     // シデロスタット
     public static final RegistryObject<BlockEntityType<SiderostatBlockEntity>> SIDEROSTAT_BE =
         BLOCKENTITIES.register("siderostat",() ->

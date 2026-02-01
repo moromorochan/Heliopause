@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class SiderostatMenu extends AbstractContainerMenu {
 
@@ -91,7 +92,7 @@ public class SiderostatMenu extends AbstractContainerMenu {
 
     @Override
     //シフトクリックでの移動に対応させる
-    public ItemStack quickMoveStack(Player player, int slotId) {
+    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int slotId) {
         final int invStart = 2;
         final int hotStart = 29;
         final int hotEnd = 37;
@@ -99,7 +100,7 @@ public class SiderostatMenu extends AbstractContainerMenu {
         ItemStack itemstack = ItemStack.EMPTY;
         //スロットを取得
         Slot slot = this.slots.get(slotId);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             //中身を取得してコピーを作成
             ItemStack tempItemStack = slot.getItem();
             itemstack = tempItemStack.copy();
@@ -161,7 +162,7 @@ public class SiderostatMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos().above()),
             player, BlockRegistry.SIDEROSTAT_TOP.get());
     }

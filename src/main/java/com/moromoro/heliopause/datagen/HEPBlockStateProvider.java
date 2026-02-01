@@ -2,6 +2,7 @@ package com.moromoro.heliopause.datagen;
 
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.EnumProperty.SiderostatTopState;
+import com.moromoro.heliopause.block.LensBarrelBlock;
 import com.moromoro.heliopause.block.SiderostatTopBlock;
 import com.moromoro.heliopause.block.AbstractWrittenBoardBlock;
 import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
@@ -31,9 +32,19 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
 
         // モデルなしブロック
         simpleBlock(BlockRegistry.STELLAR_INGREDIENT_BLOCK.get(), models().getExistingFile(mcLoc("block/air")));
+        //simpleBlock(BlockRegistry.STARLIGHT_CONCENTRATOR_INTERFACE.get(), models().getExistingFile(mcLoc("block/air")));
 
-        simpleBlockWithItem(BlockRegistry.PENETRATOR.get(), models().getExistingFile(modLoc("block/penetrator")));
-        cylinderBlockWithItem(BlockRegistry.CONVERGE_CYLINDER);
+        /*simpleBlockWithItem(BlockRegistry.PENETRATOR.get(), models().getExistingFile(modLoc("block/penetrator")));
+        cylinderBlockWithItem(BlockRegistry.CONVERGE_CYLINDER);*/
+
+        //simpleBlockWithItem(BlockRegistry.WOODEN_LENS_BARREL_BLOCK.get(), models().getExistingFile(modLoc("block/lens_barrel/wooden_barrel")));
+        //simpleBlockWithItem(BlockRegistry.WOODEN_MAIN_MIRROR_BLOCK.get(), models().getExistingFile(modLoc("block/lens_barrel/wooden_main")));
+        //simpleBlockWithItem(BlockRegistry.WOODEN_SECOND_MIRROR_BLOCK.get(), models().getExistingFile(modLoc("block/lens_barrel/wooden_secondary")));
+        //simpleBlockItem(BlockRegistry.STARLIGHT_CONCENTRATOR_BASE.get(), models().getExistingFile(modLoc("block/starlight_concentrator/base_item")));
+
+        lensBarrelBlockWithItem(BlockRegistry.WOODEN_LENS_BARREL_BLOCK, "barrel","wooden");
+        lensBarrelBlockWithItem(BlockRegistry.WOODEN_MAIN_MIRROR_BLOCK, "main","wooden");
+        lensBarrelBlockWithItem(BlockRegistry.WOODEN_SECOND_MIRROR_BLOCK, "secondary","wooden");
 
         simpleBlock(BlockRegistry.CENTRAL_STAR.get(),models().getExistingFile(mcLoc("block/air")));
         //simpleBlock(BlockRegistry.SIDEROSTAT_MOON.get(), models().getExistingFile(modLoc("block/celestial_bodies/moon")));
@@ -53,6 +64,7 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
                 ));
         writtenBoardBlock(BlockRegistry.WRITTEN_BOARD);
         largeWrittenBoardBlock(BlockRegistry.ORRERY_CIRCLE_BOARD);
+        largeWrittenBoardBlock(BlockRegistry.ALT_AZIMUTH_CIRCLE_BOARD);
     }
 
     private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
@@ -182,6 +194,40 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
         );
     }
 
+    private void lensBarrelBlockWithItem(RegistryObject<? extends LensBarrelBlock> blockRegistryObject, String part, String type){
+        // パスを用意
+        ResourceLocation modelPath = modLoc("block/lens_barrel/" + type + "_" + part);
+        ResourceLocation sidePath = modLoc("block/lens_barrel/" + type + "/side");
+
+        // モデルを生成
+        models().withExistingParent(modelPath + "_top", modelPath + "_single")
+            .texture("side", sidePath.getPath() + "_top").renderType("cutout");
+        models().withExistingParent(modelPath + "_middle", modelPath + "_single")
+            .texture("side", sidePath + "_middle").renderType("cutout");
+        models().withExistingParent(modelPath + "_bottom", modelPath + "_single")
+            .texture("side", sidePath + "_bottom").renderType("cutout");
+
+        // ブロックステートを用意
+        getVariantBuilder(blockRegistryObject.get())
+            .partialState().with(LensBarrelBlock.TOP, true).with(LensBarrelBlock.BOTTOM, true)
+            .modelForState().modelFile(models().getExistingFile(modLoc(modelPath.getPath() + "_single"))).addModel();
+
+        getVariantBuilder(blockRegistryObject.get())
+            .partialState().with(LensBarrelBlock.TOP, true).with(LensBarrelBlock.BOTTOM, false)
+            .modelForState().modelFile(models().getExistingFile(modLoc(modelPath.getPath() + "_top"))).addModel();
+
+        getVariantBuilder(blockRegistryObject.get())
+            .partialState().with(LensBarrelBlock.TOP, false).with(LensBarrelBlock.BOTTOM, false)
+            .modelForState().modelFile(models().getExistingFile(modLoc(modelPath.getPath() + "_middle"))).addModel();
+
+        getVariantBuilder(blockRegistryObject.get())
+            .partialState().with(LensBarrelBlock.TOP, false).with(LensBarrelBlock.BOTTOM, true)
+            .modelForState().modelFile(models().getExistingFile(modLoc(modelPath.getPath() + "_bottom"))).addModel();
+
+        // アイテムモデルを用意
+        simpleBlockItem(blockRegistryObject.get(), models().getExistingFile(modLoc(modelPath.getPath() + "_single")));
+    }
+
     private void litableBlockWithItem(RegistryObject<? extends Block> blockRegistryObject, boolean itemModelLit){
         //モデルパスを用意
         String modelName = blockRegistryObject.getId().getPath();
@@ -259,5 +305,9 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
                 .partialState().with(AbstractWrittenBoardBlock.CIRCLE_TYPE, writtenBoardDrawType)
                 .modelForState().modelFile(models().getExistingFile(modelLoc)).addModel();
         }
+        // アイテムを生成
+        ResourceLocation itemLoc = modLoc("item/"+ blockRegistryObject.getId().getPath());
+        models().withExistingParent(itemLoc.getPath(), modLoc("item/large_circle_board"))
+            .texture("3", modLoc("block/written_board/"+ blockRegistryObject.getId().getPath()).getPath());
     }
 }

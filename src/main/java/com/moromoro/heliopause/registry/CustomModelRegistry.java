@@ -25,6 +25,10 @@ public class CustomModelRegistry {
 
     public static final ResourceLocation SIDEROSTAT_MOON = new ResourceLocation(Heliopause.MODID, "decoration/siderostat/moon");
     public static final ResourceLocation SIDEROSTAT_SPRING = new ResourceLocation(Heliopause.MODID, "decoration/siderostat/spring");
+    // 星明かり収斂器
+    public static final ResourceLocation STARLIGHT_CONCENTRATOR_PITCH = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/pitch");
+    public static final ResourceLocation STARLIGHT_CONCENTRATOR_TURNTABLE = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/turntable");
+    public static final ResourceLocation STARLIGHT_CONCENTRATOR_WEIGHT = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/weight");
     // インターフェース陣
     public static final ResourceLocation CIRCLE_DOTTED = new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_circle_dotted");
     public static final ResourceLocation LINE_DOTTED = new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_line_dotted");
@@ -35,6 +39,9 @@ public class CustomModelRegistry {
     // 遷天模倣陣
     public static final ResourceLocation CIRCLE_ORRERY = new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_circle_orrery");
     public static final ResourceLocation LINE_ORRERY = new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_line_orrery");
+    // 経緯台陣
+    public static final ResourceLocation CIRCLE_ALT_AZIMUTH = new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_circle_alt_azimuth");
+    public static final ResourceLocation LINE_ALT_AZIMUTH = new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_line_alt_azimuth");
 
     //カスタムモデルの登録
     @SubscribeEvent
@@ -53,6 +60,9 @@ public class CustomModelRegistry {
         event.register(ORRERY_ORBIT_END);
         event.register(SIDEROSTAT_MOON);
         event.register(SIDEROSTAT_SPRING);
+        event.register(STARLIGHT_CONCENTRATOR_PITCH);
+        event.register(STARLIGHT_CONCENTRATOR_TURNTABLE);
+        event.register(STARLIGHT_CONCENTRATOR_WEIGHT);
         // インターフェース陣
         event.register(CIRCLE_DOTTED);
         event.register(LINE_DOTTED);
@@ -63,5 +73,8 @@ public class CustomModelRegistry {
         // 遷天模倣陣
         event.register(CIRCLE_ORRERY);
         event.register(LINE_ORRERY);
+        // 経緯台陣
+        event.register(CIRCLE_ALT_AZIMUTH);
+        event.register(LINE_ALT_AZIMUTH);
     }
 }

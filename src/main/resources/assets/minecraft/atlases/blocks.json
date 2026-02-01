@@ -14,6 +14,10 @@
 
     {"type": "minecraft:single", "resource": "heliopause:decoration/siderostat/moon"},
 
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/pitch"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/turntable"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/weight"},
+
     {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_circle_dotted"},
     {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_line_dotted"},
     {"type": "minecraft:single","resource": "heliopause:decoration/circle/arrow_default"},
@@ -22,6 +26,9 @@
     {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_line_default"},
 
     {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_circle_orrery"},
-    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_line_orrery"}
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_line_orrery"},
+
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_circle_alt_azimuth"},
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_line_alt_azimuth"}
   ]
 }

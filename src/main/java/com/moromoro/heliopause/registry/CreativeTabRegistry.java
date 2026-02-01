@@ -36,6 +36,12 @@ public class CreativeTabRegistry {
                 output.accept(BlockRegistry.BLACKBOARD.get());
                 output.accept(BlockRegistry.CRUCIBLE.get());
                 //output.accept(ItemRegistry.COMET_CORE_ITEM.get());
+                output.accept(BlockRegistry.CONCENTRATOR.get());
+
+                // 鏡筒
+                output.accept(BlockRegistry.WOODEN_LENS_BARREL_BLOCK.get());
+                output.accept(BlockRegistry.WOODEN_MAIN_MIRROR_BLOCK.get());
+                output.accept(BlockRegistry.WOODEN_SECOND_MIRROR_BLOCK.get());
 
                 // 素材
                 output.accept(BlockRegistry.ALCHEMY_BIRON_BLOCK.get());

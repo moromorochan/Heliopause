@@ -26,8 +26,8 @@ public class HEPBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(BlockRegistry.COPPER_PIPE.get());
         this.dropSelf(BlockRegistry.FLUID_SPREADER_TOWER.get());
 
-        this.dropSelf(BlockRegistry.PAPERBUSH_LEAVES_BLOCK.get());
-        this.dropSelf(BlockRegistry.PAPERBUSH_BLOCK.get());
+        /*this.dropSelf(BlockRegistry.PAPERBUSH_LEAVES_BLOCK.get());
+        this.dropSelf(BlockRegistry.PAPERBUSH_BLOCK.get());*/
 
         this.dropSelf(BlockRegistry.ALCHEMY_CAMPFIRE.get());//TODO キャンプファイヤーのドロップに合わせる
         /*this.add(BlockRegistry.SIDEROSTAT_MOON.get(), block ->
@@ -44,14 +44,21 @@ public class HEPBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(BlockRegistry.SIDEROSTAT_TOP.get());
         //this.dropOther(BlockRegistry.SIDEROSTAT_ORB.get(),BlockRegistry.SIDEROSTAT_BASE.get());
 
-        this.dropSelf(BlockRegistry.PENETRATOR.get());
+        /*this.dropSelf(BlockRegistry.PENETRATOR.get());
         this.dropSelf(BlockRegistry.DISSOLVER.get());
         this.dropSelf(BlockRegistry.CONVERGE_CYLINDER.get());
-        this.dropSelf(BlockRegistry.REFINERY_CYLINDER.get());
+        this.dropSelf(BlockRegistry.REFINERY_CYLINDER.get());*/
+
+        this.dropSelf(BlockRegistry.CONCENTRATOR.get());
+
+        this.dropSelf(BlockRegistry.WOODEN_LENS_BARREL_BLOCK.get());
+        this.dropSelf(BlockRegistry.WOODEN_MAIN_MIRROR_BLOCK.get());
+        this.dropSelf(BlockRegistry.WOODEN_SECOND_MIRROR_BLOCK.get());
 
         this.dropSelf(BlockRegistry.BLACKBOARD.get());
         this.dropOther(BlockRegistry.WRITTEN_BOARD.get(), BlockRegistry.BLACKBOARD.get());
         this.dropOther(BlockRegistry.ORRERY_CIRCLE_BOARD.get(), BlockRegistry.BLACKBOARD.get());
+        this.dropOther(BlockRegistry.ALT_AZIMUTH_CIRCLE_BOARD.get(), BlockRegistry.BLACKBOARD.get());
 
     }
 

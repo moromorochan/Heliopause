@@ -298,7 +298,7 @@ public class WrittenBoardRenderer<T extends AbstractWrittenBoardBlockEntity> imp
         }
         // ヒット位置がノード判定内なら
         BlockState hitBlockState = instance.level.getBlockState(BlockPos.containing(pointPos.add(0,-0.5,0)));
-        if(hitBlockState.getBlock() instanceof AbstractWrittenBoardBlock writtenBoardBlock && AbstractWrittenBoardBlock.checkPosInNode(hitBlockState, entityPos, pointPos)) {
+        if(hitBlockState.getBlock() instanceof AbstractWrittenBoardBlock && AbstractWrittenBoardBlock.checkPosInNode(entity.getBlockState(), entityPos, pointPos)) {//TODO: 大きいノードの範囲内に別のノードがあるときの対応
             float halfNodeSize = (float) (WrittenBoardDrawType.getNodeSize(hitBlockState.getValue(AbstractWrittenBoardBlock.CIRCLE_TYPE)) /2);
 
             VertexConsumer buffer = bufferSource.getBuffer(RenderType.LINES);

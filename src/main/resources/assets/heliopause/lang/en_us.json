@@ -10,9 +10,20 @@
   "block.heliopause.fluid_spreader_tower_orb": "Fluid Spreader Tower",
   "block.heliopause.blackboard": "Blackboard",
   "block.heliopause.written_board": "Written BlackBoard",
-  "block.heliopause.orrery_circle_board": "Magic Circle of Orrery Transference",
+  "block.heliopause.orrery_circle_board": "Circle of Orrery Transference",
   "block.heliopause.siderostat_base": "Siderostat",
   "block.heliopause.siderostat": "Siderostat",
+
+  "block.heliopause.alt_azimuth_circle_board": "Circle of Starlight Concentration",
+  "block.heliopause.concentrator": "Alt-Azimuth Mount",
+  "gui.heliopause.concentrator.compass.north": "N",
+  "gui.heliopause.concentrator.compass.east": "E",
+  "gui.heliopause.concentrator.compass.south": "S",
+  "gui.heliopause.concentrator.compass.west": "W",
+
+  "block.heliopause.wooden_lens_barrel": "Wooden Lens Barrel",
+  "block.heliopause.wooden_main_mirror": "Wooden Lens Barrel Main Mirror",
+  "block.heliopause.wooden_second_mirror": "Wooden Lens Barrel Secondary Mirror",
 
   "block.heliopause.alchemy_biron_block": "Alchemy Biron Block",
   "block.heliopause.glowstone_alloy_block": "Glowstone Alloy Block",

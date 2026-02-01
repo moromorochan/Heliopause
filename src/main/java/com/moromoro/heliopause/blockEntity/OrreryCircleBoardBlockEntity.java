@@ -179,7 +179,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
     // IngredientsをNBTから読み込む
     public static List<CircumstellarIngredient> circumStellarFromNbt(@NotNull CompoundTag nbt) {
         List<CircumstellarIngredient> newIngredient = new ArrayList<>();
-        ListTag ingredientsList = nbt.getList("ingredients",10/*nbtのID*/);
+        ListTag ingredientsList = nbt.getList("ingredients", CompoundTag.TAG_COMPOUND);
         for (int i = 0; i < ingredientsList.size(); i++) {
             CompoundTag ingredientNbt = ingredientsList.getCompound(i);
             CircumstellarIngredient ingredient = CircumstellarIngredient.readFromNbt(ingredientNbt);
