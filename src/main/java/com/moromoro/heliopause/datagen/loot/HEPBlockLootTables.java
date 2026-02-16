@@ -59,6 +59,7 @@ public class HEPBlockLootTables extends BlockLootSubProvider {
         this.dropOther(BlockRegistry.WRITTEN_BOARD.get(), BlockRegistry.BLACKBOARD.get());
         this.dropOther(BlockRegistry.ORRERY_CIRCLE_BOARD.get(), BlockRegistry.BLACKBOARD.get());
         this.dropOther(BlockRegistry.ALT_AZIMUTH_CIRCLE_BOARD.get(), BlockRegistry.BLACKBOARD.get());
+        this.dropSelf(BlockRegistry.CONCENTRATOR.get());
 
     }
 

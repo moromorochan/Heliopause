@@ -6,6 +6,8 @@ import com.moromoro.heliopause.particle.WhirlRingParticles;
 import com.moromoro.heliopause.particle.FluidSpreadParticles;
 import com.moromoro.heliopause.registry.*;
 import com.moromoro.heliopause.render.*;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
@@ -25,7 +27,8 @@ public class ModEventBusClientEvents {
     //レンダリングタイプの登録
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-
+        ItemBlockRenderTypes.setRenderLayer(FluidRegistry.LIQUEFIED_STARLIGHT.still().get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(FluidRegistry.LIQUEFIED_STARLIGHT.flowing().get(), RenderType.translucent());
         //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.SIDEROSTAT_MOON.get(), RenderType.translucent());
     }
 

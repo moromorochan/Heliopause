@@ -1,4 +1,4 @@
-package com.moromoro.heliopause.item;
+package com.moromoro.heliopause.instance;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;

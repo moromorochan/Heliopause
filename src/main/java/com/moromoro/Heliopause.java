@@ -27,6 +27,8 @@ import static com.moromoro.heliopause.registry.BlockEntityRegistry.BLOCKENTITIES
 import static com.moromoro.heliopause.registry.BlockRegistry.BLOCKS;
 import static com.moromoro.heliopause.registry.CreativeTabRegistry.CREATIVE_MODE_TABS;
 import static com.moromoro.heliopause.registry.EntityRegistry.ENTITIES;
+import static com.moromoro.heliopause.registry.FluidRegistry.FLUIDS;
+import static com.moromoro.heliopause.registry.FluidRegistry.FLUID_TYPES;
 import static com.moromoro.heliopause.registry.ItemRegistry.ITEMS;
 import static com.moromoro.heliopause.registry.MenuTypeRegistry.MENU_TYPES;
 import static com.moromoro.heliopause.registry.ParticleRegistry.PARTICLE_TYPES;
@@ -53,6 +55,8 @@ public class Heliopause {
         BLOCKS.register(modEventBus);
         BLOCKENTITIES.register(modEventBus);
         ITEMS.register(modEventBus);
+        FLUIDS.register(modEventBus);
+        FLUID_TYPES.register(modEventBus);
         ENTITIES.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
         MENU_TYPES.register(modEventBus);

@@ -44,7 +44,6 @@ public class LensBarrelEntityRenderer extends EntityRenderer<LensBarrelEntity> {
         float entityYRot = entity.getPartialYRot(partialTicks);
         float entityXRot = entity.getPartialXRot(partialTicks);
 
-
         double yaw = (float) Math.toRadians(180 - entityYRot);
         double pitch = (float) Math.toRadians(270 - entityXRot);
         double weightPitch = (float) Math.toRadians(-45 - entityXRot * 0.5);

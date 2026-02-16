@@ -1,9 +1,9 @@
-package com.moromoro.heliopause.item;
+package com.moromoro.heliopause.instance;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 public interface IhasLevelDraw {
-    void renderLevelGraphic(RenderLevelStageEvent event, ClientLevel level, ItemStack itemStack);
+    boolean renderLevelGraphic(RenderLevelStageEvent event, ClientLevel level, ItemStack itemStack);
 }

@@ -2,6 +2,7 @@ package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.item.*;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

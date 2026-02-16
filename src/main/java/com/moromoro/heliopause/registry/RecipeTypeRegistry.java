@@ -21,16 +21,22 @@ public class RecipeTypeRegistry {
         RECIPE_TYPES.register("orrery_whirling", () -> OrreryWhirlingRecipe.Type.INSTANCE);
 
     public static final RegistryObject<RecipeType<MoonlightPouringRecipe>> MOONLIGHT_POURING =
-        RECIPE_TYPES.register("moonlight_pouring", () -> MoonlightPouringRecipe.Type.INSTANCE);
+        RECIPE_TYPES.register(MoonlightPouringRecipe.Type.ID, () -> MoonlightPouringRecipe.Type.INSTANCE);
 
     public static final RegistryObject<RecipeType<MagicCircleAssemblyRecipe>> MAGIC_CIRCLE_ASSEMBLY =
-        RECIPE_TYPES.register("magic_circle_assembly",() -> MagicCircleAssemblyRecipe.Type.INSTANCE);
+        RECIPE_TYPES.register(MagicCircleAssemblyRecipe.Type.ID,() -> MagicCircleAssemblyRecipe.Type.INSTANCE);
 
     public static final RegistryObject<RecipeType<ImitationCoreAssemblyRecipe>> IMITATION_CORE_ASSEMBLY =
-        RECIPE_TYPES.register("imitation_core_assembly",() -> ImitationCoreAssemblyRecipe.Type.INSTANCE);
+        RECIPE_TYPES.register(ImitationCoreAssemblyRecipe.Type.ID,() -> ImitationCoreAssemblyRecipe.Type.INSTANCE);
 
     public static final RegistryObject<RecipeType<OrreryTransferenceRecipe>> ORRERY_TRANSFERENCE =
-        RECIPE_TYPES.register("orrery_transference",() -> OrreryTransferenceRecipe.Type.INSTANCE);
+        RECIPE_TYPES.register(OrreryTransferenceRecipe.Type.ID,() -> OrreryTransferenceRecipe.Type.INSTANCE);
+
+    public static final RegistryObject<RecipeType<StellarInstantiationRecipe>> STELLAR_INSTANTIATION =
+        RECIPE_TYPES.register(StellarInstantiationRecipe.Type.ID,()->StellarInstantiationRecipe.Type.INSTANCE);
+
+    public static final RegistryObject<RecipeType<StarlightConcentrationRecipe>> STARLIGHT_CONCENTRATION =
+        RECIPE_TYPES.register(StarlightConcentrationRecipe.Type.ID,()-> StarlightConcentrationRecipe.Type.INSTANCE);
 
     //public static final RegistryObject<RecipeType<>> ORRERY_WHIRLING =
 

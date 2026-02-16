@@ -7,12 +7,14 @@ import com.moromoro.heliopause.block.SiderostatTopBlock;
 import com.moromoro.heliopause.block.AbstractWrittenBoardBlock;
 import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.registry.BlockRegistry;
+import com.moromoro.heliopause.registry.FluidRegistry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
@@ -65,6 +67,10 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
         writtenBoardBlock(BlockRegistry.WRITTEN_BOARD);
         largeWrittenBoardBlock(BlockRegistry.ORRERY_CIRCLE_BOARD);
         largeWrittenBoardBlock(BlockRegistry.ALT_AZIMUTH_CIRCLE_BOARD);
+
+        /*fluidBlock(FluidRegistry.STARRY_MIXTURE,"cutout");
+        fluidBlock(FluidRegistry.LIQUEFIED_STARLIGHT, "translucent");
+        fluidBlock(FluidRegistry.LIQUEFIED_TWILIGHT, "opacue");*/
     }
 
     private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
@@ -309,5 +315,15 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
         ResourceLocation itemLoc = modLoc("item/"+ blockRegistryObject.getId().getPath());
         models().withExistingParent(itemLoc.getPath(), modLoc("item/large_circle_board"))
             .texture("3", modLoc("block/written_board/"+ blockRegistryObject.getId().getPath()).getPath());
+    }
+
+    private void fluidBlock(FluidRegistry.FluidEntry fluidEntryObject, String renderType) {
+        // パスを用意
+        String modelName = fluidEntryObject.still().getId().getPath();
+        String texPathStill = "block/fluid/" + modelName + "_still";
+        // モデルを生成
+        ModelFile stillModel = models().withExistingParent("block/" + modelName, "block/water")
+            .texture("particle", texPathStill).renderType(renderType);
+        simpleBlock(fluidEntryObject.block().get(), stillModel);
     }
 }

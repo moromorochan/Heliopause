@@ -1,0 +1,23 @@
+{
+  "type": "heliopause:starlight_concentration",
+  "fluid": "heliopause:scarlet_starbead",
+  "amount": 25,
+  "feature": 1,
+  "starlight_conditions": {
+    "dimension": "minecraft:overworld",
+    "magnitude_min": 1,
+    "magnitude_max": 3,
+    "accuracy_min": 0.8,
+    "accuracy_max": 2.0,
+    "type_whitelist":[
+      "fixed_star", "collapsar"
+    ],
+    "longitude_chance": [
+      {
+        "start": 0,
+        "end": 359,
+        "chance": 1.0
+      }
+    ]
+  }
+}

@@ -53,6 +53,15 @@ public class CreativeTabRegistry {
                 output.accept(ItemRegistry.CELESTITE.get());
                 output.accept(ItemRegistry.OPTICAL_GLASS.get());
 
+                //液体
+                output.accept(FluidRegistry.STARRY_MIXTURE.bucket().get());
+                output.accept(FluidRegistry.LIQUEFIED_STARLIGHT.bucket().get());
+                output.accept(FluidRegistry.LIQUEFIED_TWILIGHT.bucket().get());
+                output.accept(FluidRegistry.AZURE_STARBEAD.bucket().get());
+                output.accept(FluidRegistry.SCARLET_STARBEAD.bucket().get());
+                output.accept(FluidRegistry.SUMMER_STAR_ESSENCE.bucket().get());
+                output.accept(FluidRegistry.WINTER_STAR_ESSENCE.bucket().get());
+
                 // ツール
                 output.accept(ItemRegistry.COMPASS_ITEM.get());
                 //output.accept(ItemRegistry.IMITATION_CORE_ITEM.get());

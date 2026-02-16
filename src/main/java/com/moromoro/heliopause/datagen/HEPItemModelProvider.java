@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.datagen;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.registry.FluidRegistry;
 import com.moromoro.heliopause.registry.ItemRegistry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +25,9 @@ public class HEPItemModelProvider extends net.minecraftforge.client.model.genera
         simpleItem(ItemRegistry.CELESTITE);
         simpleItem(ItemRegistry.IMITATION_CORE_ITEM);
         simpleItem(ItemRegistry.OPTICAL_GLASS);
+        simpleItem(FluidRegistry.STARRY_MIXTURE.bucket());
+        simpleItem(FluidRegistry.LIQUEFIED_STARLIGHT.bucket());
+        simpleItem(FluidRegistry.LIQUEFIED_TWILIGHT.bucket());
         //simpleItem(ItemRegistry.CHALK_ITEM);
         //simpleItem(ItemRegistry.VIAL_ITEM);
         //simpleItem(ItemRegistry.LARGE_BOTTLE_ITEM);

@@ -1,5 +1,6 @@
 package com.moromoro.heliopause.blockEntity;
 
+import com.moromoro.ConfigHolder;
 import com.moromoro.heliopause.EnumProperty.SiderostatTopState;
 import com.moromoro.heliopause.block.SiderostatBaseBlock;
 import com.moromoro.heliopause.block.SiderostatTopBlock;
@@ -75,7 +76,7 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
         5.625, 16.875, 28.125, 39.375, 50.625, 61.875, 73.125, 84.375,
         95.625, 106.875, 118.125, 129.375, 140.625, 151.875, 163.125, 174.375
     };
-    private static final double RAY_MAX_DISTANCE = 255;
+    private static final double RAY_MAX_DISTANCE = ConfigHolder.MAX_VIEW_SIDEROSTAT.get();
 
     // 内部アイテム(材料・完成品)
     private final ItemStackHandler itemHandler = new ItemStackHandler(2){
@@ -386,13 +387,13 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
         Vec3 clipStart = new Vec3(normalX* 0.7, normalY * 0.7, 0).add(centerPos);
         Vec3 clipEnd = new Vec3(normalX * RAY_MAX_DISTANCE, normalY * RAY_MAX_DISTANCE, 0).add(centerPos);
 
-        // ClipContext のブロックモードは COLLIDER（衝突ボックス）を利用
+        // 遮蔽判定
         ClipContext context = new ClipContext(clipStart, clipEnd, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, null);
         BlockHitResult result = level.clip(context);
 
         //Heliopause.LOGGER.debug(level.getBlockState());
         // 遮蔽がないなら
-        if (result.getType() == HitResult.Type.MISS) {
+        if (!result.getType().equals(HitResult.Type.BLOCK)) {
             canSeeSkies |= (short) (1 << index);
         }
         return canSeeSkies;

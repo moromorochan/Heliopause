@@ -51,19 +51,23 @@ public class ConcentratorBlock extends BaseEntityBlock {
     @Override
     public void onRemove(@NotNull BlockState state, Level level, @NotNull BlockPos blockPos, @NotNull BlockState newBlockState, boolean isMoving) {
 
-        if(!level.isClientSide()) {
-            if(!(newBlockState.getBlock() instanceof ConcentratorBlock)) {
-                if(level.getBlockEntity(blockPos) instanceof ConcentratorBlockEntity blockEntity){
-                    List<LensBarrelEntity> entities = level.getEntitiesOfClass(LensBarrelEntity.class, new AABB(blockPos.above()));
-                    for (LensBarrelEntity entity : entities) {
-                        blockEntity.disAssemble(entity.getBarrels());
-                        entity.discard();
-                    }
-                }
-            }
+        if(!newBlockState.is(this)) {
+            disassembleBarrel(state, level, blockPos, newBlockState);
         }
 
         super.onRemove(state, level, blockPos, newBlockState, isMoving);
+    }
+
+    private void disassembleBarrel(@NotNull BlockState state, Level level, @NotNull BlockPos blockPos, @NotNull BlockState newBlockState) {
+        List<LensBarrelEntity> entity =
+            level.getEntitiesOfClass(LensBarrelEntity.class, new AABB(blockPos.above(2)), e -> true);
+        for (LensBarrelEntity barrelEntity : entity) {
+            barrelEntity.disassemble();
+        }
+        // enabled切り替え
+        /*BlockState newState =  level.getBlockState(blockPos).setValue(ConcentratorBlock.ENABLED, false);
+        level.setBlock(blockPos,newState, 3);
+        level.sendBlockUpdated(blockPos, newState, newState, 3);*/
     }
 
     @Nullable
@@ -71,30 +75,6 @@ public class ConcentratorBlock extends BaseEntityBlock {
     public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new ConcentratorBlockEntity(blockPos, blockState);
     }
-
-    /*@Override
-    public @NotNull InteractionResult use(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
-        // 上面は無視
-        if (!hitResult.getDirection().equals(Direction.UP)) {
-            if (level.getBlockEntity(blockPos) instanceof ConcentratorBlockEntity entity) {
-                if (blockState.getValue(ConcentratorBlock.ENABLED).equals(false)) {
-                    if (entity.assemble()) {
-                        return InteractionResult.sidedSuccess(!level.isClientSide());
-                    }
-                } else {
-                    entity.disAssemble();
-                    return InteractionResult.sidedSuccess(!level.isClientSide());
-                }
-            }
-        }
-        return super.use(blockState, level, blockPos, player, hand, hitResult);
-    }
-
-    public void pairRemoved(Level level, BlockState blockState, BlockPos blockPos) {
-        if(blockState.getValue(ConcentratorBlock.ENABLED).equals(true)){
-            this.onRemove(blockState,level, blockPos, Blocks.AIR.defaultBlockState(), false);
-        }
-    }*/
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {

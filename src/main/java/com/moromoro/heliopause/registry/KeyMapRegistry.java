@@ -14,7 +14,7 @@ import org.lwjgl.glfw.GLFW;
 public enum KeyMapRegistry {
 
     BOTTLE_DRAIN("bottle_drain", GLFW.GLFW_KEY_LEFT_SHIFT),
-    CIRCLE_SELECT("circle_select",GLFW.GLFW_KEY_LEFT_SHIFT),
+    CIRCLE_SELECT("circle_select",GLFW.GLFW_KEY_LEFT_ALT),
     ;
 
     private KeyMapping keyMapping;

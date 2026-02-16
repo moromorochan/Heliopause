@@ -6,6 +6,8 @@ import com.moromoro.heliopause.block.AbstractWrittenBoardBlock;
 import com.moromoro.heliopause.block.BlackBoardBlock;
 import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.blockEntity.AbstractWrittenBoardBlockEntity;
+import com.moromoro.heliopause.instance.IhasHoverDraw;
+import com.moromoro.heliopause.instance.IhasHoverTexts;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.registry.KeyMapRegistry;
 import net.minecraft.client.Minecraft;
@@ -41,7 +43,7 @@ import java.util.Objects;
 // 錬成陣を開始する道具
 public class CompassItem extends Item implements IhasHoverTexts, IhasHoverDraw {
     // 背景
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(Heliopause.MODID, "textures/gui/item/circle_select/background.png");
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(Heliopause.MODID, "textures/gui/compass_tool_select.png");
     // アイコン
     //private static final ResourceLocation SYMBOL = new ResourceLocation(Heliopause.MODID,"textures/gui/item/circle_select/symbol.png");
     //private static final ResourceLocation CIRCLE = new ResourceLocation(Heliopause.MODID,"textures/gui/item/circle_select/circle.png");
@@ -431,13 +433,13 @@ public class CompassItem extends Item implements IhasHoverTexts, IhasHoverDraw {
 
     // 選択メニュー表示
     @Override
-    public void renderHoverGraphic(RenderGuiOverlayEvent event, ClientLevel clientLevel, ItemStack itemStack, HitResult hitResult) {
+    public boolean renderHoverGraphic(RenderGuiOverlayEvent event, ClientLevel clientLevel, ItemStack itemStack, HitResult hitResult) {
         //new CircleSelectScreen(itemStack, hitResult);
         Minecraft instance = Minecraft.getInstance();
         LocalPlayer player = instance.player;
         // プレイヤーがaltを押しているか確認
         if(player == null || !KeyMapRegistry.CIRCLE_SELECT.isPressed()){
-            return;
+            return false;
         }
         /*
         // 対象のブロックを取得
@@ -493,6 +495,7 @@ public class CompassItem extends Item implements IhasHoverTexts, IhasHoverDraw {
             0xFFFFFF
         );
         }
+        return true;
     }
 
     // 書きかけのプレビュー表示

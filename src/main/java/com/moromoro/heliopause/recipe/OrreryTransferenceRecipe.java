@@ -367,12 +367,12 @@ public class OrreryTransferenceRecipe implements Recipe<Container> {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return OrreryTransferenceRecipe.Serializer.INSTANCE;
+        return Serializer.INSTANCE;
     }
 
     @Override
     public @NotNull RecipeType<?> getType() {
-        return OrreryTransferenceRecipe.Type.INSTANCE;
+        return Type.INSTANCE;
     }
 
     public static FluidStack FluidStackFromJson(JsonObject jsonObject, int defaultAmount) {

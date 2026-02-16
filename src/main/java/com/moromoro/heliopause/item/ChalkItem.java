@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.item;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.instance.IhasHoverTexts;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.screen.CircleSelectMenu;
 import net.minecraft.client.Minecraft;

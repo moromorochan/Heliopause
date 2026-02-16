@@ -23,16 +23,22 @@ public class RecipeSerializerRegistry {
         RECIPE_SERIALIZERS.register("orrery_whirling",() -> OrreryWhirlingRecipe.Serializer.INSTANCE);
 
     public static final RegistryObject<RecipeSerializer<MoonlightPouringRecipe>> MOONLIGHT_POURING =
-        RECIPE_SERIALIZERS.register("moonlight_pouring",() -> MoonlightPouringRecipe.Serializer.INSTANCE);
+        RECIPE_SERIALIZERS.register(MoonlightPouringRecipe.Type.ID,() -> MoonlightPouringRecipe.Serializer.INSTANCE);
 
     public static final RegistryObject<RecipeSerializer<MagicCircleAssemblyRecipe>> MAGIC_CIRCLE_ASSEMBLY =
-        RECIPE_SERIALIZERS.register("magic_circle_assembly",() -> MagicCircleAssemblyRecipe.Serializer.INSTANCE);
+        RECIPE_SERIALIZERS.register(MagicCircleAssemblyRecipe.Type.ID,() -> MagicCircleAssemblyRecipe.Serializer.INSTANCE);
 
     public static final RegistryObject<RecipeSerializer<ImitationCoreAssemblyRecipe>> IMITATION_CORE_ASSEMBLY =
-        RECIPE_SERIALIZERS.register("imitation_core_assembly",() -> ImitationCoreAssemblyRecipe.Serializer.INSTANCE);
+        RECIPE_SERIALIZERS.register(ImitationCoreAssemblyRecipe.Type.ID,() -> ImitationCoreAssemblyRecipe.Serializer.INSTANCE);
 
     public static final RegistryObject<RecipeSerializer<OrreryTransferenceRecipe>> ORRERY_TRANSFERENCE =
-        RECIPE_SERIALIZERS.register("orrery_transference",() -> OrreryTransferenceRecipe.Serializer.INSTANCE);
+        RECIPE_SERIALIZERS.register(OrreryTransferenceRecipe.Type.ID,() -> OrreryTransferenceRecipe.Serializer.INSTANCE);
+
+    public static final RegistryObject<RecipeSerializer<StellarInstantiationRecipe>> STELLAR_INSTANTIATION =
+        RECIPE_SERIALIZERS.register(StellarInstantiationRecipe.Type.ID,() -> StellarInstantiationRecipe.Serializer.INSTANCE);
+
+    public static final RegistryObject<RecipeSerializer<StarlightConcentrationRecipe>> STARLIGHT_CONCENTRATION =
+        RECIPE_SERIALIZERS.register(StarlightConcentrationRecipe.Type.ID,() -> StarlightConcentrationRecipe.Serializer.INSTANCE);
 
 //    public static final RegistryObject<RecipeSerializer<MagicCircleAssemblyRecipe>> CIRCLE_RECIPE_SERIALIZER =
 //            RECIPE_SERIALIZERS.register("magic_circle_assembly",() -> MagicCircleAssemblyRecipe.Serializer.INSTANCE);

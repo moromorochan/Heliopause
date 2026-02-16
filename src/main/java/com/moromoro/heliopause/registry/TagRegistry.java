@@ -14,9 +14,11 @@ public class TagRegistry {
     }
 
     public static class Blocks {
-        public static final TagKey<Block> WOODEN_LENS_BARREL = tagBlock("wooden_lens_barrel");
-        public static final TagKey<Block> MAIN_MIRROR = tagBlock("main_mirror_barrel");
-        public static final TagKey<Block> SECOND_MIRROR = tagBlock("secondary_mirror_barrel");
+        public static final TagKey<Block> WOODEN_LENS_BARREL = tagBlock("lens_barrel_wooden");
+        public static final TagKey<Block> BIRON_LENS_BARREL = tagBlock("lens_barrel_alchemy_biron");
+
+        public static final TagKey<Block> MAIN_MIRROR = tagBlock("main_mirror");
+        public static final TagKey<Block> SECOND_MIRROR = tagBlock("secondary_mirror");
     }
 
     private static TagKey<Item> tagItem(String name) {

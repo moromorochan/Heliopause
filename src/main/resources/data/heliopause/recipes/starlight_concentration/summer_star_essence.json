@@ -1,0 +1,33 @@
+{
+  "type": "heliopause:starlight_concentration",
+  "fluid": "heliopause:summer_star_essence",
+  "amount": 40,
+  "feature": 2,
+  "starlight_conditions": {
+    "dimension": "minecraft:overworld",
+    "magnitude_min": 1,
+    "magnitude_max": 2,
+    "accuracy_min": 2.0,
+    "accuracy_max": 3.6,
+    "type_whitelist":[
+      "fixed_star"
+    ],
+    "longitude_chance": [
+      {
+        "start": 170,
+        "end": 184,
+        "chance": 0.2
+      },
+      {
+        "start": 185,
+        "end": 189,
+        "chance": 1.0
+      },
+      {
+        "start": 190,
+        "end": 204,
+        "chance": 0.2
+      }
+    ]
+  }
+}

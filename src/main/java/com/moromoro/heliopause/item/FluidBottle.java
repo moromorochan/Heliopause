@@ -2,6 +2,7 @@ package com.moromoro.heliopause.item;
 
 import com.moromoro.ConfigHolder;
 import com.moromoro.heliopause.entity.OrreryInteractionOperatorEntity;
+import com.moromoro.heliopause.instance.IhasHoverTexts;
 import com.moromoro.heliopause.registry.KeyMapRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
