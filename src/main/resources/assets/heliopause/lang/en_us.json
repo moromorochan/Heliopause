@@ -91,10 +91,10 @@
   "item.heliopause.azure_starbead_bucket": "Azure Starbead Bucket",
   "fluid_type.heliopause.scarlet_starbead": "Scarlet Starbead",
   "item.heliopause.scarlet_starbead_bucket": "Scarlet Starbead Bucket",
-  "fluid_type.heliopause.summer_star_essence": "Summer Star Essence",
-  "item.heliopause.summer_star_essence_bucket": "Summer Star Bucket",
-  "fluid_type.heliopause.winter_star_essence": "Winter Star Essence",
-  "item.heliopause.winter_star_essence_bucket": "Winter Star Bucket",
+  "fluid_type.heliopause.summer_star_essence": "Summer Prominence",
+  "item.heliopause.summer_star_essence_bucket": "Summer Prominence Bucket",
+  "fluid_type.heliopause.winter_star_essence": "Winter Prominence",
+  "item.heliopause.winter_star_essence_bucket": "Winter Prominence Bucket",
 
   "recipe.heliopause.roasting": "Roasting",
   "recipe.heliopause.transmutation": "Transmutation",
@@ -123,6 +123,9 @@
   "season.heliopause.month.12": "Dec.",
   "season.heliopause.date": " %s",
   "season.heliopause.time": "%1$s:%2$s",
+
+  "entity.heliopause.stellar_ingredient_entity": "Ingredient",
+  "entity.heliopause.lens_barrel_entity": "Lens Barrel",
 
   "heliopause.subtitle.siderostat_winding": "Mainspring winds",
   "heliopause.subtitle.siderostat_lock": "Siderostat operates",

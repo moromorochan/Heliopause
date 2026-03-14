@@ -100,9 +100,9 @@ public class WhirlRingParticles extends TextureSheetParticle {
         Vec3 cameraPos = camera.getPosition();
 
         //tick前の位置とtick後の位置を補完 & カメラからの相対座標に変換
-        float partialPosX = (float)(Mth.lerp((double)partialTicks, this.xo, this.x) - cameraPos.x());
-        float partialPosY = (float)(Mth.lerp((double)partialTicks, this.yo, this.y) - cameraPos.y());
-        float partialPosZ = (float)(Mth.lerp((double)partialTicks, this.zo, this.z) - cameraPos.z());
+        float partialPosX = (float)(Mth.lerp(partialTicks, this.xo, this.x) - cameraPos.x());
+        float partialPosY = (float)(Mth.lerp(partialTicks, this.yo, this.y) - cameraPos.y());
+        float partialPosZ = (float)(Mth.lerp(partialTicks, this.zo, this.z) - cameraPos.z());
 
         //軌道平面を取得
         Quaternionf orbitalPlane = getOrbitalPlane(partialTicks);
@@ -144,15 +144,15 @@ public class WhirlRingParticles extends TextureSheetParticle {
         float maxV = this.getV1();
         int lightColor = calcLight(this.getLightColor(partialTicks),lightIntensity);//lightIntensity;//Math.max(lightIntensity, this.getLightColor(partialTicks));
         //オモテ面
-        buffer.vertex((double)underVertexPosArray[0].x(), (double)underVertexPosArray[0].y(), (double)underVertexPosArray[0].z()).uv(maxU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-        buffer.vertex((double)underVertexPosArray[3].x(), (double)underVertexPosArray[3].y(), (double)underVertexPosArray[3].z()).uv(minU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-        buffer.vertex((double)underVertexPosArray[2].x(), (double)underVertexPosArray[2].y(), (double)underVertexPosArray[2].z()).uv(minU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-        buffer.vertex((double)underVertexPosArray[1].x(), (double)underVertexPosArray[1].y(), (double)underVertexPosArray[1].z()).uv(maxU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex(underVertexPosArray[0].x(), underVertexPosArray[0].y(), underVertexPosArray[0].z()).uv(maxU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex(underVertexPosArray[3].x(), underVertexPosArray[3].y(), underVertexPosArray[3].z()).uv(minU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex(underVertexPosArray[2].x(), underVertexPosArray[2].y(), underVertexPosArray[2].z()).uv(minU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex(underVertexPosArray[1].x(), underVertexPosArray[1].y(), underVertexPosArray[1].z()).uv(maxU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
         //ウラ面
-        buffer.vertex((double)overVertexPosArray[0].x(), (double)overVertexPosArray[0].y(), (double)overVertexPosArray[0].z()).uv(maxU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-        buffer.vertex((double)overVertexPosArray[1].x(), (double)overVertexPosArray[1].y(), (double)overVertexPosArray[1].z()).uv(maxU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-        buffer.vertex((double)overVertexPosArray[2].x(), (double)overVertexPosArray[2].y(), (double)overVertexPosArray[2].z()).uv(minU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-        buffer.vertex((double)overVertexPosArray[3].x(), (double)overVertexPosArray[3].y(), (double)overVertexPosArray[3].z()).uv(minU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex(overVertexPosArray[0].x(), overVertexPosArray[0].y(), overVertexPosArray[0].z()).uv(maxU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex(overVertexPosArray[1].x(), overVertexPosArray[1].y(), overVertexPosArray[1].z()).uv(maxU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex(overVertexPosArray[2].x(), overVertexPosArray[2].y(), overVertexPosArray[2].z()).uv(minU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
+        buffer.vertex(overVertexPosArray[3].x(), overVertexPosArray[3].y(), overVertexPosArray[3].z()).uv(minU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
 
         cameraDistance = Vector3f.length(overVertexPosArray[0].x(),overVertexPosArray[0].y(),overVertexPosArray[0].z());
     }

@@ -1,7 +1,6 @@
 package com.moromoro.heliopause.item;
 
 import com.moromoro.ConfigHolder;
-import com.moromoro.heliopause.entity.OrreryInteractionOperatorEntity;
 import com.moromoro.heliopause.instance.IhasHoverTexts;
 import com.moromoro.heliopause.registry.KeyMapRegistry;
 import net.minecraft.ChatFormatting;
@@ -275,7 +274,7 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasHoverTex
             }
         }
         //エンティティの場合
-        else if (hitResult.getType() == HitResult.Type.ENTITY) {
+        /*else if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity entity = ((EntityHitResult) hitResult).getEntity();
             if(entity.isRemoved()){
                 return tooltip;
@@ -287,32 +286,32 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasHoverTex
                 if (itemStack.getCount() == 1) {
                     //操作キーを押している間は行を反転
                     if (!KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
-                        /*tooltip.add(Component.literal("[").append(useKey).append("] :"));
-                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));*/
+                        *//*tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));*//*
                         tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
                         tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2").withStyle(ChatFormatting.GRAY));
                     } else {
                         tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
                         tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2"));
-                        /*tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
-                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1").withStyle(ChatFormatting.GRAY));*/
+                        *//*tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1").withStyle(ChatFormatting.GRAY));*//*
                     }
                 } else {
                     //操作キーを押している間は行を反転
                     if (!KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
-                        /*tooltip.add(Component.literal("[").append(useKey).append("] :"));
-                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));*/
+                        *//*tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));*//*
                         tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
                         tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2").withStyle(ChatFormatting.GRAY));
                     } else {
                         tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
                         tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
-                        /*tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
-                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1").withStyle(ChatFormatting.GRAY));*/
+                        *//*tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1").withStyle(ChatFormatting.GRAY));*//*
                     }
                 }
             }
-        }
+        }*/
         return tooltip;
     }
 

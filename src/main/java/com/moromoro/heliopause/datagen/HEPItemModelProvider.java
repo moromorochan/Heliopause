@@ -28,6 +28,10 @@ public class HEPItemModelProvider extends net.minecraftforge.client.model.genera
         simpleItem(FluidRegistry.STARRY_MIXTURE.bucket());
         simpleItem(FluidRegistry.LIQUEFIED_STARLIGHT.bucket());
         simpleItem(FluidRegistry.LIQUEFIED_TWILIGHT.bucket());
+        simpleItem(FluidRegistry.AZURE_STARBEAD.bucket());
+        simpleItem(FluidRegistry.SCARLET_STARBEAD.bucket());
+        simpleItem(FluidRegistry.SUMMER_STAR_ESSENCE.bucket());
+        simpleItem(FluidRegistry.WINTER_STAR_ESSENCE.bucket());
         //simpleItem(ItemRegistry.CHALK_ITEM);
         //simpleItem(ItemRegistry.VIAL_ITEM);
         //simpleItem(ItemRegistry.LARGE_BOTTLE_ITEM);

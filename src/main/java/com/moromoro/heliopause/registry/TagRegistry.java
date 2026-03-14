@@ -19,6 +19,9 @@ public class TagRegistry {
 
         public static final TagKey<Block> MAIN_MIRROR = tagBlock("main_mirror");
         public static final TagKey<Block> SECOND_MIRROR = tagBlock("secondary_mirror");
+
+        // 互換性(仮)
+        public static final TagKey<Block> CREATE_BRITTLE = BlockTags.create(new ResourceLocation("create", "brittle"));
     }
 
     private static TagKey<Item> tagItem(String name) {

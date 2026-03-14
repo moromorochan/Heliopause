@@ -28,7 +28,7 @@ public class BlockRegistry {
 
     // ブロックの作成
     //錬金焚き火
-    public static final RegistryObject<Block> ALCHEMY_CAMPFIRE =
+    /*public static final RegistryObject<Block> ALCHEMY_CAMPFIRE =
         registerBlock("alchemy_campfire",
             () -> new AlchemyCampfireBlock(
                 true, 0,
@@ -36,7 +36,7 @@ public class BlockRegistry {
                     .noOcclusion()
                     .strength(1.0f)
                     .lightLevel(blockState -> blockState.getValue(AlchemyCampfireBlock.LIT) ? 15 : 0)
-            ));
+            ));*/
     //錬金こん炉
     public static final RegistryObject<Block> ALCHEMY_STOVE =
         registerBlock("alchemy_stove",
@@ -55,7 +55,7 @@ public class BlockRegistry {
                     )
             );
     //オーブ
-    public static final RegistryObject<Block> ORB =
+    /*public static final RegistryObject<Block> ORB =
         registerBlock("orb",() -> new OrbBlock(
                     BlockBehaviour.Properties.of()
                             .strength(1.0f)
@@ -63,7 +63,7 @@ public class BlockRegistry {
                             .noOcclusion()
                             .noParticlesOnBreak()
                         .noLootTable()
-            ));
+            ));*/
 
     // 材料保持ブロック
     public static final RegistryObject<Block> STELLAR_INGREDIENT_BLOCK =
@@ -86,20 +86,20 @@ public class BlockRegistry {
                             .noParticlesOnBreak()
             ));*/
     //中心星
-    public static final RegistryObject<Block> CENTRAL_STAR =
+    /*public static final RegistryObject<Block> CENTRAL_STAR =
         registerBlock("central_star",
             () -> new CentralStarBlock(
                 BlockBehaviour.Properties.of()
                     .noLootTable()
                     .strength(0.5f)
                     .lightLevel(blockState -> 15)
-            ));
+            ));*/
     //軌道面インタラクト用ブロック
-    public static final RegistryObject<Block> ORRERY_SPACE =
+    /*public static final RegistryObject<Block> ORRERY_SPACE =
         registerBlock("orrery_space",
             ()-> new OrrerySpaceBlock(
                 BlockBehaviour.Properties.of()
-            ));
+            ));*/
 
     //流体ケージ
     public static final RegistryObject<Block> FLUID_CAGE =
@@ -197,7 +197,7 @@ public class BlockRegistry {
 
     //液体散布器
         //オーブ
-    public static final RegistryObject<Block> FLUID_SPREADER_ORB =
+    /*public static final RegistryObject<Block> FLUID_SPREADER_ORB =
         registerBlock("fluid_spreader_orb",() -> new FluidSpreaderOrbBlock(
                     BlockBehaviour.Properties.of()
                             .strength(1.0f)
@@ -205,14 +205,14 @@ public class BlockRegistry {
                             .noOcclusion()
                             .noParticlesOnBreak()
                         .noLootTable()
-            ));
+            ));*/
         //塔
-    public static final RegistryObject<Block> FLUID_SPREADER_TOWER =
+    /*public static final RegistryObject<Block> FLUID_SPREADER_TOWER =
             registerBlock("fluid_spreader_tower",() -> new FluidSpreaderTowerBlock(
                    BlockBehaviour.Properties.of()
                            .strength(1.0f)
                            .sound(SoundType.WOOD)
-            ));
+            ));*/
     /*public static final RegistryObject<Block> FLUID_SPREADER =
             BLOCKS.register("fluid_spreader",() -> new FluidSpreaderBlock(
                     BlockBehaviour.Properties.of()

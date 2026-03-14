@@ -478,7 +478,7 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
             poseStack.pushPose();
             poseStack.translate(0,offsetY, orbitalRadius);
             poseStack.rotateAround(
-                new Quaternionf().rotateY((float) angle), 0.5f, 0.5f, 0.5f - (float) orbitalRadius);
+                new Quaternionf().rotateY((float) angle), 0.5f, 0.5f, 0.5f - orbitalRadius);
             poseStack.translate((scale+1)*0.5, 0,0);
             poseStack.scale(-scale,1,1);
             int visualLight = calcLight(getVisualPosLight(
@@ -496,7 +496,7 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
             poseStack.pushPose();
             poseStack.translate(0,offsetY, orbitalRadius);
             poseStack.rotateAround(
-                new Quaternionf().rotateY((float) angle), 0.5f, 0.5f, 0.5f - (float) orbitalRadius);
+                new Quaternionf().rotateY((float) angle), 0.5f, 0.5f, 0.5f - orbitalRadius);
             poseStack.translate((1-scale)*0.5, 0,0);
             poseStack.scale(scale,1,1);
             int visualLight = calcLight(getVisualPosLight(
@@ -514,7 +514,7 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
             poseStack.pushPose();
             poseStack.translate(0,offsetY, orbitalRadius);
             poseStack.rotateAround(
-                new Quaternionf().rotateY((float) angle), 0.5f, 0.5f, 0.5f - (float) orbitalRadius);
+                new Quaternionf().rotateY((float) angle), 0.5f, 0.5f, 0.5f - orbitalRadius);
             poseStack.translate((1-scale)*0.5, 0,0);
             poseStack.scale(scale,1,1);
             int visualLight = calcLight(getVisualPosLight(
@@ -541,7 +541,7 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
             poseStack.pushPose();
             poseStack.translate(0,offsetY, orbitalRadius);
             poseStack.rotateAround(
-                new Quaternionf().rotateY((float) angle), 0.5f, 0.5f, 0.5f - (float) orbitalRadius);
+                new Quaternionf().rotateY((float) angle), 0.5f, 0.5f, 0.5f - orbitalRadius);
             poseStack.translate((1-scale)*0.5, 0,0);
             poseStack.scale(scale,1,1);
             int visualLight = calcLight(getVisualPosLight(
@@ -578,8 +578,8 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
         for (int i = 0; i <= segments; i++) {
             float angle = Math.toRadians(angleStart) + i * angleIncrement;
             //頂点座標を用意
-            float x1 = circleRadius * (float) Math.cos(angle);
-            float y1 = circleRadius * (float) Math.sin(angle);
+            float x1 = circleRadius * Math.cos(angle);
+            float y1 = circleRadius * Math.sin(angle);
 
             buffer.vertex(poseStack.last().pose(), x1, 0, y1)
                 .color(red, green, blue, 255)
@@ -619,10 +619,10 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
         for (int i = 0; i <= segments; i++) {
             float angle = i * angleIncrement;
             //頂点座標を用意
-            float x1 = circleRadius * (float) Math.cos(angle);
-            float y1 = circleRadius * (float) Math.sin(angle);
-            float x2 = (circleRadius+ (inner ? -0.1f: 0.1f)) * (float) Math.cos(angle);
-            float y2 = (circleRadius+ (inner ? -0.1f: 0.1f)) * (float) Math.sin(angle);
+            float x1 = circleRadius * Math.cos(angle);
+            float y1 = circleRadius * Math.sin(angle);
+            float x2 = (circleRadius+ (inner ? -0.1f: 0.1f)) * Math.cos(angle);
+            float y2 = (circleRadius+ (inner ? -0.1f: 0.1f)) * Math.sin(angle);
 
             buffer.vertex(poseStack.last().pose(), x1, 0, y1)
                 .color(red, green, blue, 255)

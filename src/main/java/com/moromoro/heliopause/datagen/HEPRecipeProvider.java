@@ -127,7 +127,7 @@ public class HEPRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                     leaves, 1,
                     400, 0.1f
                 ).unlockedBy("has_sapling", has(sapling))
-                .save(consumer, new ResourceLocation(Heliopause.MODID, MoonlightPouringRecipe.Type.ID +"/"+ sapling.toString()));
+                .save(consumer, new ResourceLocation(Heliopause.MODID, MoonlightPouringRecipe.Type.ID +"/"+ sapling));
         }
 
         // 方解石

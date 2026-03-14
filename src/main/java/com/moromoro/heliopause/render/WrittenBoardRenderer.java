@@ -64,7 +64,7 @@ public class WrittenBoardRenderer<T extends AbstractWrittenBoardBlockEntity> imp
         float[] debugColor = {1f,1f,1f};
         if(instance.options.renderDebug){
             combinedLight = 0xF000F0;
-            debugColor[0] = RandomSource.create(rootPos.getX()).nextInt(0,255)/255f;/*(rootPos.getX() % 16 + 16) / 32f*/;
+            debugColor[0] = RandomSource.create(rootPos.getX()).nextInt(0,255)/255f;/*(rootPos.getX() % 16 + 16) / 32f*/
             debugColor[1] = RandomSource.create(rootPos.getY()).nextInt(0,255)/255f;//(rootPos.getY() % 16 + 16) / 32f;
             debugColor[2] = RandomSource.create(rootPos.getZ()).nextInt(0,255)/255f;//(rootPos.getZ() % 16 + 16) / 32f;
             // ノードにオーバーレイ

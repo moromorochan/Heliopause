@@ -32,7 +32,7 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
     private static final float FLUID_TOP = 13f;
     private static final float FLUID_BOTTOM = 2f;//(float) (CrucibleBlock.INNER.min(Direction.Axis.Y));
 
-    private static HashMap<BlockPos,FluidStack> fluidList = new HashMap<>();
+    private static final HashMap<BlockPos,FluidStack> fluidList = new HashMap<>();
 
     public static void updateData(BlockPos pos, FluidStack updateStack) {
         if(updateStack.getAmount() == 0){removeData(pos); return;}

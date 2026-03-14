@@ -90,10 +90,10 @@
   "item.heliopause.azure_starbead_bucket": "瑠璃色の星雫入りバケツ",
   "fluid_type.heliopause.scarlet_starbead": "緋色の星雫",
   "item.heliopause.scarlet_starbead_bucket": "緋色の星雫入りバケツ",
-  "fluid_type.heliopause.summer_star_essence": "夏星の精髄",
-  "item.heliopause.summer_star_essence_bucket": "夏星の精髄入りバケツ",
-  "fluid_type.heliopause.winter_star_essence": "冬星の精髄",
-  "item.heliopause.winter_star_essence_bucket": "冬星の精髄入りバケツ",
+  "fluid_type.heliopause.summer_star_essence": "夏の精髄",
+  "item.heliopause.summer_star_essence_bucket": "夏の精髄入りバケツ",
+  "fluid_type.heliopause.winter_star_essence": "冬の精髄",
+  "item.heliopause.winter_star_essence_bucket": "冬の精髄入りバケツ",
 
   "recipe.heliopause.roasting": "焙煎",
   "recipe.heliopause.transmutation": "錬成",
@@ -122,6 +122,9 @@
   "season.heliopause.month.12": "12月",
   "season.heliopause.date": " %s日",
   "season.heliopause.time": "%1$s:%2$s",
+
+  "entity.heliopause.stellar_ingredient_entity": "材料",
+  "entity.heliopause.lens_barrel_entity": "鏡筒",
 
   "heliopause.subtitle.siderostat_winding": "ゼンマイが巻かれる",
   "heliopause.subtitle.siderostat_lock": "シデロスタットが動作する",

@@ -740,8 +740,8 @@ public class ConcentratorScreen extends AbstractContainerScreen<ConcentratorMenu
                     continue;
                 }
                 radY = Math.toRadians(horizontalCoordinate.y());
-                screenX = (1+Math.cos(radX)*Math.cos(radY))*56;
-                screenY = (1+Math.sin(radX)*Math.cos(radY))*56;
+                screenX = (1+Math.cos(radX)*Math.cos(radY))*56; //- size/2d;
+                screenY = (1+Math.sin(radX)*Math.cos(radY))*56; //+ size/2d;
             }else{
                 horizontalCoordinate = new Vector2d((starCoordinate.x() + scrollOffset)%360, starCoordinate.y());
                 if(horizontalCoordinate.x() > 180){
@@ -754,8 +754,8 @@ public class ConcentratorScreen extends AbstractContainerScreen<ConcentratorMenu
                 screenY = (1+Math.sin(radY))*56 + (Math.sin(radX))*6;
             }
 
-            double distanceX = Math.abs(x + screenX - size/2d - mouseX);
-            double distanceY = Math.abs(y + screenY + size/2d - mouseY);
+            double distanceX = Math.abs(x + screenX - mouseX);
+            double distanceY = Math.abs(y + screenY - mouseY);
             if( distanceX < size/2d && distanceY < size/2d){
                 double distance = Vector2d.length(distanceX, distanceY);
                 if(distance < lastDistance){
@@ -807,27 +807,41 @@ public class ConcentratorScreen extends AbstractContainerScreen<ConcentratorMenu
         for (int i = 0; i < 3; i++) {
             int xPos = x + 19 + 28 * i;
             int yPos = y + 34;
-            boolean hover = (mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 13);
             switch (isRecipeValid[i]) {
+                case INVALID_SIGHT, TANK_FULL -> {
+                    break;
+                }
                 case VALID -> {
                     int height = Mth.clamp((int) ((13.0 * recipeProgress[i]) / PROGRESS_DIVIDE), 0, 13);
-                    graphics.blit(TEXTURE, x + 19 + 28 * i, y + 34, 0, 476, 18, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-                    if(hover){
+                    graphics.blit(TEXTURE, xPos, yPos, 0, 476, 18, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+                    break;
+                }
+                case INVALID_NO_RECIPE, INVALID_ACCURACY -> {
+                    graphics.blit(TEXTURE, xPos, yPos, 18, 476, 18, 13, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            int xPos = x + 19 + 28 * i;
+            int yPos = y + 34;
+            boolean hover = (mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 13);
+            if(hover){
+                switch (isRecipeValid[i]) {
+                    case INVALID_NO_RECIPE, TANK_FULL -> {
+                        break;
+                    }
+                    case VALID -> {
                         graphics.renderTooltip(font, Component.literal("観測中"), mouseX, mouseY);
+                        break;
                     }
-                }
-                case INVALID_NO_RECIPE -> {
-                    graphics.blit(TEXTURE, x + 19 + 28 * i, y + 34, 18, 476, 18, 13, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-                }
-                case INVALID_SIGHT -> {
-                    if(hover){
+                    case INVALID_SIGHT -> {
                         graphics.renderTooltip(font, Component.literal("観測環境を待機中"), mouseX, mouseY);
+                        break;
                     }
-                }
-                case INVALID_ACCURACY -> {
-                    graphics.blit(TEXTURE, x + 19 + 28 * i, y + 34, 18, 476, 18, 13, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-                    if(hover){
+                    case INVALID_ACCURACY -> {
                         graphics.renderTooltip(font, Component.literal("鏡筒の精度が足りない!"), mouseX, mouseY);
+                        break;
                     }
                 }
             }

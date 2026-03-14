@@ -240,7 +240,7 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
             return 0.0;
         }
         //ドット数の計算
-        int divisor = (int) Math.round(resolution * meshSize);
+        int divisor = Math.round(resolution * meshSize);
         //メッシュが小さすぎてドット数が0になる場合、メッシュの大きさを返す
         if(divisor == 0){
             return meshSize;

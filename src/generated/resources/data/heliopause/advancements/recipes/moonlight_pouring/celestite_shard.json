@@ -1,3 +1,22 @@
 {
-  "criteria": {}
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sand": {
+      "items": [
+        {
+          "tag": "forge:sand"
+        }
+      ]
+    }
+  },
+  "requirements": [
+    [
+      "has_sand"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "heliopause:moonlight_pouring/celestite_shard"
+    ]
+  }
 }

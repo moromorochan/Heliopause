@@ -111,19 +111,19 @@ public class FluidRegistry {
             FluidType.Properties.create().density(1000).viscosity(1000));
 
     public static final FluidEntry AZURE_STARBEAD =
-        registerFluidPair("azure_starbead",BlockBehaviour.Properties.copy(Blocks.WATER),
-            FluidType.Properties.create().density(1000).viscosity(1000));
+        registerFluidPair("azure_starbead",BlockBehaviour.Properties.copy(Blocks.WATER).lightLevel((blockState)-> 7),
+            FluidType.Properties.create().density(1000).viscosity(1000).lightLevel(7));
 
     public static final FluidEntry SCARLET_STARBEAD =
-        registerFluidPair("scarlet_starbead",BlockBehaviour.Properties.copy(Blocks.WATER),
-            FluidType.Properties.create().density(1000).viscosity(1000));
+        registerFluidPair("scarlet_starbead",BlockBehaviour.Properties.copy(Blocks.WATER).lightLevel((blockState)-> 7),
+            FluidType.Properties.create().density(1000).viscosity(1000).lightLevel(7));
 
     public static final FluidEntry SUMMER_STAR_ESSENCE =
         registerFluidPair("summer_star_essence",BlockBehaviour.Properties.copy(Blocks.WATER),
-            FluidType.Properties.create().density(1000).viscosity(1000));
+            FluidType.Properties.create().density(1000).viscosity(1000).lightLevel(15));
 
     public static final FluidEntry WINTER_STAR_ESSENCE =
         registerFluidPair("winter_star_essence",BlockBehaviour.Properties.copy(Blocks.WATER),
-            FluidType.Properties.create().density(1000).viscosity(1000));
+            FluidType.Properties.create().density(1000).viscosity(1000).lightLevel(15));
 
 }

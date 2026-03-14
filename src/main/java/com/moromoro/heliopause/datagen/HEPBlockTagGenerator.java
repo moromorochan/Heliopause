@@ -11,7 +11,6 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.text.html.HTML;
 import java.util.concurrent.CompletableFuture;
 
 public class HEPBlockTagGenerator extends BlockTagsProvider {
@@ -30,22 +29,28 @@ public class HEPBlockTagGenerator extends BlockTagsProvider {
                 BlockRegistry.CRUCIBLE.get(),
                 BlockRegistry.BLACKBOARD.get(),
                 BlockRegistry.WRITTEN_BOARD.get(),
-                BlockRegistry.ORRERY_CIRCLE_BOARD.get()
+                BlockRegistry.ORRERY_CIRCLE_BOARD.get(),
+                BlockRegistry.ALT_AZIMUTH_CIRCLE_BOARD.get(),
+                BlockRegistry.CONCENTRATOR.get()
             );
 
         this.tag(BlockTags.MINEABLE_WITH_AXE)
             .add(
                 BlockRegistry.FLUID_CAGE.get(),
                 BlockRegistry.ROASTING_TABLE.get(),
-                BlockRegistry.FLUID_SPREADER_TOWER.get(),
+                //BlockRegistry.FLUID_SPREADER_TOWER.get(),
                 BlockRegistry.SIDEROSTAT_BASE.get(),
-                BlockRegistry.SIDEROSTAT_TOP.get()
+                BlockRegistry.SIDEROSTAT_TOP.get(),
+                BlockRegistry.CONCENTRATOR.get(),
+                BlockRegistry.WOODEN_LENS_BARREL_BLOCK.get(),
+                BlockRegistry.WOODEN_MAIN_MIRROR_BLOCK.get(),
+                BlockRegistry.WOODEN_SECOND_MIRROR_BLOCK.get()
             );
 
-        this.tag(BlockTags.CAMPFIRES)
+        /*this.tag(BlockTags.CAMPFIRES)
             .add(
                 BlockRegistry.ALCHEMY_CAMPFIRE.get()
-            );
+            );*/
 
         this.tag(TagRegistry.Blocks.WOODEN_LENS_BARREL)
             .add(
@@ -60,6 +65,13 @@ public class HEPBlockTagGenerator extends BlockTagsProvider {
         this.tag(TagRegistry.Blocks.SECOND_MIRROR)
             .add(
                 BlockRegistry.WOODEN_SECOND_MIRROR_BLOCK.get()
+            );
+
+        this.tag(TagRegistry.Blocks.CREATE_BRITTLE/*AllTags.AllBlockTags.BRITTLE.tag*/)
+            .add(
+                BlockRegistry.FLUID_CAGE.get(),
+                BlockRegistry.SIDEROSTAT_BASE.get(),
+                BlockRegistry.SIDEROSTAT_TOP.get()
             );
     }
 }

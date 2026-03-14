@@ -3,6 +3,7 @@ package com.moromoro.heliopause.recipe;
 import com.google.gson.JsonObject;
 import com.moromoro.Heliopause;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -107,12 +108,34 @@ public class MoonlightPouringRecipeBuilder implements RecipeBuilder {
 
             @Override
             public JsonObject serializeAdvancement() {
+                JsonObject advancement = new JsonObject();
+                // 親にルートを設定
+                advancement.addProperty("parent", "minecraft:recipes/root");
 
-                JsonObject adv = new JsonObject();
+                // criteria を追加
                 JsonObject criteriaJson = new JsonObject();
+                for (Map.Entry<String, CriterionTriggerInstance> entry : criteria.entrySet()) {
+                    criteriaJson.add(entry.getKey(), entry.getValue().serializeToJson(SerializationContext.INSTANCE));
+                }
+                advancement.add("criteria", criteriaJson);
 
-                adv.add("criteria", criteriaJson);
-                return adv;
+                // rewards にレシピIDを入れる
+                JsonObject rewards = new JsonObject();
+                com.google.gson.JsonArray recipesArray = new com.google.gson.JsonArray();
+                recipesArray.add(id.toString());
+                rewards.add("recipes", recipesArray);
+                advancement.add("rewards", rewards);
+
+                // requirementsをorで設定
+                com.google.gson.JsonArray requirements = new com.google.gson.JsonArray();
+                for (String name : criteria.keySet()) {
+                    com.google.gson.JsonArray single = new com.google.gson.JsonArray();
+                    single.add(name);
+                    requirements.add(single);
+                }
+                advancement.add("requirements", requirements);
+
+                return advancement;
             }
 
             @Override

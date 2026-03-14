@@ -1,3 +1,24 @@
 {
-  "criteria": {}
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_celestite": {
+      "items": [
+        {
+          "items": [
+            "heliopause:celestite_shard"
+          ]
+        }
+      ]
+    }
+  },
+  "requirements": [
+    [
+      "has_celestite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "heliopause:moonlight_pouring/calcite"
+    ]
+  }
 }

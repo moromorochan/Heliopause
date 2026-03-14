@@ -25,13 +25,13 @@ public class BlockEntityRegistry {
                     ).build(null)
             );
         //液球
-    public static final RegistryObject<BlockEntityType<OrbBlockEntity>> ORB_BE =
+    /*public static final RegistryObject<BlockEntityType<OrbBlockEntity>> ORB_BE =
             BLOCKENTITIES.register("orb",() ->
                     BlockEntityType.Builder.of(
                             OrbBlockEntity::new,
                             BlockRegistry.ORB.get()
                     ).build(null)
-            );
+            );*/
         //液体ケージ
     public static final RegistryObject<BlockEntityType<FluidCageBlockEntity>> FLUID_CAGE_BE =
             BLOCKENTITIES.register("fluid_cage",() ->
@@ -41,21 +41,21 @@ public class BlockEntityRegistry {
                     ).build(null)
             );
         //流体散布塔 中心星
-    public static final RegistryObject<BlockEntityType<FluidSpreaderOrbBlockEntity>> FLUID_SPREADER_ORB_BE =
+    /*public static final RegistryObject<BlockEntityType<FluidSpreaderOrbBlockEntity>> FLUID_SPREADER_ORB_BE =
                 BLOCKENTITIES.register("fluid_spreader_orb",()->
                         BlockEntityType.Builder.of(
                                 FluidSpreaderOrbBlockEntity::new,
                                 BlockRegistry.FLUID_SPREADER_ORB.get()
                         ).build(null)
-                );
+                );*/
         //中心星
-    public static final RegistryObject<BlockEntityType<CentralStarBlockEntity>> CENTRAL_STAR_BE =
+    /*public static final RegistryObject<BlockEntityType<CentralStarBlockEntity>> CENTRAL_STAR_BE =
         BLOCKENTITIES.register("central_star",()->
             BlockEntityType.Builder.of(
                 CentralStarBlockEntity::new,
                 BlockRegistry.CENTRAL_STAR.get()
             ).build(null)
-        );
+        );*/
         //焙炉
     public static final RegistryObject<BlockEntityType<RoastingTableBlockEntity>> ROASTING_TABLE_BE =
             BLOCKENTITIES.register("alchemy_roasting_table",() ->

@@ -1,5 +1,6 @@
 package com.moromoro.heliopause.generic;
 
+import com.moromoro.heliopause.compat.TerraFirmaCraftModCompat;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
@@ -13,14 +14,12 @@ public class Season {
     public static final long SEASON_LENGTH = MONTH_DATES * SEASON_MONTHS;
     public static final long YEAR_LENGTH = SEASON_LENGTH * 4;
 
-    public static final int SPRING_INDEX = 0;
-    public static final int SUMMER_INDEX = 1;
-    public static final int AUTUMN_INDEX = 2;
-    public static final int WINTER_INDEX = 3;
-
-    //private static long dateOffset = 0;
-
     public static long getDayInYear(ServerLevel level){
+        // TFCが導入されているならTFCのカレンダーを取得
+        if(TerraFirmaCraftModCompat.isLoadedTFC){
+            return TerraFirmaCraftModCompat.getTFCDayInYear(level);
+        }
+        // ないならgameTimeから変換
         long totalTicks = level.getGameTime();
         long totalDays = totalTicks / 24000L;
         return Math.floorMod(totalDays + SEASON_OFFSET.get(), YEAR_LENGTH);
@@ -33,14 +32,6 @@ public class Season {
     public static int getSeason(long dayInYear){
         return (int) Math.floorDiv(dayInYear, SEASON_LENGTH);
     }
-
-    /*public static long getDateOffset() {
-        return dateOffset;
-    }
-
-    public static void setDateOffset(int newOffset) {
-        dateOffset = newOffset;
-    }*/
 
     public static String getDateTranslatable(long dayInYear, long timeInDay){
         // 日

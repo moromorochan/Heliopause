@@ -18,10 +18,10 @@ public enum KeyMapRegistry {
     ;
 
     private KeyMapping keyMapping;
-    private String keyApplication;
-    private int keyCode;
+    private final String keyApplication;
+    private final int keyCode;
 
-    private KeyMapRegistry(String application, int defaultKey){
+    KeyMapRegistry(String application, int defaultKey){
         this.keyApplication = "keybinding."+ Heliopause.MODID + "."+ application;
         this.keyCode = defaultKey;
     }

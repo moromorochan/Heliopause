@@ -50,16 +50,16 @@ public class StarRippleParticles extends TextureSheetParticle {
         float f5 = this.getV1();
         int j = this.getLightColor(partialTicks);
         // オモテ
-        p_107678_.vertex((double)meshVector[0].x(), (double)meshVector[0].y(), (double)meshVector[0].z()).uv(f7, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        p_107678_.vertex((double)meshVector[1].x(), (double)meshVector[1].y(), (double)meshVector[1].z()).uv(f7, f4).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        p_107678_.vertex((double)meshVector[2].x(), (double)meshVector[2].y(), (double)meshVector[2].z()).uv(f6, f4).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        p_107678_.vertex((double)meshVector[3].x(), (double)meshVector[3].y(), (double)meshVector[3].z()).uv(f6, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        p_107678_.vertex(meshVector[0].x(), meshVector[0].y(), meshVector[0].z()).uv(f7, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        p_107678_.vertex(meshVector[1].x(), meshVector[1].y(), meshVector[1].z()).uv(f7, f4).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        p_107678_.vertex(meshVector[2].x(), meshVector[2].y(), meshVector[2].z()).uv(f6, f4).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        p_107678_.vertex(meshVector[3].x(), meshVector[3].y(), meshVector[3].z()).uv(f6, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
 
         //ウラ
-        p_107678_.vertex((double)meshVector[0].x(), (double)meshVector[0].y(), (double)meshVector[0].z()).uv(f7, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        p_107678_.vertex((double)meshVector[3].x(), (double)meshVector[3].y(), (double)meshVector[3].z()).uv(f7, f4).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        p_107678_.vertex((double)meshVector[2].x(), (double)meshVector[2].y(), (double)meshVector[2].z()).uv(f6, f4).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        p_107678_.vertex((double)meshVector[1].x(), (double)meshVector[1].y(), (double)meshVector[1].z()).uv(f6, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        p_107678_.vertex(meshVector[0].x(), meshVector[0].y(), meshVector[0].z()).uv(f7, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        p_107678_.vertex(meshVector[3].x(), meshVector[3].y(), meshVector[3].z()).uv(f7, f4).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        p_107678_.vertex(meshVector[2].x(), meshVector[2].y(), meshVector[2].z()).uv(f6, f4).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        p_107678_.vertex(meshVector[1].x(), meshVector[1].y(), meshVector[1].z()).uv(f6, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
 
     }
 

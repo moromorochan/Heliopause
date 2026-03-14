@@ -1,3 +1,22 @@
 {
-  "criteria": {}
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_copper": {
+      "items": [
+        {
+          "tag": "forge:ingots/copper"
+        }
+      ]
+    }
+  },
+  "requirements": [
+    [
+      "has_copper"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "heliopause:moonlight_pouring/alchemy_biron_ingot"
+    ]
+  }
 }

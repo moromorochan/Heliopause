@@ -30,7 +30,7 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
         blockWithItem(BlockRegistry.GLOWSTONE_ALLOY_BLOCK);
         customModelBlockWithItem(BlockRegistry.CRUCIBLE);
         litableBlockWithItem(BlockRegistry.ROASTING_TABLE,false);
-        customModelBlockWithItem(BlockRegistry.ALCHEMY_CAMPFIRE);
+        //customModelBlockWithItem(BlockRegistry.ALCHEMY_CAMPFIRE);
 
         // モデルなしブロック
         simpleBlock(BlockRegistry.STELLAR_INGREDIENT_BLOCK.get(), models().getExistingFile(mcLoc("block/air")));
@@ -48,7 +48,7 @@ public class HEPBlockStateProvider extends net.minecraftforge.client.model.gener
         lensBarrelBlockWithItem(BlockRegistry.WOODEN_MAIN_MIRROR_BLOCK, "main","wooden");
         lensBarrelBlockWithItem(BlockRegistry.WOODEN_SECOND_MIRROR_BLOCK, "secondary","wooden");
 
-        simpleBlock(BlockRegistry.CENTRAL_STAR.get(),models().getExistingFile(mcLoc("block/air")));
+        //simpleBlock(BlockRegistry.CENTRAL_STAR.get(),models().getExistingFile(mcLoc("block/air")));
         //simpleBlock(BlockRegistry.SIDEROSTAT_MOON.get(), models().getExistingFile(modLoc("block/celestial_bodies/moon")));
 
         simpleBlock(BlockRegistry.SIDEROSTAT_BASE.get(), models().getExistingFile(modLoc("block/siderostat/mount")));

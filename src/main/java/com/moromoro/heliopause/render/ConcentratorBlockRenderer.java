@@ -29,7 +29,6 @@ public class ConcentratorBlockRenderer<T extends ConcentratorBlockEntity> implem
     @Override
     public void render(@NotNull T entity, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         if(entity.getBlockState().getValue(ConcentratorBlock.ENABLED).equals(false)){
-            return;
         }
 
         // 角度を取得

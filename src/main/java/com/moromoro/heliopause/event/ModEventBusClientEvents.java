@@ -29,6 +29,10 @@ public class ModEventBusClientEvents {
     public static void onClientSetup(FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(FluidRegistry.LIQUEFIED_STARLIGHT.still().get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(FluidRegistry.LIQUEFIED_STARLIGHT.flowing().get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(FluidRegistry.AZURE_STARBEAD.still().get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(FluidRegistry.AZURE_STARBEAD.flowing().get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(FluidRegistry.SCARLET_STARBEAD.still().get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(FluidRegistry.SCARLET_STARBEAD.flowing().get(), RenderType.translucent());
         //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.SIDEROSTAT_MOON.get(), RenderType.translucent());
     }
 
@@ -37,12 +41,12 @@ public class ModEventBusClientEvents {
     public static void registerBER(EntityRenderersEvent.RegisterRenderers event){
         //ブロックエンティティ
         event.registerBlockEntityRenderer(BlockEntityRegistry.CRUCIBLE_BE.get(), CrucibleBlockRenderer::new);
-        event.registerBlockEntityRenderer(BlockEntityRegistry.ORB_BE.get(), OrbBlockRenderer::new);
+        //event.registerBlockEntityRenderer(BlockEntityRegistry.ORB_BE.get(), OrbBlockRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.FLUID_CAGE_BE.get(), FluidCageBlockRenderer::new);
         //event.registerBlockEntityRenderer(BlockEntityRegistry.FLUID_SPREADER_BE.get(), FluidSpreaderBlockRenderer::new);
         //event.registerBlockEntityRenderer(BlockEntityRegistry.COMET_CORE_BE.get(), CometCoreBlockRenderer::new);
-        event.registerBlockEntityRenderer(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), CentralStarBlockRenderer::new);
-        event.registerBlockEntityRenderer(BlockEntityRegistry.CENTRAL_STAR_BE.get(), CentralStarBlockRenderer::new);
+        //event.registerBlockEntityRenderer(BlockEntityRegistry.FLUID_SPREADER_ORB_BE.get(), CentralStarBlockRenderer::new);
+        //event.registerBlockEntityRenderer(BlockEntityRegistry.CENTRAL_STAR_BE.get(), CentralStarBlockRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.SIDEROSTAT_BE.get(), SiderostatRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.WRITTEN_BOARD_BE.get(), WrittenBoardRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityRegistry.ORRERY_CIRCLE_BOARD_BE.get(), OrreryCircleBoardRenderer::new);

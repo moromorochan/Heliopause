@@ -1,6 +1,7 @@
 package com.moromoro;
 
 import com.mojang.logging.LogUtils;
+import com.moromoro.heliopause.compat.TerraFirmaCraftModCompat;
 import com.moromoro.heliopause.event.TooltipEventHandler;
 import com.moromoro.heliopause.item.FluidBottle;
 import com.moromoro.heliopause.registry.*;
@@ -16,10 +17,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -46,11 +49,16 @@ public class Heliopause {
     // slf4j logger を参照
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    //ブロック・ブロックエンティティ・アイテムの登録
+    IEventBus modEventBus;
 
+    //ブロック・ブロックエンティティ・アイテムの登録
     public Heliopause()
     {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        // 互換性登録
+        modEventBus.addListener(this::commonSetup);
+
         // Deferred Register を MOD イベント バスに登録して、ブロック・アイテム・クリエイティブタブが登録されるように
         BLOCKS.register(modEventBus);
         BLOCKENTITIES.register(modEventBus);
@@ -81,6 +89,15 @@ public class Heliopause {
     {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+    }
+
+    private void commonSetup(final FMLCommonSetupEvent event) {
+        LOGGER.info("HELLO FROM COMMON SETUP");
+        event.enqueueWork(() -> {
+            if(ModList.get().isLoaded("tfc")){
+                TerraFirmaCraftModCompat.init(modEventBus);
+            }
+        });
     }
 
     // EventBusSubscriber を使用すると、@SubscribeEvent アノテーションが付けられたクラス内のすべての静的メソッドを自動的に登録できる
