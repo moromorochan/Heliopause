@@ -161,6 +161,10 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:terrafirmacraft-302973:7442504")
     //implementation fg.deobf('curse.maven:terrafirmacraft-302973:7452541')
 
+    // KubeJS
+    compileOnly fg.deobf("curse.maven:kubejs-238086:5853326")
+    compileOnly fg.deobf("curse.maven:rhino-416294:6186971")
+
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
     // The group id is ignored when searching -- in this case, it is "blank"
