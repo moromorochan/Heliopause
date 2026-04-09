@@ -2,7 +2,7 @@ package com.moromoro.heliopause.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
+import com.moromoro.heliopause.registry.enumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.block.AbstractWrittenBoardBlock;
 import com.moromoro.heliopause.blockEntity.AbstractWrittenBoardBlockEntity;
 import com.moromoro.heliopause.item.CompassItem;

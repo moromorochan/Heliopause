@@ -1,88 +1,71 @@
 package com.moromoro.heliopause.recipe;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.moromoro.Heliopause;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.moromoro.heliopause.recipe.OrreryTransferenceRecipe.FluidStackFromJson;
 
 public class StarlightConcentrationRecipe implements Recipe<Container> {
 
-    public final static int FEATURE_FIRST = 0;
-    public final static int FEATURE_SECOND = 1;
-    public final static int FEATURE_THIRD = 2;
-
     // レシピパラメータ
-    private final FluidStack fluidStack;
-    private final int featureId;
-    private final Conditions conditions;
     private final ResourceLocation recipeId;
-
-    public record Conditions(String dimension, int magnitudeMin, int magnitudeMax, double accuracyMin, double accuracyMax, List<String> typeWhitelist, List<LongitudeChance> longitudeChance) {
-        public static Conditions parseConditions(JsonObject jsonObject) {
-            // conditionがないならデフォルト条件
-            if (jsonObject == null) return new Conditions("minecraft:overworld", 1, 1, 0.0, 1.0, new ArrayList<>(), new ArrayList<>());
-
-            // ディメンション取得
-            String dimension = jsonObject.has("dimension") ? jsonObject.get("dimension").getAsString() : "minecraft:overworld";
-            // 等級範囲取得
-            int magnitudeMin = jsonObject.has("magnitude_min") ? jsonObject.get("magnitude_min").getAsInt() : 1;
-            int magnitudeMax = jsonObject.has("magnitude_max") ? jsonObject.get("magnitude_max").getAsInt() : 1;
-            // 要求精度範囲取得
-            double accuracyMin = jsonObject.has("accuracy_min") ? jsonObject.get("accuracy_min").getAsDouble() : 0.0;
-            double accuracyMax = jsonObject.has("accuracy_max") ? jsonObject.get("accuracy_max").getAsDouble() : 1.0;
-
-            // 天体の種類条件取得
-            List<String> typeWhitelist = new ArrayList<>();
-            if (jsonObject.has("type_whitelist")) {
-                JsonArray arr = jsonObject.getAsJsonArray("type_whitelist");
-                for (JsonElement e : arr) typeWhitelist.add(e.getAsString());
-            }
-
-            // 経度ごとの確率取得
-            List<LongitudeChance> longitudeChance = new ArrayList<>();
-            if (jsonObject.has("longitude_chance")) {
-                JsonArray array = jsonObject.getAsJsonArray("longitude_chance");
-                for (JsonElement element : array) {
-                    JsonObject object = element.getAsJsonObject();
-                    int start = object.has("start") ? object.getAsJsonPrimitive("start").getAsInt() : 0;
-                    int end = object.has("end") ? object.getAsJsonPrimitive("end").getAsInt() : 359;
-                    double chance = object.has("chance") ? object.getAsJsonPrimitive("chance").getAsDouble() : 1.0;
-                    longitudeChance.add(new LongitudeChance(start, end, chance));
-                }
-            }
-
-            return new Conditions(dimension, magnitudeMin, magnitudeMax, accuracyMin, accuracyMax, typeWhitelist, longitudeChance);
-        }
-    }
-
-    public record LongitudeChance(int start, int end, double chance) {}
-
-    StarlightConcentrationRecipe(FluidStack fluidStack, int featureId, Conditions conditions, ResourceLocation recipeId){
-        this.fluidStack = fluidStack;
-        this.featureId = featureId;
-        this.conditions = conditions;
+    
+    private final Ingredient ingredientItem;
+    private final FluidStack ingredientFluid;
+    
+    private final ItemStack resultItem;
+    private final FluidStack resultFluid;
+    
+    private final int time;
+    private final Conditions conditions;
+    
+    public StarlightConcentrationRecipe(ResourceLocation recipeId, Ingredient ingredientItem, FluidStack ingredientFluid, ItemStack resultItem, FluidStack resultFluid, int time, Conditions conditions) {
         this.recipeId = recipeId;
+        this.ingredientItem = ingredientItem;
+        this.ingredientFluid = ingredientFluid;
+        this.resultItem = resultItem;
+        this.resultFluid = resultFluid;
+        this.time = time;
+        this.conditions = conditions;
+    }
+    
+    // パラメータのレコードクラス
+    public record SeasonRange(int start, int end) {}
+    
+    public record Conditions(String dimension, Set<String> coverage, SeasonRange seasonRange) {
+        static Conditions fromJson(JsonObject obj) {
+            String dimension = obj.has("dimension")
+                ? obj.get("dimension").getAsString()
+                : "minecraft:overworld";
+            
+            Set<String> coverage = new HashSet<>();
+            if (obj.has("coverage")) {
+                obj.getAsJsonArray("coverage").forEach(e -> coverage.add(e.getAsString()));
+            }
+            
+            JsonObject o = obj.getAsJsonObject("season_range");
+            int start = o.get("start").getAsInt();
+            int end = o.get("end").getAsInt();
+            SeasonRange ranges = new SeasonRange(start, end);
+            
+            return new Conditions(dimension, coverage, ranges);
+        }
     }
 
     public static class Type implements RecipeType<StarlightConcentrationRecipe>{
@@ -97,90 +80,92 @@ public class StarlightConcentrationRecipe implements Recipe<Container> {
         // jsonレシピ読み込み
         @Override
         public @NotNull StarlightConcentrationRecipe fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json){
-            FluidStack fluidStack;
-            // 液体取得
-            if (json.has("fluid")) {
-                fluidStack = FluidStackFromJson(json, 10);
-                if (fluidStack.isEmpty()) {
-                    Heliopause.LOGGER.warn("unknown 'fluid' in recipe {}. Skipping.", recipeId);
+            // ingredient
+            Ingredient ingredientItem = Ingredient.EMPTY;
+            FluidStack ingredientFluid = FluidStack.EMPTY;
+            
+            if (json.has("ingredient")) {
+                JsonObject ing = json.getAsJsonObject("ingredient");
+                
+                if (ing.has("item")) {
+                    ingredientItem = Ingredient.fromJson(ing);
                 }
-            } else {
-                fluidStack = FluidStack.EMPTY;
-                Heliopause.LOGGER.warn("must have 'fluid' in recipe {}. Skipping.", recipeId);
+                if (ing.has("fluid")) {
+                    ingredientFluid = FluidStackFromJson(ing, 1000);
+                }
             }
-            int feature = json.has("feature") ? json.get("feature").getAsInt() : FEATURE_FIRST;
-
-            Conditions conditions;
-            if(json.has("starlight_conditions")){
-                conditions = Conditions.parseConditions(json.getAsJsonObject("starlight_conditions"));
-            }else{
-                conditions = Conditions.parseConditions(null);
+            
+            // result
+            ItemStack resultItem = ItemStack.EMPTY;
+            FluidStack resultFluid = FluidStack.EMPTY;
+            
+            if (json.has("result")) {
+                JsonObject res = json.getAsJsonObject("result");
+                
+                if (res.has("item")) {
+                    resultItem = ShapedRecipe.itemStackFromJson(res);
+                }
+                if (res.has("fluid")) {
+                    resultFluid = FluidStackFromJson(res, 1000);
+                }
             }
-
-            return new StarlightConcentrationRecipe(fluidStack, feature, conditions, recipeId);
+            
+            int time = json.has("time") ? json.get("time").getAsInt() : 0;
+            
+            // conditions
+            StarlightConcentrationRecipe.Conditions conditions =
+                json.has("starlight_conditions") ? StarlightConcentrationRecipe.Conditions.fromJson(json.getAsJsonObject("starlight_conditions"))
+                    : new StarlightConcentrationRecipe.Conditions("minecraft:overworld", Set.of(), new SeasonRange(0, 359));
+            
+            return new StarlightConcentrationRecipe(recipeId, ingredientItem, ingredientFluid, resultItem, resultFluid, time, conditions);
         }
 
         //サーバー・クライアント間のやりとり
         @Override
         public @Nullable StarlightConcentrationRecipe fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer){
-            // 液体
-            FluidStack fluidStack = FluidStack.readFromPacket(buffer);
-            // 特徴スロット
-            int feature = buffer.readInt();
-
-            // 条件
+            Ingredient ingredientItem = Ingredient.fromNetwork(buffer);
+            FluidStack ingredientFluid = FluidStack.readFromPacket(buffer);
+            
+            ItemStack resultItem = buffer.readItem();
+            FluidStack resultFluid = FluidStack.readFromPacket(buffer);
+            
+            int time = buffer.readInt();
+            
+            // conditions
             String dimension = buffer.readUtf();
-            int magnitudeMin = buffer.readInt();
-            int magnitudeMax = buffer.readInt();
-            double accuracyMin = buffer.readDouble();
-            double accuracyMax = buffer.readDouble();
-
-            int whitelistSize = buffer.readInt();
-            List<String> typeWhitelist = new ArrayList<>(whitelistSize);
-            for(int i = 0; i < whitelistSize; i++){
-                typeWhitelist.add(buffer.readUtf());
-            }
-
-            int chanceSize = buffer.readInt();
-            List<StarlightConcentrationRecipe.LongitudeChance> longitudeChance = new ArrayList<>(chanceSize);
-            for(int i = 0; i < chanceSize; i++){
-                int start = buffer.readInt();
-                int end = buffer.readInt();
-                double chance = buffer.readDouble();
-                longitudeChance.add(new StarlightConcentrationRecipe.LongitudeChance(start, end, chance));
-            }
-
-            StarlightConcentrationRecipe.Conditions conditions =
-                new StarlightConcentrationRecipe.Conditions(dimension, magnitudeMin, magnitudeMax, accuracyMin, accuracyMax, typeWhitelist, longitudeChance);
-
-            return new StarlightConcentrationRecipe(fluidStack, feature, conditions, recipeId);
+            
+            int covSize = buffer.readInt();
+            Set<String> coverage = new HashSet<>();
+            for (int i = 0; i < covSize; i++) coverage.add(buffer.readUtf());
+            
+            int start = buffer.readInt();
+            int end = buffer.readInt();
+            SeasonRange range = new SeasonRange(start, end);
+            
+            StarlightConcentrationRecipe.Conditions conditions = new StarlightConcentrationRecipe.Conditions(dimension, coverage, range);
+            
+            return new StarlightConcentrationRecipe(recipeId, ingredientItem, ingredientFluid, resultItem, resultFluid, time, conditions);
         }
 
         @Override
         public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull StarlightConcentrationRecipe recipe){
-            // 液体
-            recipe.fluidStack.writeToPacket(buffer);
-            // 特徴スロット
-            buffer.writeInt(recipe.featureId);
-
-            // 条件
-            StarlightConcentrationRecipe.Conditions recipeConditions = recipe.conditions;
-            buffer.writeUtf(recipeConditions.dimension);
-            buffer.writeInt(recipeConditions.magnitudeMin);
-            buffer.writeInt(recipeConditions.magnitudeMax);
-            buffer.writeDouble(recipeConditions.accuracyMin);
-            buffer.writeDouble(recipeConditions.accuracyMax);
-
-            buffer.writeInt(recipeConditions.typeWhitelist.size());
-            for(String stellarType : recipeConditions.typeWhitelist) buffer.writeUtf(stellarType);
-
-            buffer.writeInt(recipeConditions.longitudeChance.size());
-            for(StarlightConcentrationRecipe.LongitudeChance chance : recipeConditions.longitudeChance){
-                buffer.writeInt(chance.start);
-                buffer.writeInt(chance.end);
-                buffer.writeDouble(chance.chance);
-            }
-
+            recipe.ingredientItem.toNetwork(buffer);
+            recipe.ingredientFluid.writeToPacket(buffer);
+            
+            buffer.writeItem(recipe.resultItem);
+            recipe.resultFluid.writeToPacket(buffer);
+            
+            buffer.writeInt(recipe.time);
+            
+            // conditions
+            buffer.writeUtf(recipe.conditions.dimension());
+            
+            buffer.writeInt(recipe.conditions.coverage().size());
+            for (String coverage : recipe.conditions.coverage()) buffer.writeUtf(coverage);
+            
+            SeasonRange range = recipe.conditions.seasonRange();
+            buffer.writeInt(range.start());
+            buffer.writeInt(range.end());
         }
     }
 
@@ -193,20 +178,8 @@ public class StarlightConcentrationRecipe implements Recipe<Container> {
         // ディメンション一致確認
         ResourceLocation requiredDim = new ResourceLocation(recipeConditions.dimension);
         ResourceLocation currentDim = level.dimension().location();
-        // 天体生成レシピがあるか確認
-        //level.getRecipeManager().getRecipeFor(RecipeTypeRegistry.STELLAR_INSTANTIATION.get(), container, level);
         return currentDim.equals(requiredDim);
     }
-
-    /*public record EtherFeature(FluidStack fluidStack, double requiredAccuracy){}
-
-    public EtherFeature getEtherFeature(long levelSeed, int featureId, StellarInstantiationRecipe.StellarInstance stellarInstance){
-
-        RandomSource randomSource = RandomSource.create(levelSeed);
-        double accuracy = conditions.accuracyMin + randomSource.nextDouble()*(conditions.accuracyMax - conditions.accuracyMin);
-
-        return;
-    }*/
 
     @Override
     public @NotNull ItemStack assemble(@NotNull Container container, @NotNull RegistryAccess registryAccess) {
@@ -217,96 +190,31 @@ public class StarlightConcentrationRecipe implements Recipe<Container> {
     public boolean canCraftInDimensions(int width, int height) {
         return true;
     }
-
-    public int getFeatureId() {
-        return Mth.clamp(featureId, 0, 2);
+    
+    public Ingredient getIngredientItem() {
+        return ingredientItem;
     }
-
-    public double getChance(StellarInstantiationRecipe.StellarInstance stellarInstance) {
-        String type = stellarInstance.stellarType();
-        if(!conditions.typeWhitelist.contains(type)){
-            return 0;
-        }
-        int magnitude = stellarInstance.magnitude();
-        if(magnitude < conditions.magnitudeMin() || magnitude > conditions.magnitudeMax()){
-            return 0;
-        }
-        int longitude = stellarInstance.coordinate().x();
-        for (LongitudeChance chance : conditions.longitudeChance) {
-            if(longitude >= chance.start() && longitude <= chance.end()){
-                return chance.chance();
-            }
-        }
-        return 0;
+    
+    public FluidStack getIngredientFluid() {
+        return ingredientFluid;
     }
-
-    public double getAccuracy(long localSeed){
-        RandomSource randomSource = RandomSource.create(localSeed);
-        return conditions.accuracyMin + randomSource.nextDouble()*(conditions.accuracyMax - conditions.accuracyMin);
+    
+    public Conditions getConditions() {
+        return conditions;
     }
-
-    public FluidStack getResultFluidStack() {
-        return fluidStack;
+    
+    public int getTime() {
+        return time;
     }
-
-    public record FluidStackChance(FluidStack fluidStack, int maxAmount, double chance, double accuracy){}
-
-    public static Collection<? extends FluidStackChance> pickFluidStack(RandomSource localRandom, List<FluidStackChance>[] stackChancesArray, double[] wholePoolArray) {
-        List<FluidStackChance> resultChances = new ArrayList<>();
-        if(stackChancesArray.length != wholePoolArray.length){
-            return resultChances;
-        }
-        RandomSource slotRandomSource = RandomSource.create(localRandom.nextLong());
-        for (int i = 0; i < stackChancesArray.length; i++) {
-            slotRandomSource = RandomSource.create(slotRandomSource.nextLong());
-            List<FluidStackChance> stackChances = stackChancesArray[i];
-            double wholePool = wholePoolArray[i];
-
-            if (stackChances == null || stackChances.isEmpty()) {
-                resultChances.add(new FluidStackChance(FluidStack.EMPTY, 0, 0, 0)); // フォールバック処理
-                continue;
-            }
-            // チャンス合計が0の場合は最初の候補を返す
-            if (wholePool <= 0) {
-                FluidStackChance first = stackChances.get(0);
-                resultChances.add(new FluidStackChance(first.fluidStack().copy(), first.maxAmount(), first.chance(), first.accuracy()));
-                continue;
-            }
-
-            double randomGetter = slotRandomSource.nextDouble() * wholePool;
-            double threshold = 0.0;
-            boolean checked = false;
-            for (FluidStackChance typeChance : stackChances) {
-                threshold += typeChance.chance();
-                if (randomGetter <= threshold) {
-                    // 内容量をランダム化 20%切り上げ ~ 100%
-                    FluidStack chanceStack = typeChance.fluidStack().copy();
-                    int amount = chanceStack.getAmount();
-                    chanceStack.setAmount((int)Math.ceil(amount * 0.2 + amount * 0.8 * slotRandomSource.nextDouble()));
-
-                    resultChances.add(new FluidStackChance(chanceStack, typeChance.fluidStack().getAmount(), typeChance.chance(), typeChance.accuracy()));
-                    checked = true;
-                    break;
-                }
-            }
-            if(checked){
-                continue;
-            }
-            FluidStackChance typeChance = stackChances.get(stackChances.size() - 1);
-            // 内容量をランダム化 20%切り上げ ~ 100%
-            FluidStack chanceStack = typeChance.fluidStack().copy();
-            int amount = chanceStack.getAmount();
-            chanceStack.setAmount((int)Math.ceil(amount * 0.2 + amount * 0.8 * slotRandomSource.nextDouble()));
-            resultChances.add(new FluidStackChance(chanceStack, typeChance.fluidStack().getAmount(), typeChance.chance(), typeChance.accuracy()));
-        }
-        return resultChances;
-    }
-
+    
     @Override
     public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
-        return ItemStack.EMPTY;
+        return resultItem;
     }
-
+    public FluidStack getResultFluid() {
+        return resultFluid;
+    }
+    
     @Override
     public @NotNull ResourceLocation getId() {
         return recipeId;

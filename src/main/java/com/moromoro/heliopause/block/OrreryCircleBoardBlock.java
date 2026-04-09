@@ -1,6 +1,6 @@
 package com.moromoro.heliopause.block;
 
-import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
+import com.moromoro.heliopause.registry.enumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.blockEntity.OrreryCircleBoardBlockEntity;
 import com.moromoro.heliopause.ingredient.CircumstellarIngredient;
 import com.moromoro.heliopause.particle.WhirlRingParticles;
@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static java.lang.Math.floor;
 import static java.lang.Math.max;
 
 public class OrreryCircleBoardBlock extends AbstractWrittenBoardBlock {

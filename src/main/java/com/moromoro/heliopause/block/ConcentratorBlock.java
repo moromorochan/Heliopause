@@ -53,6 +53,9 @@ public class ConcentratorBlock extends BaseEntityBlock {
 
         if(!newBlockState.is(this)) {
             disassembleBarrel(state, level, blockPos, newBlockState);
+            if(level.getBlockEntity(blockPos) instanceof ConcentratorBlockEntity blockEntity){
+                blockEntity.drops();
+            }
         }
 
         super.onRemove(state, level, blockPos, newBlockState, isMoving);

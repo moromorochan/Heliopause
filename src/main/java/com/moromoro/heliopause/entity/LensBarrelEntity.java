@@ -6,10 +6,10 @@ import com.moromoro.heliopause.block.ConcentratorBlock;
 import com.moromoro.heliopause.block.LensBarrelBlock;
 import com.moromoro.heliopause.blockEntity.ConcentratorBlockEntity;
 import com.moromoro.heliopause.generic.Season;
-import com.moromoro.heliopause.instance.IhasHoverDrawEntity;
+import com.moromoro.heliopause.implementable.IHasHoverDrawEntity;
+import com.moromoro.heliopause.recipe.LensBarrelCoverageListener;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.registry.EntityRegistry;
-import com.moromoro.heliopause.screen.ConcentratorScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -43,20 +43,19 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2d;
 import org.joml.Vector2f;
-import org.joml.Vector2i;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import static com.moromoro.heliopause.block.LensBarrelBlock.renderAccuracyGUI;
-import static com.moromoro.heliopause.screen.ConcentratorScreen.isStellarValidOnTime;
+import static com.moromoro.heliopause.block.LensBarrelBlock.getCoverageWindowData;
+import static com.moromoro.heliopause.block.LensBarrelBlock.renderAccuracyGui;
 
-public class LensBarrelEntity extends Entity implements IhasHoverDrawEntity {
+public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
+
+    private static final ForgeConfigSpec.BooleanValue INFO_ALWAYS = ConfigHolder.BARREL_ENTITY_INFO_ALWAYS;
 
     private final List<BlockState> barrels = new ArrayList<>();
 
@@ -156,7 +155,8 @@ public class LensBarrelEntity extends Entity implements IhasHoverDrawEntity {
         }
         barrels.clear();
 
-        level.playSound(null, blockPos, SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, 1.0f, 0.8f);
+        level.playSound(null, blockPos, SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, 1.0f, 0.7f);
+        level.playSound(null, blockPos, SoundEvents.ARMOR_EQUIP_NETHERITE, SoundSource.BLOCKS, 1.0f, 0.8f);
 
         this.discard();
 
@@ -229,31 +229,26 @@ public class LensBarrelEntity extends Entity implements IhasHoverDrawEntity {
 
                 // 真下が収斂器か確認
                 if (level.getBlockEntity(blockEntityPos) instanceof ConcentratorBlockEntity blockEntity) {
-                    Vector2i trackingCoordinate = blockEntity.getTargetStarCoordinate();
-                    if(trackingCoordinate != null && level instanceof ServerLevel serverLevel){
+                    //Vector2i trackingCoordinate = createTrackingCoordinate();
+                    if(/*trackingCoordinate != null && */level instanceof ServerLevel serverLevel){
                         long date = Season.getDayInYear(serverLevel);
-                        long dayTime = serverLevel.getDayTime();
-                        float partialDate = date + (dayTime % 24000)/24000f;
-                        Vector2d anglePos = ConcentratorScreen.equatorialToHorizontal(trackingCoordinate, partialDate, dayTime, true);
-                        Vector2f targetPos = new Vector2f((float)-anglePos.y(), (float)anglePos.x() + 90);
+                        Vector2f targetVec = getTargetVec(serverLevel, date);
+                        
                         // 前回の値を仮保持
                         float tempYLast = this.getYRotToward();
                         float tempXLast = this.getXRotToward();
                         // 値を適用
-                        boolean isSynced;
-                        isSynced  = this.setYRotToward(targetPos.y());
-                        isSynced |= this.setXRotToward(targetPos.x());
+                        this.setYRotToward(targetVec.y());
+                        this.setXRotToward(targetVec.x());
                         this.setYRotLast(tempYLast);
                         this.setXRotLast(tempXLast);
-
-                        boolean isStellarValid = isStellarValidOnTime(dayTime % 24000, anglePos);
-
-                        if(isStellarValid && isSynced){
+                        
+                        if(serverLevel.isNight() && !serverLevel.isRaining() && !serverLevel.isThundering()) {
                             this.setSyncedToStar(canSeeSky());
                         }else{
                             this.setSyncedToStar(false);
                         }
-
+                        
                     }
                 }else{
                     this.disassemble();
@@ -266,7 +261,28 @@ public class LensBarrelEntity extends Entity implements IhasHoverDrawEntity {
         }
         createBoundingBox();
     }
-
+    
+    private static @NotNull Vector2f getTargetVec(ServerLevel serverLevel, long date) {
+        long dayTime = serverLevel.getDayTime();
+        // 東西の角度
+        float anglePosX = 90f - ((dayTime / 24000f) * 360f + 180f) % 360f;
+        if (anglePosX >  90f) anglePosX =  90f;
+        if (anglePosX < -90f) anglePosX = -90f;
+        
+        // 南北の角度
+        float anglePosY = -45f + (date % Season.MONTH_DATES) * 90f / (float) Season.MONTH_DATES;
+        
+        // 方角に変換
+        float pitch = (float)Math.sqrt(anglePosX * anglePosX + anglePosY * anglePosY);
+        if (pitch > 90f) pitch = 90f;
+        
+        float yaw = (float)Math.toDegrees(Math.atan2(anglePosX, anglePosY)) + 180f;
+        yaw %= 360f;
+        if (yaw < 0f) yaw += 360f;
+        
+        return new Vector2f(pitch-90,yaw);
+    }
+    
     @Override
     protected @NotNull AABB makeBoundingBox() {
         createBoundingBox();
@@ -274,15 +290,10 @@ public class LensBarrelEntity extends Entity implements IhasHoverDrawEntity {
     }
 
     private void createBoundingBox() {
-        // 角度からバウンディングボックス作成
-        double barrelLength = barrels != null ? getBarrels().size() - 1 : 1;
-        double partialXRot = Math.toRadians(90 + getPartialXRot(0));
-        double partialYRot = Math.toRadians( - getPartialYRot(0));
-        double barrelWidth = barrelLength * Math.sin(partialXRot);
-        double barrelHeight = barrelLength * Math.cos(partialXRot) - 8d/16;
-        Vec3 startPos = this.position().add(0,16d/16,0);
-        Vec3 endPos = new Vec3(Math.sin(partialYRot) * barrelWidth, barrelHeight, Math.cos(partialYRot) * barrelWidth).add(startPos);
-        AABB box = new AABB(startPos, endPos).inflate(0.5);
+        // 組み立て前の場合は長さ1を返す
+        double barrelLength = this.barrels != null? getBarrels().size() - 1 : 1;
+
+        AABB box = new AABB(this.position().add(0,0.5,0),this.position().add(0,0.5+barrelLength/2.0,0)).inflate(0.6);
         setBoundingBox(box);
     }
 
@@ -318,12 +329,15 @@ public class LensBarrelEntity extends Entity implements IhasHoverDrawEntity {
         return barrels;
     }
 
-    public double getWholeAccuracy(){
-        double wholeAccuracy = 1.0;
+    public Set<LensBarrelCoverageListener.BarrelCoverageData> getWholeCoverage(){
+        //double wholeAccuracy = 1.0;
+        Set<LensBarrelCoverageListener.BarrelCoverageData> coverageData = new HashSet<>(LensBarrelBlock.getBarrelConcentrationCoverage(barrels.get(0).getBlock()));
         for (BlockState barrel : barrels) {
-            wholeAccuracy *= LensBarrelBlock.getBarrelAccuracy(LensBarrelBlock.getBarrelType(barrel));
+            coverageData.retainAll(LensBarrelBlock.getBarrelConcentrationCoverage(barrel.getBlock()));
+            //wholeAccuracy *= 1;//LensBarrelBlock.getBarrelAccuracy(LensBarrelBlock.getBarrelType(barrel));
         }
-        return wholeAccuracy * barrels.size();
+        return coverageData;
+        //return wholeAccuracy * barrels.size();
     }
 
     public float getXRotToward() {
@@ -397,10 +411,14 @@ public class LensBarrelEntity extends Entity implements IhasHoverDrawEntity {
         if(player == null){
             return false;
         }
+        if(!INFO_ALWAYS.get() && !instance.options.keyShift.isDown())
+        {
+            return false;
+        }
         if (!instance.options.renderDebug) {
             List<BlockState> invertBarrels = new ArrayList<>(barrels);
             Collections.reverse(invertBarrels);
-            renderAccuracyGUI(event, instance, invertBarrels, true, true);
+            renderAccuracyGui(event, instance, new LensBarrelBlock.BarrelStateData(invertBarrels, true), getCoverageWindowData(invertBarrels), true);
         } else {
             // デバッグ用
             Window window = event.getWindow();

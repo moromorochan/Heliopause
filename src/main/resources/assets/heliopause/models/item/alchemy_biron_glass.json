@@ -1,0 +1,9 @@
+{
+	"parent": "heliopause:item/chiseled_biron_block",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"0": "heliopause:block/alchemy_biron_glass_top",
+		"1": "heliopause:block/alchemy_biron_glass",
+		"particle": "heliopause:block/alchemy_biron_glass_top"
+	}
+}

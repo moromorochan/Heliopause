@@ -25,10 +25,26 @@ public class CustomModelRegistry {
 
     public static final ResourceLocation SIDEROSTAT_MOON = new ResourceLocation(Heliopause.MODID, "decoration/siderostat/moon");
     public static final ResourceLocation SIDEROSTAT_SPRING = new ResourceLocation(Heliopause.MODID, "decoration/siderostat/spring");
+
     // 星明かり収斂器
-    public static final ResourceLocation STARLIGHT_CONCENTRATOR_PITCH = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/pitch");
-    public static final ResourceLocation STARLIGHT_CONCENTRATOR_TURNTABLE = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/turntable");
-    public static final ResourceLocation STARLIGHT_CONCENTRATOR_WEIGHT = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/weight");
+    //public static final ResourceLocation STARLIGHT_CONCENTRATOR_PITCH = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/pitch");
+    //public static final ResourceLocation STARLIGHT_CONCENTRATOR_TURNTABLE = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/turntable");
+    //public static final ResourceLocation STARLIGHT_CONCENTRATOR_WEIGHT = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/weight");
+        // ターンテーブル側
+    public static final ResourceLocation CONCENTRATOR_TURNTABLE_BOTTOM = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/turntable/bottom");
+    public static final ResourceLocation CONCENTRATOR_TURNTABLE_MIDDLE = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/turntable/middle");
+    public static final ResourceLocation CONCENTRATOR_TURNTABLE_EX_HALF = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/turntable/ex_half");
+    public static final ResourceLocation CONCENTRATOR_TURNTABLE_EX_FULL = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/turntable/ex_full");
+        // 歯車
+    public static final ResourceLocation CONCENTRATOR_TURNTABLE_GEAR = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/turntable/gear");
+        // 鏡筒側
+    public static final ResourceLocation CONCENTRATOR_CYLINDER_BOTTOM = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/cylinder/bottom");
+    public static final ResourceLocation CONCENTRATOR_CYLINDER_MIDDLE = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/cylinder/middle");
+    public static final ResourceLocation CONCENTRATOR_CYLINDER_TOP = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/cylinder/top");
+    public static final ResourceLocation CONCENTRATOR_CYLINDER_UPPER_EX_HALF = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/cylinder/upper_ex_half");
+    public static final ResourceLocation CONCENTRATOR_CYLINDER_UPPER_EX_FULL = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/cylinder/upper_ex_full");
+    public static final ResourceLocation CONCENTRATOR_CYLINDER_LOWER_EX_HALF = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/cylinder/lower_ex_half");
+    public static final ResourceLocation CONCENTRATOR_CYLINDER_LOWER_EX_FULL = new ResourceLocation(Heliopause.MODID, "decoration/concentrator/cylinder/lower_ex_full");
     // インターフェース陣
     public static final ResourceLocation CIRCLE_DOTTED = new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_circle_dotted");
     public static final ResourceLocation LINE_DOTTED = new ResourceLocation(Heliopause.MODID, "decoration/circle/multi_line_dotted");
@@ -60,9 +76,21 @@ public class CustomModelRegistry {
         event.register(ORRERY_ORBIT_END);
         event.register(SIDEROSTAT_MOON);
         event.register(SIDEROSTAT_SPRING);
-        event.register(STARLIGHT_CONCENTRATOR_PITCH);
-        event.register(STARLIGHT_CONCENTRATOR_TURNTABLE);
-        event.register(STARLIGHT_CONCENTRATOR_WEIGHT);
+        //event.register(STARLIGHT_CONCENTRATOR_PITCH);
+        //event.register(STARLIGHT_CONCENTRATOR_TURNTABLE);
+        //event.register(STARLIGHT_CONCENTRATOR_WEIGHT);
+        event.register(CONCENTRATOR_TURNTABLE_BOTTOM);
+        event.register(CONCENTRATOR_TURNTABLE_MIDDLE);
+        event.register(CONCENTRATOR_TURNTABLE_EX_HALF);
+        event.register(CONCENTRATOR_TURNTABLE_EX_FULL);
+        event.register(CONCENTRATOR_TURNTABLE_GEAR);
+        event.register(CONCENTRATOR_CYLINDER_BOTTOM);
+        event.register(CONCENTRATOR_CYLINDER_MIDDLE);
+        event.register(CONCENTRATOR_CYLINDER_TOP);
+        event.register(CONCENTRATOR_CYLINDER_UPPER_EX_HALF);
+        event.register(CONCENTRATOR_CYLINDER_UPPER_EX_FULL);
+        event.register(CONCENTRATOR_CYLINDER_LOWER_EX_HALF);
+        event.register(CONCENTRATOR_CYLINDER_LOWER_EX_FULL);
         // インターフェース陣
         event.register(CIRCLE_DOTTED);
         event.register(LINE_DOTTED);

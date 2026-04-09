@@ -1,0 +1,10 @@
+{
+  "name": "aetheric",
+  "block": [
+    "heliopause:wooden_lens_barrel",
+    "heliopause:iron_main_mirror",
+    "heliopause:iron_second_mirror"
+  ],
+  "icon": "diamond",
+  "icon_color": [87,117,183]
+}

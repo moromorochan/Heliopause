@@ -3,6 +3,7 @@ package com.moromoro.heliopause.recipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.registry.enumProperty.ImitationStellarModelValue;
 import com.moromoro.heliopause.item.ImitationCoreItem;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -44,6 +45,10 @@ public class ImitationCoreAssemblyRecipe implements Recipe<Container> {
         public ImitationCoreAssemblyRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             String key = GsonHelper.getAsString(json,"key", "");
             String model = GsonHelper.getAsString(json, "model", "gas_plain");
+            if(ImitationStellarModelValue.fromString(model) == null){
+                Heliopause.LOGGER.warn("Unknown icon '{}' in {}, using gas_plain", model, recipeId);
+                model = "gas_plain";
+            }
             float scale = GsonHelper.getAsFloat(json, "scale", 1.0f);
             int[] color = new int[]{255,255,255};
             if (json.has("color") && json.get("color").isJsonArray()) {

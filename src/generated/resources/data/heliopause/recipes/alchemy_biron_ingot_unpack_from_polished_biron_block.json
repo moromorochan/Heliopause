@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "heliopause:polished_biron_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "heliopause:alchemy_biron_ingot"
+  }
+}

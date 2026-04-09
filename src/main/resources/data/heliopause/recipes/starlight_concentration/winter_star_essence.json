@@ -1,38 +1,27 @@
 {
   "type": "heliopause:starlight_concentration",
-  "fluid": "heliopause:winter_star_essence",
-  "amount": 40,
-  "feature": 2,
+  "ingredient": {
+    "item": "minecraft:glowstone",
+    "fluid": "heliopause:azure_starbead",
+    "amount": 600
+  },
+  "result": {
+    "item": "minecraft:glowstone_dust",
+    "count": 4,
+    "fluid": "heliopause:winter_star_essence",
+    "amount": 300
+  },
+  "time": 800,
   "starlight_conditions": {
     "dimension": "minecraft:overworld",
-    "magnitude_min": 1,
-    "magnitude_max": 2,
-    "accuracy_min": 2.0,
-    "accuracy_max": 3.6,
-    "type_whitelist":[
-      "fixed_star"
+    "coverage": [
+      "infra_red",
+      "aetheric",
+      "alkahestic"
     ],
-    "longitude_chance": [
-      {
-        "start": 350,
-        "end": 359,
-        "chance": 0.2
-      },
-      {
-        "start": 0,
-        "end": 4,
-        "chance": 0.2
-      },
-      {
-        "start": 5,
-        "end": 9,
-        "chance": 1.0
-      },
-      {
-        "start": 10,
-        "end": 24,
-        "chance": 0.2
-      }
-    ]
+    "season_range": {
+      "start": 330,
+      "end": 59
+    }
   }
 }

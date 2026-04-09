@@ -57,14 +57,14 @@ public class ImitationCoreItem extends Item {
     }
 
     /*public static void setModelType(ItemStack itemStack, String modelType){
-        CompoundTag tag = itemStack.getOrCreateTag();
-        tag.putString(MODEL_TYPE, modelType);
+        CompoundTag block = itemStack.getOrCreateTag();
+        block.putString(MODEL_TYPE, modelType);
     }
 
     public static BakedModel getModelType(ItemStack itemStack){
-        CompoundTag tag = itemStack.getTag();
-        if(tag != null && tag.contains(MODEL_TYPE)){
-            return switch (tag.getString(MODEL_TYPE)) {
+        CompoundTag block = itemStack.getTag();
+        if(block != null && block.contains(MODEL_TYPE)){
+            return switch (block.getString(MODEL_TYPE)) {
                 // 岩石
                 case "rocky" -> Minecraft.getInstance().getModelManager().getModel(CustomModelRegistry.IMI_ROCKY);
                 // ガス縞模様
@@ -86,40 +86,40 @@ public class ImitationCoreItem extends Item {
     }
 
     public static void setScale(ItemStack itemStack, float scale){
-        CompoundTag tag = itemStack.getOrCreateTag();
-        tag.putFloat(SCALE, scale);
+        CompoundTag block = itemStack.getOrCreateTag();
+        block.putFloat(SCALE, scale);
     }
 
     public static float getScale(ItemStack itemStack){
-        CompoundTag tag = itemStack.getTag();
-        if(tag != null && tag.contains(SCALE)){
-            return tag.getFloat(SCALE);
+        CompoundTag block = itemStack.getTag();
+        if(block != null && block.contains(SCALE)){
+            return block.getFloat(SCALE);
         }
         return 1;
     }
 
     public static void setColor(ItemStack itemStack, int r, int g, int b){
-        CompoundTag tag = itemStack.getOrCreateTag();
-        tag.putIntArray(COLOR, new int[]{r,g,b});
+        CompoundTag block = itemStack.getOrCreateTag();
+        block.putIntArray(COLOR, new int[]{r,g,b});
     }
 
     public static int[] getColor(ItemStack itemStack){
-        CompoundTag tag = itemStack.getTag();
-        if(tag != null && tag.contains(COLOR)){
-            return tag.getIntArray(COLOR);
+        CompoundTag block = itemStack.getTag();
+        if(block != null && block.contains(COLOR)){
+            return block.getIntArray(COLOR);
         }
         return new int[]{255, 255, 255};
     }
 
     public static void setCentForce(ItemStack itemStack, float force){
-        CompoundTag tag = itemStack.getOrCreateTag();
-        tag.putFloat(CENT_FORCE, force);
+        CompoundTag block = itemStack.getOrCreateTag();
+        block.putFloat(CENT_FORCE, force);
     }
 
     public static float getCentForce(ItemStack itemStack){
-        CompoundTag tag = itemStack.getTag();
-        if(tag != null && tag.contains(CENT_FORCE)){
-            return tag.getFloat(CENT_FORCE);
+        CompoundTag block = itemStack.getTag();
+        if(block != null && block.contains(CENT_FORCE)){
+            return block.getFloat(CENT_FORCE);
         }
         return 0.5f;
     }*/

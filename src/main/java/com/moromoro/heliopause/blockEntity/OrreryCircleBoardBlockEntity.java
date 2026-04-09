@@ -402,17 +402,6 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
     // 位置から周転材料を取得
     private @Nullable CircumstellarIngredient getCircumStellarFromPos(List<CircumstellarIngredient> ingredients, double radius, double theta, double getSize) {
         for (CircumstellarIngredient ingredient : ingredients) {
-            // 円盤
-            if(ingredient.isDiskShaped()){
-                //TODO: ふるまいを記述
-
-                // 瓶を持っているなら回収可
-                if(false){
-                    continue;
-                }
-                // 素手なら回収不可で除去
-                continue;
-            }
             // 半径が遠いものを除外
             if(Math.abs(ingredient.getOrbitalRadius() - radius) > getSize){
                 continue;

@@ -1,7 +1,6 @@
 package com.moromoro.heliopause.event;
 
-import com.moromoro.heliopause.entity.LensBarrelEntity;
-import com.moromoro.heliopause.instance.*;
+import com.moromoro.heliopause.implementable.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -15,6 +14,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.List;
@@ -25,119 +25,92 @@ public class TooltipEventHandler {
     public void onRenderGuiOverlayPost(RenderGuiOverlayEvent event) {
         Minecraft instance = Minecraft.getInstance();
         Player player = instance.player;
-        if (player != null ) {
-            HitResult hitResult = instance.hitResult;
-            if (hitResult != null ) {
-                //メインハンドアイテムを取得
-                ItemStack mainHandItem = player.getMainHandItem();
-                //オフハンドアイテムを取得
-                ItemStack offHandItem = player.getOffhandItem();
-                //両方とも空の場合スキップ
-                /*if(mainHandItem.isEmpty() && offHandItem.isEmpty()){
-                    return;
-                }*/
-                // アイテム描画成功判定
-                boolean itemDrawn = false;
+        if (player == null) {
+            return;
+        }
+        HitResult hitResult = instance.hitResult;
+        if (hitResult == null) {
+            return;
+        }
+        //メインハンドアイテムを取得
+        ItemStack mainHandItem = player.getMainHandItem();
+        //オフハンドアイテムを取得
+        ItemStack offHandItem = player.getOffhandItem();
+        //両方とも空の場合スキップ
+            /*if(mainHandItem.isEmpty() && offHandItem.isEmpty()){
+                return;
+            }*/
+        // アイテム描画成功判定
+        boolean itemDrawn = false;
+        
+        //メインハンドをチェック
+        if(!mainHandItem.isEmpty()){
+            itemDrawn |= drawTextOverlay(event, mainHandItem, hitResult);
+            itemDrawn |= drawGraphicOverlay(event, mainHandItem, hitResult);
+        }
+        //オフハンドをチェック
+        else if (!offHandItem.isEmpty()) {
+            itemDrawn |= drawTextOverlay(event, mainHandItem, hitResult);
+            itemDrawn |= drawGraphicOverlay(event, mainHandItem, hitResult);
+        }
+        
+        if(itemDrawn || hitResult.getType().equals(HitResult.Type.MISS)){
+            return;
+        }
+        
+        ClientLevel level = instance.level;
+        if (level == null) {
+            return;
+        }
+        
+        // ブロック描画成功判定
+        boolean blockDrawn = false;
+        
+        // ブロックをチェック
+        if(hitResult.getType().equals(HitResult.Type.BLOCK)){
+            Vec3 angle = player.getLookAngle().normalize().scale(0.5);
+            BlockPos pos = BlockPos.containing(hitResult.getLocation().add(angle));
+            Block block = level.getBlockState(pos).getBlock();
+            if(block instanceof IHasHoverDrawBlock iBlock){
+                blockDrawn |= iBlock.renderHoverGraphic(event, instance.level, pos);
+            }
 
-                //メインハンドをチェック
-                if(!mainHandItem.isEmpty()){
-                    itemDrawn |= drawTextTooltip(event, mainHandItem, hitResult);
-                    itemDrawn |= drawGraphicTooltip(event, mainHandItem, hitResult);
-                }
-                //オフハンドをチェック
-                else if (!offHandItem.isEmpty()) {
-                    itemDrawn |= drawTextTooltip(event, mainHandItem, hitResult);
-                    itemDrawn |= drawGraphicTooltip(event, mainHandItem, hitResult);
-                }
-
-                if(itemDrawn || hitResult.getType().equals(HitResult.Type.MISS)){
-                    return;
-                }
-
-                ClientLevel level = instance.level;
-                if (level != null ) {
-
-
-                    // ブロック描画成功判定
-                    boolean blockDrawn = false;
-
-                    // ブロックをチェック
-                    if(hitResult.getType().equals(HitResult.Type.BLOCK)){
-                        Vec3 angle = player.getLookAngle().normalize().scale(0.5);
-                        BlockPos pos = BlockPos.containing(hitResult.getLocation().add(angle));
-                        Block block = level.getBlockState(pos).getBlock();
-                        if(block instanceof IhasHoverDrawBlock iBlock){
-                            blockDrawn |= iBlock.renderHoverGraphic(event, instance.level, pos);
-                        }
-
-                    }
-                    if(blockDrawn){
-                        return;
-                    }
-
-                    // エンティティをチェック
-                    if(hitResult.getType().equals(HitResult.Type.ENTITY)){
-                        List<Entity> entities =
-                            level.getEntitiesOfClass(Entity.class, new AABB(hitResult.getLocation(),hitResult.getLocation()).inflate(0.3), e -> true);
-                        for (Entity entity : entities) {
-                            if(entity instanceof IhasHoverDrawEntity iEntity){
-                                iEntity.renderHoverGraphicWithEntity(event, level);
-                            }
-                        }
-                    }
+        }
+        if(blockDrawn){
+            return;
+        }
+        
+        // エンティティをチェック
+        if(hitResult.getType().equals(HitResult.Type.ENTITY)){
+            List<Entity> entities =
+                level.getEntitiesOfClass(Entity.class, new AABB(hitResult.getLocation(),hitResult.getLocation()).inflate(0.3), e -> true);
+            for (Entity entity : entities) {
+                if(entity instanceof IHasHoverDrawEntity iEntity){
+                    iEntity.renderHoverGraphicWithEntity(event, level);
                 }
             }
         }
     }
-
-    /*// 移動操作処理に追加する
+    
+    // ツールチップレンダリングに追加する
     @SubscribeEvent
-    public void onInputUpdate(InputEvent.MouseScrollingEvent event){
+    public void OnRenderTooltip(RenderTooltipEvent.GatherComponents event){
         Minecraft instance = Minecraft.getInstance();
-        Player player = instance.player;
-        if (player instanceof LocalPlayer localPlayer) {
-            HitResult hitResult = instance.hitResult;
-            if (hitResult != null ) {
-                //メインハンドアイテムを取得
-                ItemStack mainHandItem = player.getMainHandItem();
-                //オフハンドアイテムを取得
-                ItemStack offHandItem = player.getOffhandItem();
-                //両方とも空の場合スキップ
-                if(mainHandItem.isEmpty() && offHandItem.isEmpty()){
-                    return;
-                }
-                //メインハンドをチェック
-                if(!mainHandItem.isEmpty()){
-                    stopMoveInput(event,localPlayer,mainHandItem,hitResult);
-                }
-                //オフハンドをチェック
-                else if (!offHandItem.isEmpty()) {
-                    stopMoveInput(event,localPlayer,offHandItem,hitResult);
-                }
-            }
+        if(instance.player==null || instance.level == null){
+            return;
+        }
+        ItemStack stack = event.getItemStack();
+        if (stack.isEmpty()) {
+            return;
+        }
+        if (stack.getItem() instanceof IHasTooltipDraw iItem) {
+            iItem.renderTooltip(event, instance.level, stack);
         }
     }
 
-    private void stopMoveInput(InputEvent.MouseScrollingEvent event, LocalPlayer player, ItemStack itemStack, HitResult hitResult){
-        // キーが押されているとき
-        if(KeyMapRegistry.CIRCLE_SELECT.isPressed()){
-            // アイテムを確認
-            if(itemStack.getItem() instanceof IhasHoverDraw iItem){
-                Minecraft instance = Minecraft.getInstance();
-                // プレイヤーを確認
-                if(instance.player instanceof LocalPlayer){
-                    // ホイールのデータをアイテムへ
-                    iItem.setWheelInput(event.getScrollDelta());
-                    // ホイールをリセット
-                    event = new InputEvent.MouseScrollingEvent(0,event.isLeftDown(),event.isMiddleDown(),event.isRightDown(),event.getMouseX(),event.getMouseY());
-                }
-            }
-        }
-    }*/
-
-    private boolean drawTextTooltip(RenderGuiOverlayEvent event, ItemStack itemStack, HitResult hitResult){
+    private boolean drawTextOverlay(RenderGuiOverlayEvent event, ItemStack itemStack, HitResult hitResult){
         // アイテムのツールチップをオーバーレイに表示
-        if(itemStack.getItem() instanceof IhasHoverTexts iItem){
+        if(itemStack.getItem() instanceof IHasHoverTexts iItem){
             Minecraft instance = Minecraft.getInstance();
             List<Component> tooltipLists = (iItem.getBlockHoverTexts(instance.level, itemStack, hitResult));
 
@@ -154,8 +127,8 @@ public class TooltipEventHandler {
     }
 
     // アイテムのホバーGUIをオーバーレイに表示
-    private boolean drawGraphicTooltip(RenderGuiOverlayEvent event, ItemStack itemStack, HitResult hitResult){
-        if(itemStack.getItem() instanceof IhasHoverDraw iItem){
+    private boolean drawGraphicOverlay(RenderGuiOverlayEvent event, ItemStack itemStack, HitResult hitResult){
+        if(itemStack.getItem() instanceof IHasHoverDraw iItem){
             Minecraft instance = Minecraft.getInstance();
             // アイテムの関数にeventを渡してレンダラを回す
             return iItem.renderHoverGraphic(event, instance.level, itemStack, hitResult);
@@ -172,7 +145,7 @@ public class TooltipEventHandler {
         }
         //プレイヤーが手に持っているアイテムを確認
         ItemStack itemStack = instance.player.getMainHandItem();
-        if(itemStack.getItem() instanceof IhasLevelDraw iItem){
+        if(itemStack.getItem() instanceof IHasLevelDraw iItem){
             return iItem.renderLevelGraphic(event, instance.level, itemStack);
         }
         return false;

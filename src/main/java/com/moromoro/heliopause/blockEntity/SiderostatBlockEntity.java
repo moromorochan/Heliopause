@@ -1,7 +1,7 @@
 package com.moromoro.heliopause.blockEntity;
 
 import com.moromoro.ConfigHolder;
-import com.moromoro.heliopause.EnumProperty.SiderostatTopState;
+import com.moromoro.heliopause.registry.enumProperty.SiderostatTopState;
 import com.moromoro.heliopause.block.SiderostatBaseBlock;
 import com.moromoro.heliopause.block.SiderostatTopBlock;
 import com.moromoro.heliopause.recipe.MoonlightPouringRecipe;

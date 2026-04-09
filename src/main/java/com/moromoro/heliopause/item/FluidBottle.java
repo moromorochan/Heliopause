@@ -1,7 +1,7 @@
 package com.moromoro.heliopause.item;
 
 import com.moromoro.ConfigHolder;
-import com.moromoro.heliopause.instance.IhasHoverTexts;
+import com.moromoro.heliopause.implementable.IHasHoverTexts;
 import com.moromoro.heliopause.registry.KeyMapRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -28,7 +27,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -45,7 +43,7 @@ import java.util.List;
 
 import static com.moromoro.heliopause.generic.StackControl.transferFluid;
 
-public class FluidBottle extends Item implements IFluidHandlerItem, IhasHoverTexts {
+public class FluidBottle extends Item implements IFluidHandlerItem, IHasHoverTexts {
 
     private static final String FLUID_NBT_KEY = "FluidStack";
     public static final String COLOR_NBT_KEY = "color";

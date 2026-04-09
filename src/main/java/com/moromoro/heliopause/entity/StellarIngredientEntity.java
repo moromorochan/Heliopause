@@ -263,7 +263,7 @@ public class StellarIngredientEntity extends Entity {
         }
         //Vec3 velocity = getDeltaMovement();
         if(velocity.length() > 0){
-            velocity = velocity.scale(0.99);
+            velocity = velocity.scale(0.8);
             this.setDeltaMovement(velocity);
             this.move(MoverType.SELF, getDeltaMovement());
             velocity = this.getDeltaMovement();

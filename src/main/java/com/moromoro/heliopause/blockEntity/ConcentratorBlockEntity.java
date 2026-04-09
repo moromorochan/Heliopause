@@ -1,15 +1,13 @@
 package com.moromoro.heliopause.blockEntity;
 
 import com.moromoro.ConfigHolder;
-import com.moromoro.Heliopause;
 import com.moromoro.heliopause.block.ConcentratorBlock;
 import com.moromoro.heliopause.block.LensBarrelBlock;
 import com.moromoro.heliopause.entity.LensBarrelEntity;
 import com.moromoro.heliopause.generic.Season;
+import com.moromoro.heliopause.recipe.LensBarrelCoverageListener.BarrelCoverageData;
 import com.moromoro.heliopause.recipe.StarlightConcentrationRecipe;
-import com.moromoro.heliopause.recipe.StellarInstantiationRecipe;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
-import com.moromoro.heliopause.registry.RecipeTypeRegistry;
 import com.moromoro.heliopause.registry.TagRegistry;
 import com.moromoro.heliopause.screen.ConcentratorMenu;
 import net.minecraft.core.BlockPos;
@@ -20,10 +18,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -31,7 +30,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -41,46 +39,46 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import static com.moromoro.heliopause.recipe.StarlightConcentrationRecipe.pickFluidStack;
+import static net.minecraftforge.fluids.capability.IFluidHandler.*;
 
 public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider {
     public static final int MAX_BARREL_LENGTH = ConfigHolder.MAX_BARREL_LENGTH.get();
-    //private int targetStarX;    // ターゲット赤経(α)
-    //private int targetStarY;    // ターゲット赤緯(δ)
-    private Vector2i targetStarCoordinate;
-    //private boolean isSyncedToStar;
-    private boolean isSyncedToStar;
-    // 星関係の生成
-    public List<StellarInstantiationRecipe.StellarInstance> stellarInstances = new ArrayList<>();
-
-    public static final int STAR_COUNT = 150;  // 星の数
-    public static final int STAR_RANGE_X = 360;
-    public static final int STAR_RANGE_MIN_Y = -60;
-    public static final int STAR_RANGE_MAX_Y = 60;
+    
     // メニュー渡し用データ ワールド依存なのでnbtには保存しない
-    private long levelSeed;
     private long date;
     private long dayTime;
-    private int barrelAccuracy;
-    public static final int ACCURACY_DIVIDE = 1000;
+    private Set<BarrelCoverageData> barrelCoverage;
+    private boolean isSyncedToStar;
+    
+    // 進行中レシピ
+    private StarlightConcentrationRecipe currentRecipe = null;
+    // 進行度
+    private int progress = 0;
+    // レシピ時間
+    private int maxProgress = 0;
 
-    // 内部アイテム(液体取り出し用スロット)
-    private final ItemStackHandler itemHandler = new ItemStackHandler(4){
+    // アイテム・液体スロット
+    public static final int SLOT_INPUT_ITEM = 0;
+    public static final int SLOT_OUTPUT_ITEM = 1;
+    public static final int SLOT_FLUID_IN = 2;
+    public static final int SLOT_FLUID_IN_RESULT = 3;
+    public static final int SLOT_FLUID_OUT = 4;
+    public static final int SLOT_FLUID_OUT_RESULT = 5;
+
+    private final ItemStackHandler itemHandler = new ItemStackHandler(6){
         @Override
         protected void onContentsChanged(int slot) {
             super.onContentsChanged(slot);
@@ -91,9 +89,14 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         }
 
         // アイテム搬入できるかどうか制御
-        @Override
+        /*@Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            ItemStack existingStack = this.getStackInSlot(slot);
+            // 搬出専用のスロット判定
+            if(slot == SLOT_OUTPUT_ITEM || slot == SLOT_FLUID_IN_RESULT || slot == SLOT_FLUID_OUT_RESULT){
+                return stack;
+            }
+            return super.insertItem(slot, stack, simulate);
+            *//*ItemStack existingStack = this.getStackInSlot(slot);
             // 既存のスタックが空、または同種のアイテムでスタックが満杯でない場合
             if (
                 existingStack.isEmpty() ||
@@ -106,14 +109,15 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
             } else {
                 // 種類が一致しないか、スタックが満杯の場合
                 return stack;
-            }
-        }
+            }*//*
+        }*/
     };
-    private static final int TANK_CAPACITY = 12000;
-    private static final int TANK_COUNT = 3;
+    public static final int TANK_CAPACITY = 2000;
+    private static final int TANK_COUNT = 2;
+    public static final int SLOT_INPUT_FLUID = 0;
+    public static final int SLOT_OUTPUT_FLUID = 1;
     private static class FluidTankHandler implements IFluidHandler{
         private final FluidTank[] fluidTanks = new FluidTank[]{
-        new FluidTank((TANK_CAPACITY)),
         new FluidTank((TANK_CAPACITY)),
         new FluidTank((TANK_CAPACITY))
         };
@@ -146,7 +150,7 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
 
         @Override
         public @NotNull FluidStack getFluidInTank(int tank) {
-            if(tank < 0 || tank > TANK_COUNT){
+            if(tank < 0 || tank >= TANK_COUNT){
                 return FluidStack.EMPTY;
             }
             return fluidTanks[tank].getFluidInTank(0);
@@ -154,7 +158,7 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
 
         @Override
         public int getTankCapacity(int tank) {
-            if(tank < 0 || tank > TANK_COUNT){
+            if(tank < 0 || tank >= TANK_COUNT){
                 return 0;
             }
             return fluidTanks[tank].getTankCapacity(0);
@@ -162,24 +166,24 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
 
         @Override
         public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-            if(tank < 0 || tank > TANK_COUNT){
+            if(tank < 0 || tank >= TANK_COUNT){
                 return false;
             }
             return fluidTanks[tank].isFluidValid(stack);
         }
 
         public int fillTo(int tank, FluidStack resource, FluidAction action){
-            if(tank < 0 || tank > getTanks()){return 0;}
+            if(tank < 0 || tank >= TANK_COUNT){return 0;}
             return fluidTanks[tank].fill(resource, action);
         }
 
         public FluidStack drainFrom(int tank, FluidStack resource, FluidAction action){
-            if(tank < 0 || tank > getTanks()){return FluidStack.EMPTY;}
+            if(tank < 0 || tank >= TANK_COUNT){return FluidStack.EMPTY;}
             return fluidTanks[tank].drain(resource, action);
         }
 
         public FluidStack drainFrom(int tank, int maxDrain, FluidAction action){
-            if(tank < 0 || tank > getTanks()){return FluidStack.EMPTY;}
+            if(tank < 0 || tank >= TANK_COUNT){return FluidStack.EMPTY;}
             return fluidTanks[tank].drain(maxDrain, action);
         }
 
@@ -217,42 +221,41 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         }
     };
     private final FluidTankHandler fluidHandler = new FluidTankHandler();
-
+    public FluidStack getInputFluid() {
+        return fluidHandler.getFluidInTank(0);
+    }
+    public FluidStack getOutputFluid() {
+        return fluidHandler.getFluidInTank(1);
+    }
+    
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
     private LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
 
-    private int recipeTimer = 0;
-    private static final int RECIPE_FREQ = 20; // 1秒毎
+    //private int recipeTimer = 0;
+    //private static final int RECIPE_FREQ = 20; // 1秒毎
 
     // long値は上下に分割して送る
-    public static final int DATA_ACCESS_LENGTH = 9;
-    public static final int LEVEL_SEED_LOW = 0;
-    public static final int LEVEL_SEED_HIGH = 1;
-    public static final int DATE_LOW = 2;
-    public static final int DATE_HIGH = 3;
-    public static final int TIME_LOW = 4;
-    public static final int TIME_HIGH = 5;
-    public static final int COORDINATE = 6;
-    public static final int ACCURACY = 7;
-    public static final int IS_SYNCED_TO_STAR = 8;
-    //public static final int TRACK_Y = 7;
+    public static final int DATA_ACCESS_LENGTH = 7;
+    public static final int DATE_LOW = 0;
+    public static final int DATE_HIGH = 1;
+    public static final int TIME_LOW = 2;
+    public static final int TIME_HIGH = 3;
+    public static final int PROGRESS = 4;
+    public static final int CAN_SEE_SKY = 5;
+    public static final int MAX_PROGRESS = 6;
 
     // GUI用データ格納
     protected final ContainerData data = new ContainerData() {
         @Override
         public int get(int index) {
             return switch (index){
-                case LEVEL_SEED_LOW -> (int) (ConcentratorBlockEntity.this.levelSeed & 0xFFFFFFFFL);
-                case LEVEL_SEED_HIGH -> (int) (ConcentratorBlockEntity.this.levelSeed >>> 32);
                 case DATE_LOW -> (int) (ConcentratorBlockEntity.this.date & 0xFFFFFFFFL);
                 case DATE_HIGH -> (int) (ConcentratorBlockEntity.this.date >>> 32);
                 case TIME_LOW -> (int) (ConcentratorBlockEntity.this.dayTime & 0xFFFFFFFFL);
                 case TIME_HIGH -> (int) (ConcentratorBlockEntity.this.dayTime >>> 32);
-                case COORDINATE -> ConcentratorMenu.encodeStarCoordinate(targetStarCoordinate);
-                case ACCURACY -> ConcentratorBlockEntity.this.barrelAccuracy;
-                case IS_SYNCED_TO_STAR -> ConcentratorBlockEntity.this.isSyncedToStar?1:0;
-                //case TRACK_X -> targetStarCoordinate!=null ? targetStarCoordinate.x() : ConcentratorMenu.UNIDENTIFIED_COORDINATE;
-                //case TRACK_Y -> targetStarCoordinate!=null ? targetStarCoordinate.y() : ConcentratorMenu.UNIDENTIFIED_COORDINATE;
+                case PROGRESS -> ConcentratorBlockEntity.this.progress;
+                case MAX_PROGRESS -> ConcentratorBlockEntity.this.maxProgress;
+                case CAN_SEE_SKY -> ConcentratorBlockEntity.this.isSyncedToStar?1:0;
                 default -> 0;
             };
         }
@@ -260,14 +263,6 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         @Override
         public void set(int index, int value) {
             switch (index) {
-                case LEVEL_SEED_LOW -> {
-                    long high = ConcentratorBlockEntity.this.levelSeed >>> 32;
-                    ConcentratorBlockEntity.this.levelSeed = (high << 32) | (value & 0xFFFFFFFFL);
-                }
-                case LEVEL_SEED_HIGH -> {
-                    long low = ConcentratorBlockEntity.this.levelSeed & 0xFFFFFFFFL;
-                    ConcentratorBlockEntity.this.levelSeed = ((long) value << 32) | low;
-                }
                 case DATE_LOW -> {
                     long high = ConcentratorBlockEntity.this.date >>> 32;
                     ConcentratorBlockEntity.this.date = (high << 32) | (value & 0xFFFFFFFFL);
@@ -284,33 +279,9 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
                     long low = ConcentratorBlockEntity.this.dayTime & 0xFFFFFFFFL;
                     ConcentratorBlockEntity.this.dayTime = ((long) value << 32) | low;
                 }
-                case COORDINATE -> {
-                    ConcentratorBlockEntity.this.targetStarCoordinate = ConcentratorMenu.decodeStarCoordinate(value);
-                }
-                case ACCURACY -> {
-                    ConcentratorBlockEntity.this.barrelAccuracy = value;
-                }
-                case IS_SYNCED_TO_STAR -> {
-                    ConcentratorBlockEntity.this.isSyncedToStar = (value==1);
-                }
-                /*case TRACK_X -> {
-                    if(value == ConcentratorMenu.UNIDENTIFIED_COORDINATE){
-                        ConcentratorBlockEntity.this.targetStarCoordinate = null;
-                    } else if(targetStarCoordinate == null){
-                        ConcentratorBlockEntity.this.targetStarCoordinate = new Vector2i(value,0);
-                    } else{
-                        ConcentratorBlockEntity.this.targetStarCoordinate.x = value;
-                    }
-                }
-                case TRACK_Y -> {
-                    if(value == ConcentratorMenu.UNIDENTIFIED_COORDINATE - 90){
-                        ConcentratorBlockEntity.this.targetStarCoordinate = null;
-                    } else if(targetStarCoordinate == null){
-                        ConcentratorBlockEntity.this.targetStarCoordinate = new Vector2i(0, value);
-                    } else{
-                        ConcentratorBlockEntity.this.targetStarCoordinate.y = value;
-                    }
-                }*/
+                case PROGRESS -> ConcentratorBlockEntity.this.progress = value;
+                case MAX_PROGRESS -> ConcentratorBlockEntity.this.maxProgress = value;
+                case CAN_SEE_SKY -> ConcentratorBlockEntity.this.isSyncedToStar = (value==1);
             }
         }
 
@@ -329,7 +300,6 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         super.onLoad();
         lazyItemHandler = LazyOptional.of(() -> itemHandler);
         lazyFluidHandler = LazyOptional.of(() -> fluidHandler);
-        stellarInstances.clear();
     }
 
     @Override
@@ -358,29 +328,44 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
     @Override
     protected void saveAdditional(@NotNull CompoundTag nbt) {
         super.saveAdditional(nbt);
-        nbt.putBoolean("isTracking", targetStarCoordinate != null);
-        if(targetStarCoordinate != null){
-            nbt.putInt("tracking_x", targetStarCoordinate.x());
-            nbt.putInt("tracking_y", targetStarCoordinate.y());
+        // アイテム
+        nbt.put("Items", itemHandler.serializeNBT());
+        // 液体タンク
+        CompoundTag tanksTag = new CompoundTag();
+        fluidHandler.tanksWriteToNbt(tanksTag);
+        nbt.put("FluidTanks", tanksTag);
+        // レシピ進行
+        nbt.putInt("Progress", progress);
+        nbt.putInt("MaxProgress", maxProgress);
+        // currentRecipe
+        if (currentRecipe != null) {
+            nbt.putString("CurrentRecipe", currentRecipe.getId().toString());
         }
-        nbt.put("Slot", itemHandler.serializeNBT());
-        nbt.put("Tanks", fluidHandler.tanksWriteToNbt(new CompoundTag()));
-
-        nbt.putInt("recipeTimer", recipeTimer);
     }
 
     @Override
     public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
-        if(nbt.getBoolean("isTracking")){
-            targetStarCoordinate = new Vector2i(nbt.getInt("tracking_x"), nbt.getInt("tracking_y"));
-        }else{
-            targetStarCoordinate = null;
+        // アイテム
+        if (nbt.contains("Items")) {
+            itemHandler.deserializeNBT(nbt.getCompound("Items"));
         }
-        itemHandler.deserializeNBT(nbt.getCompound("Slot"));
-        fluidHandler.tanksReadFromNbt(nbt.getCompound("Tanks"));
-
-        recipeTimer = nbt.getInt("recipeTimer");
+        // 液体タンク
+        if (nbt.contains("FluidTanks")) {
+            fluidHandler.tanksReadFromNbt(nbt.getCompound("FluidTanks"));
+        }
+        // レシピ進行
+        progress = nbt.getInt("Progress");
+        maxProgress = nbt.getInt("MaxProgress");
+        // currentRecipe
+        if (nbt.contains("CurrentRecipe")) {
+            ResourceLocation id = new ResourceLocation(nbt.getString("CurrentRecipe"));
+            if (level != null) {
+                level.getRecipeManager().byKey(id).filter(recipe -> recipe instanceof StarlightConcentrationRecipe)
+                    .ifPresent(recipe -> currentRecipe = (StarlightConcentrationRecipe) recipe);
+            }
+        }
+        
     }
 
     @Override
@@ -407,26 +392,6 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         super.handleUpdateTag(nbt);
         this.load(nbt);
     }
-
-    /*public double getYaw() {
-        return this.yaw;
-    }
-
-    public void setYaw(double yaw) {
-        this.yaw = yaw;
-    }
-
-    public double getPitch() {
-        return this.pitch;
-    }
-
-    public void setPitch(double pitch) {
-        this.pitch = pitch;
-    }*/
-
-    /*public List<BlockState> getBarrels() {
-        return barrels;
-    }*/
 
     public boolean assemble(){
         if(level == null){
@@ -468,23 +433,18 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         }
         // 適用
         LensBarrelEntity barrelEntity = new LensBarrelEntity(level, worldPosition.above().getCenter(), validBarrels);//.create(level);
-        //barrelEntity.setPos(worldPosition.getCenter());
-        //barrelEntity.assemble(validBarrels);
         level.addFreshEntity(barrelEntity);
-
-        //this.barrels.clear();
-        //this.barrels.addAll(validBarrels);
+        
         // 鏡筒のブロックステートをブロックエンティティに保存
         for (int barrelPos = 0; barrelPos < validBarrels.size(); barrelPos++) {
             level.setBlock(worldPosition.above(barrelPos + 1), Blocks.AIR.defaultBlockState(), 3);
         }
         // インターフェースブロックを設置
-        //level.setBlock(worldPosition.above(), BlockRegistry.STARLIGHT_CONCENTRATOR_INTERFACE.get().defaultBlockState(), 3);
-        // enabled切り替え
         level.setBlock(worldPosition, this.getBlockState().setValue(ConcentratorBlock.ENABLED, true), 3);
         this.setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-        level.playSound(null, worldPosition, SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1.0f, 0.8f);
+        level.playSound(null, worldPosition, SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1.0f, 0.7f);
+        level.playSound(null, worldPosition, SoundEvents.ARMOR_EQUIP_NETHERITE, SoundSource.BLOCKS, 1.0f, 0.8f);
         return true;
     }
 
@@ -500,154 +460,181 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         ConcentratorMenu menu = new ConcentratorMenu(containerId, playerInventory, this, this.data);
         return menu;
     }
+    
+    public void drops(){
+        SimpleContainer inventory =new SimpleContainer(itemHandler.getSlots());
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            inventory.setItem(i, itemHandler.getStackInSlot(i));
+        }
+        
+        Containers.dropContents(this.level, this.worldPosition, inventory);
+    }
 
     public void tick(Level level, BlockPos pos, BlockState blockState, ConcentratorBlockEntity blockEntity){
         if(level.isClientSide()){
             return;
         }
         if(level instanceof ServerLevel serverLevel){
-            levelSeed = serverLevel.getSeed();
             date = Season.getDayInYear(serverLevel);
             dayTime = serverLevel.getDayTime();
+            int seasonAngle = (int)Math.floor(((double) date /Season.YEAR_LENGTH) * 360.0);
 
-            // 星を初期化
-            if(stellarInstances.isEmpty()){
-                stellarInstances = initStellarInstances(level, levelSeed);
+            LensBarrelEntity lensBarrelEntity = null;
+            for (LensBarrelEntity entity : level.getEntitiesOfClass(LensBarrelEntity.class, new AABB(worldPosition.above()))) {
+                lensBarrelEntity = entity;
+                break;
             }
-
-            // 液体を取り出す
-            for (int tankSlot = 0; tankSlot < fluidHandler.getTanks(); tankSlot++) {
-                FluidStack fluidStack = fluidHandler.getFluidInTank(tankSlot);
-                if(fluidStack.isEmpty()){
-                    continue;
-                }
-                ItemStack slotItem = itemHandler.getStackInSlot(tankSlot + 1).copyWithCount(1);
-                if(slotItem.getItem() instanceof IFluidHandlerItem fluidHandlerItem){
-                    int filled = fluidHandlerItem.fill(fluidStack, IFluidHandler.FluidAction.SIMULATE);
-                    if(filled == 0){
-                        continue;
-                    }
-                    FluidStack drained = fluidHandler.drainFrom(tankSlot, filled, IFluidHandler.FluidAction.SIMULATE);
-                    fluidHandlerItem.fill(drained, IFluidHandler.FluidAction.EXECUTE);
-
-                    // スロットに入れられるか確認
-                    ItemStack remain = itemHandler.insertItem(0, slotItem, false);
-                    if(remain == ItemStack.EMPTY){
-                        fluidHandler.drainFrom(tankSlot, filled, IFluidHandler.FluidAction.EXECUTE);
-                        itemHandler.extractItem(tankSlot + 1, 1, false);
-                    }
-                }
-                else if(slotItem.is(Items.BUCKET)){
-                    FluidStack drained = fluidHandler.drainFrom(tankSlot, FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
-                    if(drained.getAmount() == 1000){
-                        ItemStack resultBucketStack = fluidStack.getFluid().getBucket().getDefaultInstance();
-                        ItemStack remain = itemHandler.insertItem(0, resultBucketStack, false);
-                        if(remain == ItemStack.EMPTY){
-                            fluidHandler.drainFrom(tankSlot, 1000, IFluidHandler.FluidAction.EXECUTE);
-                            itemHandler.extractItem(tankSlot + 1, 1, false);
-                        }
-                    }
-
-                }
+            if(lensBarrelEntity != null) {
+                isSyncedToStar = lensBarrelEntity.isSyncedToStar();
+                barrelCoverage = lensBarrelEntity.getWholeCoverage();
+                operateRecipe(serverLevel, barrelCoverage, seasonAngle);
             }
-
-            // 液体を増やす
-            if(blockState.getValue(ConcentratorBlock.ENABLED).equals(true)){
-                if(recipeTimer < RECIPE_FREQ){
-                    recipeTimer++;
-                }else{
-                    recipeTimer = 0;
-                    LensBarrelEntity lensBarrelEntity = null;
-                    for (LensBarrelEntity entity : level.getEntitiesOfClass(LensBarrelEntity.class, new AABB(worldPosition.above(2)))) {
-                        lensBarrelEntity = entity;
-                        break;
-                    }
-                    if(lensBarrelEntity != null){
-                        barrelAccuracy = (int)Math.ceil(lensBarrelEntity.getWholeAccuracy() * ACCURACY_DIVIDE);
-                        isSyncedToStar = lensBarrelEntity.isSyncedToStar();
-                        if(isSyncedToStar){
-                            // レシピの天体取得
-                            List<StarlightConcentrationRecipe.FluidStackChance> recipeFluidStackChance =
-                                getRecipeStellar(level, stellarInstances, targetStarCoordinate);
-
-                            if(!recipeFluidStackChance.isEmpty()){
-                                for (int tank = 0; tank < recipeFluidStackChance.size(); tank++) {
-                                    if(tank >= fluidHandler.getTanks()){
-                                        Heliopause.LOGGER.warn("Recipe length {} longer than Tank Length {}.", recipeFluidStackChance.size(), fluidHandler.getTanks());
-                                        break;
-                                    }
-                                    if(recipeFluidStackChance.get(tank).accuracy() * ACCURACY_DIVIDE <= barrelAccuracy){
-                                        FluidStack fluidStack = recipeFluidStackChance.get(tank).fluidStack();
-                                        fluidHandler.fluidTanks[tank].fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                                    }
-                                }
-                            }
-                        }
-                    }else{
-                        barrelAccuracy = 0;
-                    }
-                }
-            }
-
+            operateTankInOut();
+            
             this.setChanged();
             level.sendBlockUpdated(pos, blockState, blockState, 3);
         }
     }
+    
+    private void operateRecipe(ServerLevel level, Set<BarrelCoverageData> barrelCoverage, int seasonAngle){
+        ItemStack itemIn = itemHandler.getStackInSlot(0);
+        FluidStack fluidIn = fluidHandler.fluidTanks[0].getFluid();
 
-    public static List<StarlightConcentrationRecipe.FluidStackChance> getRecipeStellar(Level level, List<StellarInstantiationRecipe.StellarInstance> stellarInstances, Vector2i targetStarCoordinate) {
-        List<StarlightConcentrationRecipe.FluidStackChance> recipeFluidStackChance = new ArrayList<>();
-        // ターゲット星取得
-        Optional<StellarInstantiationRecipe.StellarInstance> targetOptional =
-            stellarInstances.stream().filter(stellarInstance -> stellarInstance.coordinate().equals(targetStarCoordinate)).findFirst();
-        if(targetOptional.isPresent()){
-            StellarInstantiationRecipe.StellarInstance target = targetOptional.get();
-            List<StarlightConcentrationRecipe> optional =
-                level.getRecipeManager().getRecipesFor(RecipeTypeRegistry.STARLIGHT_CONCENTRATION.get(), new SimpleContainer(), level);
-            // 特徴スロットごとに全候補からランダムで決定
-            double[] slotWholePool = new double[]{0,0,0};
-            List<StarlightConcentrationRecipe.FluidStackChance>[] slotStack = new List[]{new ArrayList<>(), new ArrayList<>(), new ArrayList<>()};
-            optional.sort(Comparator.comparing(recipe -> recipe.getId().toString()));
-            for (StarlightConcentrationRecipe recipe : optional) {
-                int featureId = recipe.getFeatureId();
-                double chance = recipe.getChance(target);
-                double accuracy = recipe.getAccuracy(target.localSeed());
-                FluidStack fluidStack = recipe.getResultFluidStack();
-                if(chance > 0 && !fluidStack.isEmpty()){
-                    slotWholePool[featureId] += chance;
-                    slotStack[featureId].add(new StarlightConcentrationRecipe.FluidStackChance(fluidStack, fluidStack.getAmount(), chance, accuracy));
+        for (StarlightConcentrationRecipe recipe : level.getRecipeManager().getAllRecipesFor(StarlightConcentrationRecipe.Type.INSTANCE)) {
+
+            // ingredient 判定
+            if (!recipe.getIngredientItem().isEmpty()) {
+                if(!recipe.getIngredientItem().test(itemIn)){
+                    continue;
                 }
             }
-            recipeFluidStackChance.addAll(pickFluidStack(RandomSource.create(target.localSeed()), slotStack, slotWholePool));
+            if (!recipe.getIngredientFluid().isEmpty()) {
+                if(!recipe.getIngredientFluid().isFluidEqual(fluidIn)){
+                    continue;
+                }
+            }
+            
+            // coverage 判定
+            if (!barrelCoverage.stream().map(BarrelCoverageData::name).collect(Collectors.toSet())
+                    .equals(recipe.getConditions().coverage())) {
+                continue;
+            }
+
+            // season 判定
+            boolean seasonMatch = false;
+            StarlightConcentrationRecipe.SeasonRange range = recipe.getConditions().seasonRange();
+            if (seasonAngle >= range.start() && seasonAngle <= range.end()) {
+                seasonMatch = true;
+            }
+            if (!seasonMatch) continue;
+
+            // dimension 判定
+            if (!level.dimension().location().toString().equals(recipe.getConditions().dimension())) {
+                continue;
+            }
+
+            // time カウント
+            if (currentRecipe == null || currentRecipe != recipe) {
+                currentRecipe = recipe;
+                maxProgress = recipe.getTime();
+                progress = 0;
+            }
+            
+            // 観測状況が有効ならレシピ進行
+            if(isSyncedToStar) {
+                progress++;
+            }
+
+            if (progress >= recipe.getTime()) {
+                finishRecipe(recipe);
+                progress = 0;
+                currentRecipe = null;
+            }
+
+            return;
         }
-        return recipeFluidStackChance;
+
+        currentRecipe = null;
+        progress = 0;
     }
-
-
-    public static @NotNull List<StellarInstantiationRecipe.StellarInstance> initStellarInstances(Level level, long levelSeed) {
-        Optional<StellarInstantiationRecipe> stars =
-            level.getRecipeManager().getRecipeFor(RecipeTypeRegistry.STELLAR_INSTANTIATION.get(), new SimpleContainer(), level);
-        if(stars.isPresent()){
-            StellarInstantiationRecipe recipe = stars.get();
-            return StellarInstantiationRecipe.getStars(recipe, levelSeed);
+    
+    private void operateTankInOut(){
+        // 入力タンク
+        handleTankIO(SLOT_INPUT_FLUID, SLOT_FLUID_IN, SLOT_FLUID_IN_RESULT, true);
+        // 出力タンク
+        handleTankIO(SLOT_OUTPUT_FLUID, SLOT_FLUID_OUT, SLOT_FLUID_OUT_RESULT, false);
+    }
+    
+    private void handleTankIO(int tankId, int slotIn, int slotOut, boolean allowFill) {
+        
+        ItemStack container = itemHandler.getStackInSlot(slotIn);
+        if (container.isEmpty()) {
+            return;
         }
-        return new ArrayList<>();
+        // 出力スロットが埋まっている場合は処理しない
+        if (!itemHandler.getStackInSlot(slotOut).isEmpty()) {
+            return;
+        }
+        
+        FluidUtil.getFluidHandler(container).ifPresent(handler -> {
+            FluidStack tankFluid = fluidHandler.getFluidInTank(tankId);
+            
+            // 方向判定
+            boolean containerHasFluid = allowFill && !handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE).isEmpty();
+            
+            // アイテムからタンク
+            if (containerHasFluid) {
+                FluidStack drainedSim = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+                if (drainedSim.isEmpty()) {
+                    return;
+                }
+                
+                int fillSim = fluidHandler.fillTo(tankId, drainedSim, FluidAction.SIMULATE);
+                if (fillSim <= 0) {
+                    return;
+                }
+                
+                // 実行
+                FluidStack drained = handler.drain(fillSim, FluidAction.EXECUTE);
+                fluidHandler.fillTo(tankId, drained, FluidAction.EXECUTE);
+                
+                ItemStack empty = handler.getContainer().copy();
+                itemHandler.extractItem(slotIn, 1, false);
+                itemHandler.insertItem(slotOut, empty, false);
+                return;
+            }
+            // タンクから取り出し
+            int fillSim = handler.fill(tankFluid, FluidAction.SIMULATE);
+            if (fillSim <= 0) {
+                return;
+            }
+            
+            FluidStack drained = fluidHandler.drainFrom(tankId, fillSim, FluidAction.EXECUTE);
+            handler.fill(drained, FluidAction.EXECUTE);
+            ItemStack filled = handler.getContainer().copy();
+            itemHandler.extractItem(slotIn, 1, false);
+            itemHandler.insertItem(slotOut, filled, false);
+        });
     }
-
-    /*public boolean isSyncedToStar() {
-        return isSyncedToStar;
+    
+    private void finishRecipe(StarlightConcentrationRecipe recipe){
+        // 消費
+        if (!recipe.getIngredientItem().isEmpty()) {
+            itemHandler.extractItem(SLOT_INPUT_ITEM, 1, false);
+        }
+        if (!recipe.getIngredientFluid().isEmpty()) {
+            FluidStack required = recipe.getIngredientFluid();
+            fluidHandler.drainFrom(SLOT_INPUT_FLUID, required.getAmount(), FluidAction.EXECUTE);
+        }
+        // 追加
+        if (!recipe.getResultItem(null).isEmpty()) {
+            ItemStack result = recipe.getResultItem(null).copy();
+            itemHandler.insertItem(SLOT_OUTPUT_ITEM, result, false);
+        }
+        if (!recipe.getResultFluid().isEmpty()) {
+            FluidStack resultFluid = recipe.getResultFluid().copy();
+            fluidHandler.fillTo(SLOT_OUTPUT_FLUID, resultFluid, FluidAction.EXECUTE);
+        }
+        this.setChanged();
     }
-
-    public void setSyncedToStar(boolean syncedToStar) {
-        this.isSyncedToStar = syncedToStar;
-    }*/
-
-    public Vector2i getTargetStarCoordinate() {
-        return targetStarCoordinate;
-    }
-
-    public void setTargetStarCoordinate(Vector2i targetStarCoordinate) {
-        this.targetStarCoordinate = targetStarCoordinate;
-    }
-
-
 }

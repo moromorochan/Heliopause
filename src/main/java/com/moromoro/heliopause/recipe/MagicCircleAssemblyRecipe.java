@@ -488,7 +488,6 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
         return List.of(new blockTravel(pos, List.of(pos), List.of("end")));
     }*/
 
-    // TODO: 読む
     // ルートノードからネットワークの形を判定
     /*public static boolean matchesAt(Level level, BlockPos originPos, MagicCircleAssemblyRecipe recipe) {
         final int MAX_DEPTH = 16;

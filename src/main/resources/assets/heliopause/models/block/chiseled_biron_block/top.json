@@ -1,0 +1,19 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made by moromorochan with Blockbench",
+	"textures": {
+		"top": "heliopause:block/chiseled_biron_block/top",
+		"particle": "heliopause:block/chiseled_biron_block/top"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#top", "cullface": "up"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#top", "cullface": "down"}
+			}
+		}
+	],
+	"display": {}
+}

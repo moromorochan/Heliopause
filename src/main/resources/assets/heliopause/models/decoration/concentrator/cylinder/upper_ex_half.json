@@ -1,0 +1,40 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made by moromorochan with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"1": "heliopause:decoration/concentrator/cylinder_deco_extensive"
+	},
+	"elements": [
+		{
+			"from": [16, 8, 1],
+			"to": [18, 16, 5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 16, 8]},
+			"faces": {
+				"north": {"uv": [4, 8, 6, 16], "texture": "#1"},
+				"east": {"uv": [0, 8, 4, 16], "texture": "#1"},
+				"south": {"uv": [4, 8, 6, 16], "texture": "#1"},
+				"west": {"uv": [0, 8, 4, 16], "texture": "#1"}
+			}
+		},
+		{
+			"from": [16, 8, 11],
+			"to": [18, 16, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 16, 8]},
+			"faces": {
+				"north": {"uv": [4, 8, 6, 16], "texture": "#1"},
+				"east": {"uv": [0, 8, 4, 16], "texture": "#1"},
+				"south": {"uv": [4, 8, 6, 16], "texture": "#1"},
+				"west": {"uv": [0, 8, 4, 16], "texture": "#1"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "upper_extensive_half",
+			"origin": [2.5, 16, -17.5],
+			"color": 0,
+			"children": [0, 1]
+		}
+	]
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "heliopause:block/chiseled_biron_block/bottom/inner",
+  "textures": {
+    "side": "heliopause:block/chiseled_biron_block/c"
+  }
+}

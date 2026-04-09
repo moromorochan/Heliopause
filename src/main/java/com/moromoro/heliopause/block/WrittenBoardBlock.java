@@ -1,7 +1,7 @@
 package com.moromoro.heliopause.block;
 
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
+import com.moromoro.heliopause.registry.enumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.blockEntity.AbstractWrittenBoardBlockEntity;
 import com.moromoro.heliopause.blockEntity.WrittenBoardBlockEntity;
 import com.moromoro.heliopause.item.CompassItem;

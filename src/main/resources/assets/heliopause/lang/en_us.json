@@ -15,22 +15,49 @@
   "block.heliopause.siderostat": "Siderostat",
 
   "block.heliopause.alt_azimuth_circle_board": "Circle of Starlight Concentration",
-  "block.heliopause.concentrator": "Alt-Azimuth Mount",
-  "gui.heliopause.concentrator.": "",
-  "gui.heliopause.concentrator.compass.north": "N",
-  "gui.heliopause.concentrator.compass.east": "E",
-  "gui.heliopause.concentrator.compass.south": "S",
-  "gui.heliopause.concentrator.compass.west": "W",
-  "gui.heliopause.concentrator.fixed_star": "Fixed Star",
-  "gui.heliopause.concentrator.galaxy": "Galaxy",
-  "gui.heliopause.concentrator.collapsar": "Collapsar",
+  "block.heliopause.concentrator": "Starlight Concentrator",
+
+  "gui.heliopause.concentrator.processing": "Concentrating the starlight...",
+  "gui.heliopause.concentrator.waiting": "Waiting for observation environment...",
+
+  "gui.heliopause.lens_barrel.coverage": "Observable Starlight",
+
+  "gui.heliopause.lens_barrel_coverage_check.title": "Lens Barrel",
+  "gui.heliopause.lens_barrel_coverage_check.assemble": "Assemble!",
+  "gui.heliopause.lens_barrel_coverage_check.disassemble": "Disassemble",
+  "gui.heliopause.lens_barrel_coverage_check.invalid_length": "The\nstructure\nis too long",
+  "gui.heliopause.lens_barrel_coverage_check.invalid_mirror": "The mirror\nplacement\nis invalid",
+  "gui.heliopause.lens_barrel_coverage_check.invalid_concentrator": "Requires a\nStarlight\nConcentrator",
+
+  "gui.heliopause.lens_barrel_coverage.optic": "Optic",
+  "gui.heliopause.lens_barrel_coverage.infra_red": "Infra Red",
+  "gui.heliopause.lens_barrel_coverage.aetheric": "Aetheric",
+  "gui.heliopause.lens_barrel_coverage.alkahestic": "Alkahestic",
 
   "block.heliopause.wooden_lens_barrel": "Wooden Lens Barrel",
-  "block.heliopause.wooden_main_mirror": "Wooden Lens Barrel Main Mirror",
-  "block.heliopause.wooden_second_mirror": "Wooden Lens Barrel Secondary Mirror",
+  "block.heliopause.stone_lens_barrel": "Stone Lens Barrel",
+  "block.heliopause.alchemy_biron_lens_barrel": "Alchemy Biron Lens Barrel",
+  "block.heliopause.thermoimmobilant_lens_barrel": "Thermoimmobilant Lens Barrel",
+  "block.heliopause.iron_main_mirror": "Iron Main Mirror",
+  "block.heliopause.iron_second_mirror": "Iron Secondary Mirror",
+  "block.heliopause.graphite_main_mirror": "Graphite Main Mirror",
+  "block.heliopause.graphite_second_mirror": "Graphite Secondary Mirror",
+  "block.heliopause.silver_main_mirror": "Silver Main Mirror",
+  "block.heliopause.silver_second_mirror": "Silver Secondary Mirror",
+  "block.heliopause.quince_steel_main_mirror": "Quince Steel Main Mirror",
+  "block.heliopause.quince_steel_second_mirror": "Quince Steel Secondary Mirror",
+
+  "block.heliopause.silver_ore": "Silver Ore",
+  "block.heliopause.deepslate_silver_ore": "Deepslate Silver Ore",
+  "block.heliopause.raw_silver_block": "Raw Silver Block",
 
   "block.heliopause.alchemy_biron_block": "Alchemy Biron Block",
   "block.heliopause.glowstone_alloy_block": "Glowstone Alloy Block",
+  "block.heliopause.silver_block": "Silver Block",
+
+  "block.heliopause.polished_biron_block": "Polished Alchemy Biron Block",
+  "block.heliopause.chiseled_biron_block": "Chiseled Alchemy Biron Block",
+  "block.heliopause.alchemy_biron_glass": "Alchemy Biron Ornate Glass",
 
   "block.heliopause.copper_pipe": "Copper Pipe",
   "item.heliopause.low_copper_pipe": "Copper Low Pressure Pipe",
@@ -45,7 +72,13 @@
   "item.heliopause.glowstone_alloy_ingot": "Glowstone Alloy Ingot",
   "item.heliopause.glowstone_alloy_nugget": "Glowstone Alloy Nugget",
 
+  "item.heliopause.raw_silver": "Raw Silver",
+  "item.heliopause.silver_ingot": "Silver Ingot",
+  "item.heliopause.silver_nugget": "Silver Nugget",
+
+  "item.heliopause.quince_steel_ingot": "Quince Steel Ingot",
   "item.heliopause.optical_glass": "Optical Glass",
+  "item.heliopause.thermoimmobilant": "Thermoimmobilant",
 
   "item.heliopause.chalk": "Chalk",
   "item.heliopause.compass": "Circle Drafting Compass",
@@ -100,6 +133,10 @@
   "recipe.heliopause.transmutation": "Transmutation",
   "recipe.heliopause.moonlight_pouring": "Moonlight Pouring",
 
+  "recipe.heliopause.starlight_concentration": "Starlight Concentration",
+  "recipe.heliopause.starlight_concentration.starlight": "Starlight to use",
+  "recipe.heliopause.starlight_concentration.starlight_description": "Starlight is supplied by the assembled lens barrel with mirrors on clear nights.\nComposition of the starlight to use must be exactly the same, without any excess or deficiency.",
+
   "recipe.heliopause.magic_circle_assembly": "Magic Circle Assembly",
   "recipe.heliopause.magic_circle_assembly_trigger_place_on": "Place",
   "recipe.heliopause.magic_circle_assembly_trigger_use": "Use",
@@ -115,7 +152,7 @@
   "season.heliopause.month.4": "Apr.",
   "season.heliopause.month.5": "May ",
   "season.heliopause.month.6": "Jun.",
-  "season.heliopause.month.7": "Jul",
+  "season.heliopause.month.7": "Jul.",
   "season.heliopause.month.8": "Aug.",
   "season.heliopause.month.9": "Sep.",
   "season.heliopause.month.10": "Oct.",
@@ -123,6 +160,7 @@
   "season.heliopause.month.12": "Dec.",
   "season.heliopause.date": " %s",
   "season.heliopause.time": "%1$s:%2$s",
+  "season.heliopause.year_round": "Year-round",
 
   "entity.heliopause.stellar_ingredient_entity": "Ingredient",
   "entity.heliopause.lens_barrel_entity": "Lens Barrel",

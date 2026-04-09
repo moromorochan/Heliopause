@@ -33,10 +33,7 @@ public class RecipeSerializerRegistry {
 
     public static final RegistryObject<RecipeSerializer<OrreryTransferenceRecipe>> ORRERY_TRANSFERENCE =
         RECIPE_SERIALIZERS.register(OrreryTransferenceRecipe.Type.ID,() -> OrreryTransferenceRecipe.Serializer.INSTANCE);
-
-    public static final RegistryObject<RecipeSerializer<StellarInstantiationRecipe>> STELLAR_INSTANTIATION =
-        RECIPE_SERIALIZERS.register(StellarInstantiationRecipe.Type.ID,() -> StellarInstantiationRecipe.Serializer.INSTANCE);
-
+    
     public static final RegistryObject<RecipeSerializer<StarlightConcentrationRecipe>> STARLIGHT_CONCENTRATION =
         RECIPE_SERIALIZERS.register(StarlightConcentrationRecipe.Type.ID,() -> StarlightConcentrationRecipe.Serializer.INSTANCE);
 

@@ -1,0 +1,8 @@
+{
+	"parent": "heliopause:block/lens_barrel/iron_mirror/secondary",
+	"textures": {
+		"0": "heliopause:block/lens_barrel/quince_steel_mirror",
+		"1": "heliopause:block/lens_barrel/thermoimmobilant_barrel",
+		"particle": "heliopause:block/silver_block"
+	}
+}

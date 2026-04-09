@@ -1,6 +1,6 @@
 package com.moromoro.heliopause.block;
 
-import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
+import com.moromoro.heliopause.registry.enumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.blockEntity.AbstractWrittenBoardBlockEntity;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import net.minecraft.core.BlockPos;

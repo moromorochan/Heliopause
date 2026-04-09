@@ -14,9 +14,10 @@
 
     {"type": "minecraft:single", "resource": "heliopause:decoration/siderostat/moon"},
 
-    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/pitch"},
-    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/turntable"},
-    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/weight"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/cylinder_deco_extensive"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/cylinder_pipes"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/turntable_deco"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/turntable_deco_extensive"},
 
     {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_circle_dotted"},
     {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_line_dotted"},

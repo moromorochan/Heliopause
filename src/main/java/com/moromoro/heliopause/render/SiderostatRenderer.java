@@ -1,7 +1,7 @@
 package com.moromoro.heliopause.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.moromoro.heliopause.EnumProperty.SiderostatTopState;
+import com.moromoro.heliopause.registry.enumProperty.SiderostatTopState;
 import com.moromoro.heliopause.block.SiderostatTopBlock;
 import com.moromoro.heliopause.blockEntity.SiderostatBlockEntity;
 import com.moromoro.heliopause.registry.BlockRegistry;

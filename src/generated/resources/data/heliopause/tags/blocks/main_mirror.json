@@ -1,5 +1,8 @@
 {
   "values": [
-    "heliopause:wooden_main_mirror"
+    "heliopause:iron_main_mirror",
+    "heliopause:graphite_main_mirror",
+    "heliopause:silver_main_mirror",
+    "heliopause:quince_steel_main_mirror"
   ]
 }

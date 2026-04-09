@@ -4,10 +4,10 @@ import com.mojang.blaze3d.platform.Window;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.block.AbstractWrittenBoardBlock;
 import com.moromoro.heliopause.block.BlackBoardBlock;
-import com.moromoro.heliopause.EnumProperty.WrittenBoardDrawType;
+import com.moromoro.heliopause.registry.enumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.blockEntity.AbstractWrittenBoardBlockEntity;
-import com.moromoro.heliopause.instance.IhasHoverDraw;
-import com.moromoro.heliopause.instance.IhasHoverTexts;
+import com.moromoro.heliopause.implementable.IHasHoverDraw;
+import com.moromoro.heliopause.implementable.IHasHoverTexts;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.registry.KeyMapRegistry;
 import net.minecraft.client.Minecraft;
@@ -41,7 +41,7 @@ import java.util.Objects;
 
 
 // 錬成陣を開始する道具
-public class CompassItem extends Item implements IhasHoverTexts, IhasHoverDraw {
+public class CompassItem extends Item implements IHasHoverTexts, IHasHoverDraw {
     // 背景
     private static final ResourceLocation BACKGROUND = new ResourceLocation(Heliopause.MODID, "textures/gui/compass_tool_select.png");
     // アイコン
@@ -343,7 +343,7 @@ public class CompassItem extends Item implements IhasHoverTexts, IhasHoverDraw {
                 tag.putInt("firstPosX", pos.getX());
                 tag.putInt("firstPosY", pos.getY());
                 tag.putInt("firstPosZ", pos.getZ());
-                //itemStack.setTag(tag);
+                //itemStack.setTag(block);
                 //context.getPlayer().setItemInHand(context.getHand(),itemStack);
             }
             return null;
@@ -358,7 +358,7 @@ public class CompassItem extends Item implements IhasHoverTexts, IhasHoverDraw {
             }
             return returnPos;
 
-            //itemStack.setTag(tag);
+            //itemStack.setTag(block);
             //context.getPlayer().setItemInHand(context.getHand(),itemStack);
 
         }
@@ -505,12 +505,12 @@ public class CompassItem extends Item implements IhasHoverTexts, IhasHoverDraw {
         if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
             return;
         }
-        CompoundTag tag = itemStack.getTag();
-        if (tag == null || !tag.contains("firstPosX")) {
+        CompoundTag block = itemStack.getTag();
+        if (block == null || !block.contains("firstPosX")) {
             return;
         }
         // 選択済みのブロック位置を取得
-        BlockPos firstPos = getPosFromTag(tag);
+        BlockPos firstPos = getPosFromTag(block);
         if(firstPos == null){
             return;
         }

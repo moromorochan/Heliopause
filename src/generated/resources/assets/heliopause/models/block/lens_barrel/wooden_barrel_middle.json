@@ -1,7 +1,0 @@
-{
-  "parent": "heliopause:block/lens_barrel/wooden_barrel_single",
-  "render_type": "minecraft:cutout",
-  "textures": {
-    "side": "heliopause:block/lens_barrel/wooden/side_middle"
-  }
-}

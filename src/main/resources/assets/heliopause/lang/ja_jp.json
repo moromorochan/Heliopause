@@ -15,21 +15,49 @@
   "block.heliopause.siderostat": "シデロスタット",
 
   "block.heliopause.alt_azimuth_circle_board": "星明かり収斂陣",
-  "block.heliopause.concentrator": "経緯台",
-  "gui.heliopause.concentrator.compass.north": "北",
-  "gui.heliopause.concentrator.compass.east": "東",
-  "gui.heliopause.concentrator.compass.south": "南",
-  "gui.heliopause.concentrator.compass.west": "西",
-  "gui.heliopause.concentrator.fixed_star": "恒星",
-  "gui.heliopause.concentrator.galaxy": "銀河",
-  "gui.heliopause.concentrator.collapsar": "崩壊星",
+  "block.heliopause.concentrator": "星明かり収斂器",
+
+  "gui.heliopause.concentrator.processing": "星明かりを収斂中...",
+  "gui.heliopause.concentrator.waiting": "観測環境を待機中...",
+
+  "gui.heliopause.lens_barrel.coverage": "対応する星明かり",
+
+  "gui.heliopause.lens_barrel_coverage_check.title": "鏡筒の情報",
+  "gui.heliopause.lens_barrel_coverage_check.assemble": "組み立て可能!",
+  "gui.heliopause.lens_barrel_coverage_check.disassemble": "組み立て解除",
+  "gui.heliopause.lens_barrel_coverage_check.invalid_length": "鏡筒が\n長すぎます",
+  "gui.heliopause.lens_barrel_coverage_check.invalid_mirror": "鏡の配置が\n無効です",
+  "gui.heliopause.lens_barrel_coverage_check.invalid_concentrator": "最下部に\n星明かり収斂器\nが必要です",
+
+  "gui.heliopause.lens_barrel_coverage.optic": "可視光",
+  "gui.heliopause.lens_barrel_coverage.infra_red": "赤外光",
+  "gui.heliopause.lens_barrel_coverage.aetheric": "エーテル波長",
+  "gui.heliopause.lens_barrel_coverage.alkahestic": "超溶媒波長",
 
   "block.heliopause.wooden_lens_barrel": "木の鏡筒",
-  "block.heliopause.wooden_main_mirror": "木の鏡筒の主鏡",
-  "block.heliopause.wooden_second_mirror": "木の鏡筒の副鏡",
+  "block.heliopause.stone_lens_barrel": "石の鏡筒",
+  "block.heliopause.alchemy_biron_lens_barrel": "錬金赤銅の鏡筒",
+  "block.heliopause.thermoimmobilant_lens_barrel": "超断熱材の鏡筒",
+  "block.heliopause.iron_main_mirror": "鉄の主鏡",
+  "block.heliopause.iron_second_mirror": "鉄の副鏡",
+  "block.heliopause.graphite_main_mirror": "黒鉛の主鏡",
+  "block.heliopause.graphite_second_mirror": "黒鉛の副鏡",
+  "block.heliopause.silver_main_mirror": "銀の主鏡",
+  "block.heliopause.silver_second_mirror": "銀の副鏡",
+  "block.heliopause.quince_steel_main_mirror": "クインス鋼の主鏡",
+  "block.heliopause.quince_steel_second_mirror": "クインス鋼の副鏡",
+
+  "block.heliopause.silver_ore": "銀鉱石",
+  "block.heliopause.deepslate_silver_ore": "深層銀鉱石",
+  "block.heliopause.raw_silver_block": "銀の原石ブロック",
 
   "block.heliopause.alchemy_biron_block": "錬金赤銅ブロック",
   "block.heliopause.glowstone_alloy_block": "グロウストーン合金ブロック",
+  "block.heliopause.silver_block": "銀ブロック",
+
+  "block.heliopause.polished_biron_block": "磨かれた錬金赤銅ブロック",
+  "block.heliopause.chiseled_biron_block": "模様入りの錬金赤銅ブロック",
+  "block.heliopause.alchemy_biron_glass": "錬金赤銅の装飾付きガラス",
 
   "block.heliopause.copper_pipe": "銅の管",
   "item.heliopause.low_copper_pipe": "銅の低圧管",
@@ -44,7 +72,13 @@
   "item.heliopause.glowstone_alloy_ingot": "グロウストーン合金インゴット",
   "item.heliopause.glowstone_alloy_nugget": "グロウストーン合金塊",
 
+  "item.heliopause.raw_silver": "銀の原石",
+  "item.heliopause.silver_ingot": "銀インゴット",
+  "item.heliopause.silver_nugget": "銀塊",
+
+  "item.heliopause.quince_steel_ingot": "クインス鋼インゴット",
   "item.heliopause.optical_glass": "光学ガラス",
+  "item.heliopause.thermoimmobilant": "超断熱材",
 
   "item.heliopause.chalk": "チョーク",
   "item.heliopause.compass": "作陣用コンパス",
@@ -97,14 +131,18 @@
 
   "recipe.heliopause.roasting": "焙煎",
   "recipe.heliopause.transmutation": "錬成",
-  "recipe.heliopause.moonlight_pouring": "月明かり注入工程",
+  "recipe.heliopause.moonlight_pouring": "月明かり注入",
+
+  "recipe.heliopause.starlight_concentration": "星明かり収斂",
+  "recipe.heliopause.starlight_concentration.starlight": "使用する星明かり",
+  "recipe.heliopause.starlight_concentration.starlight_description": "星明かりは晴れた夜間、組み立てた鏡筒によって供給されます\n使用する星明かりの内訳は、過不足なく一致している必要があります",
 
   "recipe.heliopause.magic_circle_assembly": "魔法陣の構築",
   "recipe.heliopause.magic_circle_assembly_trigger_place_on": "設置",
   "recipe.heliopause.magic_circle_assembly_trigger_use": "使用",
   "recipe.heliopause.magic_circle_assembly_trigger_consume": "消費",
 
-  "recipe.heliopause.orrery": "遷天模倣工程",
+  "recipe.heliopause.orrery": "遷天模倣",
 
   "season.heliopause.AM": "午前",
   "season.heliopause.PM": "午後",
@@ -122,6 +160,7 @@
   "season.heliopause.month.12": "12月",
   "season.heliopause.date": " %s日",
   "season.heliopause.time": "%1$s:%2$s",
+  "season.heliopause.year_round": "通年",
 
   "entity.heliopause.stellar_ingredient_entity": "材料",
   "entity.heliopause.lens_barrel_entity": "鏡筒",

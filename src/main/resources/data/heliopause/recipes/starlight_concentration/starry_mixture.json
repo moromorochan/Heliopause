@@ -1,23 +1,23 @@
 {
   "type": "heliopause:starlight_concentration",
-  "fluid": "heliopause:starry_mixture",
-  "amount": 50,
-  "feature": 0,
+  "ingredient": {
+    "fluid":"minecraft:water",
+    "amount": 250
+  },
+  "result": {
+    "fluid": "heliopause:starry_mixture",
+    "amount": 250
+  },
+  "time": 200,
   "starlight_conditions": {
     "dimension": "minecraft:overworld",
-    "magnitude_min": 1,
-    "magnitude_max": 3,
-    "accuracy_min": 0.4,
-    "accuracy_max": 1.0,
-    "type_whitelist":[
-      "fixed_star", "galaxy"
+    "coverage": [
+      "optic",
+      "aetheric"
     ],
-    "longitude_chance": [
-      {
-        "start": 0,
-        "end": 359,
-        "chance": 1.0
-      }
-    ]
+    "season_range": {
+      "start": 0,
+      "end": 359
+    }
   }
 }

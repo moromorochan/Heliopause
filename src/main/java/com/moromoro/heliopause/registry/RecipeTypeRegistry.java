@@ -32,9 +32,6 @@ public class RecipeTypeRegistry {
     public static final RegistryObject<RecipeType<OrreryTransferenceRecipe>> ORRERY_TRANSFERENCE =
         RECIPE_TYPES.register(OrreryTransferenceRecipe.Type.ID,() -> OrreryTransferenceRecipe.Type.INSTANCE);
 
-    public static final RegistryObject<RecipeType<StellarInstantiationRecipe>> STELLAR_INSTANTIATION =
-        RECIPE_TYPES.register(StellarInstantiationRecipe.Type.ID,()->StellarInstantiationRecipe.Type.INSTANCE);
-
     public static final RegistryObject<RecipeType<StarlightConcentrationRecipe>> STARLIGHT_CONCENTRATION =
         RECIPE_TYPES.register(StarlightConcentrationRecipe.Type.ID,()-> StarlightConcentrationRecipe.Type.INSTANCE);
 

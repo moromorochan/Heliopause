@@ -1,15 +1,12 @@
 package com.moromoro;
 
-import com.moromoro.heliopause.block.LensBarrelBlock;
 import com.moromoro.heliopause.generic.Season;
 import com.moromoro.heliopause.registry.TagRegistry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ConfigHolder {
@@ -22,9 +19,11 @@ public class ConfigHolder {
     // 季節オフセット
     public static final ForgeConfigSpec.IntValue SEASON_OFFSET;
 
-    // 鏡筒の定義
+    // 鏡筒関係
     public static final ForgeConfigSpec.IntValue MAX_BARREL_LENGTH;
-    public static final Map<TagKey<Block>, ForgeConfigSpec.DoubleValue> LENS_BARREL_ACCURACIES = new HashMap<>();
+    public static final ForgeConfigSpec.BooleanValue BARREL_BLOCK_INFO_ALWAYS;
+    public static final ForgeConfigSpec.BooleanValue BARREL_ENTITY_INFO_ALWAYS;
+    //public static final Map<TagKey<Block>, ForgeConfigSpec.DoubleValue> LENS_BARREL_ACCURACIES = new HashMap<>();
 
     // シデロスタットの視界確認距離
     public static final ForgeConfigSpec.DoubleValue MAX_VIEW_SIDEROSTAT;
@@ -33,12 +32,12 @@ public class ConfigHolder {
 
     static {
         // 液体
-        BUILDER.push("fluidColors");
+        /*BUILDER.push("fluidColors");
         // 各液体のデフォルト色情報を定義
         addFluidColor("minecraft:water", 0x3F76E4);
         addFluidColor("minecraft:lava", 0xFF6C00);
         //...
-        BUILDER.pop();
+        BUILDER.pop();*/
 
         // 季節オフセット
         BUILDER.push("season");
@@ -46,13 +45,18 @@ public class ConfigHolder {
                 .defineInRange("offset",0, (int)-Season.YEAR_LENGTH, (int)Season.YEAR_LENGTH);
         BUILDER.pop();
 
-        // 鏡筒の精度
+        // 鏡筒関係
         BUILDER.push("lensBarrel");
-            MAX_BARREL_LENGTH = BUILDER.comment("Definition of the maximum lens barrel length.").defineInRange("max_length", 4, 2, 8);
+            MAX_BARREL_LENGTH = BUILDER.comment("Definition of the maximum lens barrel length, including mirrors.")
+                .defineInRange("maxLength", 4, 2, 8);
 
-            BUILDER.comment("Definition of lens barrel types and accuracy.");
+            BARREL_BLOCK_INFO_ALWAYS = BUILDER.comment("Whether to always display information for barrel-blocks. If false, it will only be displayed when the Shift key is down.")
+                .define("alwaysDisplayBlockInfo", false);
+            BARREL_ENTITY_INFO_ALWAYS = BUILDER.comment("Whether to always display information for barrel-entity. If false, it will only be displayed when the Shift key is down.")
+                .define("alwaysDisplayEntityInfo", true);
+            /*BUILDER.comment("Definition of lens barrel types and accuracy.");
             addLensBarrelAccuracy(TagRegistry.Blocks.WOODEN_LENS_BARREL, 0.7);
-            addLensBarrelAccuracy(TagRegistry.Blocks.BIRON_LENS_BARREL, 0.9);
+            addLensBarrelAccuracy(TagRegistry.Blocks.ALCHEMY_BIRON_LENS_BARREL, 0.9);*/
         //...
         BUILDER.pop();
 
@@ -68,14 +72,14 @@ public class ConfigHolder {
         SPEC = BUILDER.build();
     }
 
-    private static void addFluidColor(String fluidName, int defaultColor) {
+    /*private static void addFluidColor(String fluidName, int defaultColor) {
         ForgeConfigSpec.IntValue colorValue = BUILDER.comment("Color of " + fluidName + " in RGB. Default: " + defaultColor)
                 .defineInRange(fluidName, defaultColor, 0x000000, 0xFFFFFF);
         FLUID_COLORS.put(fluidName, colorValue);
-    }
+    }*/
 
-    private static void addLensBarrelAccuracy(TagKey<Block> tagKey, double defaultAccuracy){
+    /*private static void addLensBarrelAccuracy(TagKey<Block> tagKey, double defaultAccuracy){
         ForgeConfigSpec.DoubleValue accuracyValue = BUILDER.defineInRange(tagKey.location().toString(), defaultAccuracy, 0.1, 128.0);
         LENS_BARREL_ACCURACIES.put(tagKey, accuracyValue);
-    }
+    }*/
 }

@@ -2,8 +2,12 @@ package com.moromoro;
 
 import com.mojang.logging.LogUtils;
 import com.moromoro.heliopause.compat.TerraFirmaCraftModCompat;
+import com.moromoro.heliopause.compat.kubeJS.HeliopauseKubeJSCompat;
 import com.moromoro.heliopause.event.TooltipEventHandler;
 import com.moromoro.heliopause.item.FluidBottle;
+import com.moromoro.heliopause.network.NetworkChannel;
+import com.moromoro.heliopause.recipe.LensBarrelCoverageListener;
+import com.moromoro.heliopause.recipe.LensBarrelCoveragePacket;
 import com.moromoro.heliopause.registry.*;
 import com.moromoro.heliopause.screen.ConcentratorScreen;
 import com.moromoro.heliopause.screen.RoastingTableScreen;
@@ -11,9 +15,11 @@ import com.moromoro.heliopause.screen.SiderostatScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,6 +30,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.network.PacketDistributor;
 import org.slf4j.Logger;
 
 import static com.moromoro.heliopause.registry.BlockEntityRegistry.BLOCKENTITIES;
@@ -81,6 +88,9 @@ public class Heliopause {
 
         //ブロックへのホバーでツールチップを表示する
         MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
+
+        // ネットワークのパケット登録
+        NetworkChannel.register();
     }
 
     // SubscribeEvent を使用することで、イベントバスが呼び出すメソッドを検出できるようになる
@@ -89,6 +99,21 @@ public class Heliopause {
     {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+
+        // カスタムjsonの同期
+        LensBarrelCoveragePacket packet = new LensBarrelCoveragePacket(LensBarrelCoverageListener.getMap());
+
+        for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
+            NetworkChannel.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+        }
+
+    }
+
+    // カスタムjsonを読み込み
+    @SubscribeEvent
+    public void onAddReloadListener(AddReloadListenerEvent event){
+        LOGGER.info("HELLO from adding reloadListener");
+        event.addListener(new LensBarrelCoverageListener());
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -96,6 +121,9 @@ public class Heliopause {
         event.enqueueWork(() -> {
             if(ModList.get().isLoaded("tfc")){
                 TerraFirmaCraftModCompat.init(modEventBus);
+            }
+            if(ModList.get().isLoaded("kubejs")){
+                new HeliopauseKubeJSCompat();
             }
         });
     }

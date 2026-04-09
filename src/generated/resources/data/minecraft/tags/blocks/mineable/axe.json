@@ -4,9 +4,11 @@
     "heliopause:alchemy_roasting_table",
     "heliopause:siderostat_base",
     "heliopause:siderostat",
-    "heliopause:concentrator",
     "heliopause:wooden_lens_barrel",
-    "heliopause:wooden_main_mirror",
-    "heliopause:wooden_second_mirror"
+    "heliopause:iron_main_mirror",
+    "heliopause:iron_second_mirror",
+    "heliopause:thermoimmobilant_lens_barrel",
+    "heliopause:quince_steel_main_mirror",
+    "heliopause:quince_steel_second_mirror"
   ]
 }
