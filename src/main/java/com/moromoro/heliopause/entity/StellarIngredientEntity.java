@@ -207,6 +207,8 @@ public class StellarIngredientEntity extends Entity {
                         if(sound != null) {
                             this.playSound(sound, 1, 1);
                         }
+                        // アイテムを更新
+                        player.setItemInHand(hand, itemFluidCap.getContainer());
                     }
                 }
             });
@@ -254,6 +256,11 @@ public class StellarIngredientEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
+        countAge();
+        updateVelocity();
+    }
+    
+    public void countAge(){
         if (!this.level().isClientSide) {
             // 寿命
             age++;
@@ -261,9 +268,11 @@ public class StellarIngredientEntity extends Entity {
                 this.discard();
             }
         }
-        //Vec3 velocity = getDeltaMovement();
+    }
+    
+    public void updateVelocity(){
         if(velocity.length() > 0){
-            velocity = velocity.scale(0.8);
+            velocity = velocity.scale(0.90);
             this.setDeltaMovement(velocity);
             this.move(MoverType.SELF, getDeltaMovement());
             velocity = this.getDeltaMovement();

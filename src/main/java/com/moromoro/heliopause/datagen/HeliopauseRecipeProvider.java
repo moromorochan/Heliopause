@@ -42,8 +42,8 @@ public class HeliopauseRecipeProvider extends net.minecraft.data.recipes.RecipeP
             BlockRegistry.SILVER_BLOCK.get(), ItemRegistry.SILVER_INGOT.get(), ItemRegistry.SILVER_NUGGET.get());
         threeByThreePacker(consumer, RecipeCategory.MISC, BlockRegistry.RAW_SILVER_BLOCK.get(), ItemRegistry.RAW_SILVER.get());
         unPackerRecipe(consumer, RecipeCategory.MISC, ItemRegistry.RAW_SILVER.get(), 9, BlockRegistry.RAW_SILVER_BLOCK.get());
-        oreSmelting(consumer, List.of(BlockRegistry.DEEPSLATE_SILVER_ORE_BLOCK.get(), ItemRegistry.RAW_SILVER.get()), RecipeCategory.MISC, ItemRegistry.SILVER_INGOT.get(), 1.0f, 200, "silver");
-        oreBlasting(consumer, List.of(BlockRegistry.DEEPSLATE_SILVER_ORE_BLOCK.get(), ItemRegistry.RAW_SILVER.get()), RecipeCategory.MISC, ItemRegistry.SILVER_INGOT.get(), 1.0f, 100, "silver");
+        oreSmelting(consumer, List.of(BlockRegistry.SILVER_ORE_BLOCK.get(), BlockRegistry.DEEPSLATE_SILVER_ORE_BLOCK.get(), ItemRegistry.RAW_SILVER.get()), RecipeCategory.MISC, ItemRegistry.SILVER_INGOT.get(), 1.0f, 200, "silver");
+        oreBlasting(consumer, List.of(BlockRegistry.SILVER_ORE_BLOCK.get(), BlockRegistry.DEEPSLATE_SILVER_ORE_BLOCK.get(), ItemRegistry.RAW_SILVER.get()), RecipeCategory.MISC, ItemRegistry.SILVER_INGOT.get(), 1.0f, 100, "silver");
         
         // 磨かれた錬金赤銅ブロック
         unPackerRecipe(consumer, RecipeCategory.MISC, ItemRegistry.ALCHEMY_BIRON_INGOT.get(), 9, BlockRegistry.POLISHED_BIRON_BLOCK.get());
@@ -96,6 +96,38 @@ public class HeliopauseRecipeProvider extends net.minecraft.data.recipes.RecipeP
             .define('A', ItemRegistry.ALCHEMY_BIRON_INGOT.get())
             .unlockedBy("has_biron", has(ItemRegistry.ALCHEMY_BIRON_INGOT.get()))
             .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+BlockRegistry.CRUCIBLE.getId().getPath()));
+        
+        // コイル
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.GRAVITY_COIL.get(), 4)
+            .pattern("A")
+            .pattern("A")
+            .define('A', ItemRegistry.GLOWSTONE_ALLOY_INGOT.get())
+            .unlockedBy("has_glowstone_alloy", has(ItemRegistry.GLOWSTONE_ALLOY_INGOT.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+ItemRegistry.GRAVITY_COIL.getId().getPath()));
+        
+        // 反重力ディスペンサー
+        /*ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, BlockRegistry.INGREDIENT_DISPENSER.get())
+            .pattern("A A")
+            .pattern("B B")
+            .pattern("A A")
+            .define('A', Tags.Items.INGOTS_IRON)
+            .define('B', ItemRegistry.GRAVITY_COIL.get())
+            .unlockedBy("has_glowstone_alloy", has(ItemRegistry.GLOWSTONE_ALLOY_INGOT.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+BlockRegistry.INGREDIENT_DISPENSER.getId().getPath()));*/
+        
+        // 反重力コレクター
+        /*ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, BlockRegistry.INGREDIENT_COLLECTOR.get())
+            .pattern("ABA")
+            .define('A', Tags.Items.INGOTS_IRON)
+            .define('B', ItemRegistry.GRAVITY_COIL.get())
+            .unlockedBy("has_glowstone_alloy", has(ItemRegistry.GLOWSTONE_ALLOY_INGOT.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+BlockRegistry.INGREDIENT_COLLECTOR.getId().getPath()));*/
+        
+        // 模造天体コア
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemRegistry.IMITATION_CORE_ITEM.get())
+            .requires(Items.PAPER)
+            .unlockedBy("has_siderostat", has(BlockRegistry.SIDEROSTAT_TOP.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+ItemRegistry.IMITATION_CORE_ITEM.getId().getPath()));
 
         // 月明かり注入
         // 天青石

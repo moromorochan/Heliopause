@@ -34,6 +34,7 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
 
     // データクラス定義
     public record Trigger(String type, ResourceLocation blockOrItem) {}
+    public record Result(Boolean isBlock, ResourceLocation blockOrItem){}
     public record Node(String key, List<String> connects){}
     public record Circle(String key, String center, List<String> contains){}
 
@@ -43,11 +44,11 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
     // レシピパラメータ
     private final ResourceLocation recipeId;
     private final Trigger trigger;
-    private final ResourceLocation result;
+    private final Result result;
     private final NonNullList<Node> nodes;
     private final NonNullList<Circle> circles;
 
-    public MagicCircleAssemblyRecipe(Trigger trigger, ResourceLocation result, NonNullList<Node> parts, NonNullList<Circle> circles, ResourceLocation recipeId) {
+    public MagicCircleAssemblyRecipe(Trigger trigger, Result result, NonNullList<Node> parts, NonNullList<Circle> circles, ResourceLocation recipeId) {
         this.recipeId = recipeId;
         this.trigger = trigger;
         this.result = result;
@@ -70,15 +71,19 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
             JsonObject triggerObject = json.getAsJsonObject("trigger");
             String triggerType = triggerObject.get("type").getAsString();
             // タイプがブロックのときはブロックを、それ以外はアイテムを取得する
-            ResourceLocation triggerResult =
+            ResourceLocation triggerResource =
                 new ResourceLocation(triggerObject.has("block") ?
                         triggerObject.get("block").getAsString() :
                         triggerObject.get("item").getAsString()
                 );
 
-            // 結果ブロックの取得
+            // 結果の取得
             JsonObject result = json.getAsJsonObject("result");
-            ResourceLocation resultBlock = new ResourceLocation(result.get("block").getAsString());
+            boolean resultIsBlock = triggerObject.has("block");
+            ResourceLocation resultResource = new ResourceLocation(resultIsBlock ?
+                result.get("block").getAsString() :
+                result.get("item").getAsString()
+            );
 
             // パーツの取得
             NonNullList<Node> recipeNodes = NonNullList.create();//new ArrayList<>();
@@ -106,14 +111,15 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
                     ));*/
             }
 
-            return new MagicCircleAssemblyRecipe(new Trigger(triggerType, triggerResult), resultBlock, recipeNodes, recipeCircles, recipeId);
+            return new MagicCircleAssemblyRecipe(new Trigger(triggerType, triggerResource), new Result(resultIsBlock, resultResource), recipeNodes, recipeCircles, recipeId);
         }
 
         @Override
         public @Nullable MagicCircleAssemblyRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
             String triggerType = buffer.readUtf();
-            ResourceLocation triggerResult = buffer.readResourceLocation();
-            ResourceLocation resultBlock = buffer.readResourceLocation();
+            ResourceLocation triggerResource = buffer.readResourceLocation();
+            Boolean resultIsBlock = buffer.readBoolean();
+            ResourceLocation resultResource = buffer.readResourceLocation();
 
             NonNullList<Node> recipeNodes = NonNullList.create();
             int nodeCount = buffer.readInt();
@@ -139,14 +145,15 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
                 recipeCircles.add(new Circle(key, center, contains));
             }
 
-            return new MagicCircleAssemblyRecipe(new Trigger(triggerType, triggerResult), resultBlock, recipeNodes, recipeCircles, recipeId);
+            return new MagicCircleAssemblyRecipe(new Trigger(triggerType, triggerResource), new Result(resultIsBlock, resultResource), recipeNodes, recipeCircles, recipeId);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, MagicCircleAssemblyRecipe recipe) {
             buffer.writeUtf(recipe.getTrigger().type());
             buffer.writeResourceLocation(recipe.getTrigger().blockOrItem());
-            buffer.writeResourceLocation(recipe.getResult());
+            buffer.writeBoolean(recipe.getResult().isBlock());
+            buffer.writeResourceLocation(recipe.getResult().blockOrItem());
             NonNullList<Node> recipeNodes = recipe.getNodes();
             NonNullList<Circle> recipeCircles = recipe.getCircles();
 
@@ -184,15 +191,15 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
     private record levelNode(BlockPos keyPos, List<BlockPos> connectsPos){}
     private record levelCircle(double keyRadius, BlockPos centerPos, List<BlockPos> containsPos){}
     // ネットワークの比較
-    public static boolean matchesAt(Level level, BlockPos originPos, MagicCircleAssemblyRecipe recipe){
+    public static @Nullable List<BlockPos> matchesAt(Level level, BlockPos originPos, MagicCircleAssemblyRecipe recipe){
         // ルート位置のブロックエンティティを取得
         BlockEntity blockEntity = level.getBlockEntity(originPos);
         if (!(blockEntity instanceof WrittenBoardBlockEntity originBlockEntity)) {
-            return false;
+            return null;
         }
         // ルートじゃないならキャンセル
         if (!originBlockEntity.isRoot(level) || originBlockEntity.isFunctionalRoot(level)) {
-            return false;
+            return null;
         }
 
         // レシピのノードを取得
@@ -206,14 +213,14 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
         Optional<levelNode> originNodeOptional = levelWholeNodes.stream().filter(levelNode -> levelNode.keyPos().equals(originPos)).findFirst();
         // 中心ノードが繋がりを持たない場合false
         if(originNodeOptional.isEmpty()){
-            return false;
+            return null;
         }
         levelNode originNode = originNodeOptional.get();
         levelWholeNodes.remove(originNode);
 
         // ノードの数チェック
         if(levelWholeNodes.size() != recipeNodes.size() || levelCircles.size() != recipeCircles.size()){
-            return false;
+            return null;
         }
 
         // 構造チェック
@@ -222,7 +229,7 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
 
     private record nodeCandidate(Node node, List<levelNode> candidateLevelNodes){}
 
-    private static boolean checkStructure(Set<levelNode> levelNodes, Set<levelCircle> levelCircles, levelNode originNode, NonNullList<Node> recipeNodes, NonNullList<Circle> recipeCircles) {
+    private static @Nullable List<BlockPos> checkStructure(Set<levelNode> levelNodes, Set<levelCircle> levelCircles, levelNode originNode, NonNullList<Node> recipeNodes, NonNullList<Circle> recipeCircles) {
         // 枝分かれ数チェック
         List<nodeCandidate> candidatesByLinePair = new ArrayList<>();
         for (Node recipeNode : recipeNodes) {
@@ -230,7 +237,7 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
             List<levelNode> candidateLevelNodes = levelNodes.stream().filter(levelNode -> levelNode.connectsPos().size() == recipePairCount).toList();
             // 一致がないなら終了
             if(candidateLevelNodes.isEmpty()){
-                return false;
+                return null;
             }
             // 候補リスト
             candidatesByLinePair.add(new nodeCandidate(recipeNode, candidateLevelNodes));
@@ -250,7 +257,7 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
             }
             // 一致がないなら終了
             if(candidateLevelNodes.isEmpty()){
-                return false;
+                return null;
             }
             candidatesByCircle.add(new nodeCandidate(node, candidateLevelNodes));
         }
@@ -269,7 +276,7 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
             }
             // 一致がないなら終了
             if(candidateLevelNodes.isEmpty()){
-                return false;
+                return null;
             }
             candidatesByCenter.add(new nodeCandidate(node, candidateLevelNodes));
         }
@@ -288,7 +295,11 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
         candidatesByKey.put(ORIGIN_KEY, List.of(originNode));
 
         // ノードとキーの全単射チェック
-        return tryAssign(0, keyList, candidatesByKey, new HashMap<>(Map.of(ORIGIN_KEY, originNode)),new HashSet<>(List.of(originNode)), recipeNodes, levelCircles, recipeCircles);
+        Map<String, levelNode> assignMap = new HashMap<>(Map.of(ORIGIN_KEY, originNode));
+        if (tryAssign(0, keyList, candidatesByKey, assignMap, new HashSet<>(List.of(originNode)), recipeNodes, levelCircles, recipeCircles)){
+            return assignMap.values().stream().map(levelNode::keyPos).toList();
+        }
+        return null;
     }
 
     // 再帰的に全単射チェック
@@ -841,11 +852,20 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
 
     @Override
     public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
-        Block resultBlock = ForgeRegistries.BLOCKS.getValue(getResult());
-        if(resultBlock == null) {
-            return Items.AIR.getDefaultInstance();
+        Result blockOrItem = getResult();
+        if(blockOrItem.isBlock()){
+            Block resultBlock = ForgeRegistries.BLOCKS.getValue(blockOrItem.blockOrItem());
+            if(resultBlock == null) {
+                return Items.AIR.getDefaultInstance();
+            }
+            return resultBlock.asItem().getDefaultInstance();
+        }else{
+            Item resultItem = ForgeRegistries.ITEMS.getValue(blockOrItem.blockOrItem());
+            if(resultItem == null) {
+                return Items.AIR.getDefaultInstance();
+            }
+            return resultItem.getDefaultInstance();
         }
-        return resultBlock.asItem().getDefaultInstance();
     }
 
     @Override
@@ -884,7 +904,7 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
         return trigger;
     }
 
-    public ResourceLocation getResult() {
+    public Result getResult() {
         return result;
     }
 

@@ -4,6 +4,9 @@ import com.moromoro.heliopause.registry.enumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.blockEntity.AbstractWrittenBoardBlockEntity;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -44,7 +47,12 @@ public abstract class AbstractWrittenBoardBlock extends BaseEntityBlock {
             if(level.getBlockEntity(blockPos) instanceof AbstractWrittenBoardBlockEntity entity){
                 //entity.eraseFromPos(blockPos.getCenter(), AbstractWrittenBoardBlockEntity.CLICK_SIZE);
                 entity.eraseNode( 2);
+                // 効果音を再生
+                level.playSound(null, blockPos, SoundEvents.WOOL_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
             }
+        }else{
+            // 効果音を再生
+            level.playSound(null, blockPos, SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.BLOCKS, 0.5f, 1.0f);
         }
         super.onRemove(blockState, level, blockPos, newState, isMoving);
     }

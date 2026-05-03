@@ -59,8 +59,8 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         }
 
         //渡すデータをつくる
-        HashMap<String,Object> renderingRequires = new HashMap<>();
-        renderingRequires.put("fluidStack",fluidStack);
+        //HashMap<String,Object> renderingRequires = new HashMap<>();
+        //renderingRequires.put("fluidStack",fluidStack);
 
         // 現在のフレーム時間を取得
         long currentFrameTime = System.nanoTime();
@@ -68,14 +68,14 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         float deltaTime = (currentFrameTime - entity.getLastFrameTime()) / 1_000_000_000.0F;
 
         //時間依存アニメーションに必要な情報を入れる
-        putProperties(entity,deltaTime,renderingRequires);
+        renderFluidRequires renderingRequires = putProperties(entity, deltaTime, fluidStack, combinedLight);
 
-        renderingRequires.put("combinedLight", combinedLight);
+        //renderingRequires.put("combinedLight", combinedLight);
 
         //親モデルをスタックに保管して、子モデルの編集をはじめる
         poseStack.pushPose();
         //液体の見た目をつくるメソッドを呼び出す
-        renderGroup(poseStack, bufferSource, renderingRequires);
+        renderFluid(poseStack, bufferSource, renderingRequires);
         //親モデルをスタックから取り出して、子モデルの編集をおわる
         poseStack.popPose();
 
@@ -83,9 +83,9 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         entity.setLastFrameTime(currentFrameTime);
     }
 
-    protected void putProperties(T entity, float deltaTime, HashMap<String, Object> renderingRequires) {
+    protected renderFluidRequires putProperties(T entity, float deltaTime, FluidStack fluidStack, int combinedLight) {
 
-        FluidStack fluidStack = (FluidStack) renderingRequires.get("fluidStack");
+        //FluidStack fluidStack = (FluidStack) renderingRequires.get("fluidStack");
         //内容量の見た目スムージングを計算
         entity.setSmoothedTankAmount(Math.max(0.01f,Math.lerp(entity.getSmoothedTankAmount(), fluidStack.getAmount(), Math.min(1.0f,deltaTime * 15f))));
 
@@ -102,19 +102,27 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         //上下動オフセットに加算
         entity.setWaveOffset(entity.getWaveOffset() + (deltaTime / orbSize) * 170f);
 
-        renderingRequires.put("orbSize",orbSize);
+        /*renderingRequires.put("orbSize",orbSize);
         renderingRequires.put("rotationOffset", entity.getRotationOffset() + RandomSource.create(entity.getBlockPos().asLong()).nextInt(0,360));
         renderingRequires.put("waveOffset", entity.getWaveOffset());
-        renderingRequires.put("combinedOffset",entity.centerOffset().add(new Vec3(0,calcOffsetY(orbSize),0)));
+        renderingRequires.put("combinedOffset",entity.centerOffset().add(new Vec3(0,calcOffsetY(orbSize),0)));*/
+        return new renderFluidRequires(
+            fluidStack,
+            orbSize,
+            entity.getRotationOffset() + RandomSource.create(entity.getBlockPos().asLong()).nextInt(0,360),
+            entity.getWaveOffset(),
+            entity.centerOffset().add(new Vec3(0,calcOffsetY(orbSize),0)),
+            combinedLight
+            );
     }
 
     protected boolean permanentRender(T entity) {
         return false;
     }
 
-    public void renderGroup(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, HashMap<String, Object> renderingRequires){
+    /*public void renderGroup(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, HashMap<String, Object> renderingRequires){
         renderFluid(poseStack,bufferSource,renderingRequires);
-    }
+    }*/
 
     public float getRotationSpeed() {
         return -40f;
@@ -142,12 +150,16 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
     public float calcOffsetY(float orbSize) {
         return 0f;
     }
+    
+    public record renderFluidRequires(FluidStack fluidStack, float orbSize, float rotationOffset, float waveOffset, Vec3 combinedOffset, int combinedLight){}
+    
+    public record renderFluidOrbMeshRequires(renderFluidRequires fluidReq, Matrix4f matrix, VertexConsumer consumer, TextureAtlasSprite sprite, float[] color){}
 
-    protected static void renderFluid(PoseStack poseStack, MultiBufferSource bufferSource, HashMap<String,Object> renderingRequires)
+    protected static void renderFluid(PoseStack poseStack, MultiBufferSource bufferSource, renderFluidRequires renderingRequires)
     {
         //値を取り出す
-        FluidStack fluidStack = (FluidStack) renderingRequires.get("fluidStack");
-        int combinedLight = (int) renderingRequires.get("combinedLight");
+        FluidStack fluidStack = renderingRequires.fluidStack();//(FluidStack) renderingRequires.get("fluidStack");
+        int combinedLight = renderingRequires.combinedLight();//(int) renderingRequires.get("combinedLight");
 
         //レンダリング形式を決める
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.translucent());
@@ -158,17 +170,18 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         float[] color = getFluidColor(fluidStack);
 
         //配列に値を格納
-        renderingRequires.put("matrix", poseStack.last().pose());
+        renderFluidOrbMeshRequires meshRequires = new renderFluidOrbMeshRequires(renderingRequires, poseStack.last().pose(), consumer, sprite, color);
+        /*renderingRequires.put("matrix", poseStack.last().pose());
         renderingRequires.put("consumer", consumer);
         renderingRequires.put("sprite", sprite);
-        renderingRequires.put("color", color);
+        renderingRequires.put("color", color);*/
 
         //メッシュを組み立てる
 
         //配列から値を取り出す
-        float orbSize = (float)renderingRequires.get("orbSize");
-        float rotationOffset = (float)renderingRequires.get("rotationOffset");//entity.rotationOffset;
-        float waveOffset = (float)renderingRequires.get("waveOffset");//entity.waveOffset;
+        float orbSize = renderingRequires.orbSize();//(float)renderingRequires.get("orbSize");
+        float rotationOffset = renderingRequires.rotationOffset();//(float)renderingRequires.get("rotationOffset");//entity.rotationOffset;
+        float waveOffset = renderingRequires.waveOffset();//(float)renderingRequires.get("waveOffset");//entity.waveOffset;
 
         //必要な座標を用意
         final float topY = orbSize * ((float) Math.sqrt(1.5))/2, sideX = orbSize * Math.sqrt(1f/3f), sideY = topY/3;
@@ -197,10 +210,6 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         //位置調整
         poseStack.translate(0.5f,0.5f+ CreateSinWaveform(waveOffset, orbSize *0.02f),0.5f);
 
-        //フチ
-
-        //テクスチャの境目
-
         //場合分け
         //方向1 2 3
         for (int i = 0; i < 3; i++) {
@@ -214,9 +223,9 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
 
             //面ごとの明るさ設定
             int light0 = calcLight(combinedLight,fluidStack);
-            renderingRequires.put("light",light0);
+            //renderingRequires.put("light",light0);
             //メッシュを定義するメソッドを呼び出す
-            renderQuads(renderingRequires,vertPos0,pixel_offset,pixel_num);
+            renderQuads(meshRequires, light0,vertPos0,pixel_offset,pixel_num);
 
             //下面
             Vector3f[] vertPos1 = {
@@ -228,9 +237,9 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
 
             //面ごとの明るさ設定
             int light1 = calcLight(combinedLight/2,fluidStack);
-            renderingRequires.put("light",light1);
+            //renderingRequires.put("light",light1);
             //メッシュを定義するメソッドを呼び出す
-            renderQuads(renderingRequires,vertPos1,pixel_offset,pixel_num);
+            renderQuads(meshRequires, light1, vertPos1,pixel_offset,pixel_num);
         }
     }
 
@@ -292,14 +301,14 @@ public abstract class AbstractFluidOrbBlockRenderer<T extends AbstractFluidOrbBl
         return (amplitude * Math.cos(Math.toRadians(waveOffset)));
     }
 
-    protected static void renderQuads(HashMap<String, Object> renderingRequires, Vector3f[] vertexPos, float pixelOffset, float pixelNum) {
+    protected static void renderQuads(renderFluidOrbMeshRequires meshRequires, int combinedLight, Vector3f[] vertexPos, float pixelOffset, float pixelNum) {
         //配列から値を取り出す
-        Matrix4f matrix = (Matrix4f) renderingRequires.get("matrix");
-        VertexConsumer buffer = (VertexConsumer) renderingRequires.get("consumer");
-        TextureAtlasSprite sprite = (TextureAtlasSprite) renderingRequires.get("sprite");
-        float[] color = (float[]) renderingRequires.get("color");
-        int light = (int) renderingRequires.get("light");
-        Vec3 offset = (Vec3) renderingRequires.get("combinedOffset");
+        Matrix4f matrix = meshRequires.matrix();//(Matrix4f) renderingRequires.get("matrix");
+        VertexConsumer buffer = meshRequires.consumer();//(VertexConsumer) renderingRequires.get("consumer");
+        TextureAtlasSprite sprite = meshRequires.sprite();//(TextureAtlasSprite) renderingRequires.get("sprite");
+        float[] color = meshRequires.color();//(float[]) renderingRequires.get("color");
+        int light = combinedLight;//(int) renderingRequires.get("light");
+        Vec3 offset = meshRequires.fluidReq().combinedOffset();//(Vec3) renderingRequires.get("combinedOffset");
 
         //色を取得
         float red = color[0];

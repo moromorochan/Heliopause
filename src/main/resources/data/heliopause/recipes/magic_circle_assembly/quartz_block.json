@@ -1,11 +1,11 @@
 {
   "type": "heliopause:magic_circle_assembly",
   "trigger": {
-    "type": "place_on",
-    "block": "heliopause:crucible"
+    "type": "consume",
+    "item": "minecraft:amethyst_block"
   },
   "result": {
-    "block": "heliopause:logic_circle_board"
+    "item": "minecraft:quartz_block"
   },
   "parts": [
     {

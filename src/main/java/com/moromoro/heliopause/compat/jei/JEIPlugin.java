@@ -4,19 +4,25 @@ import com.moromoro.Heliopause;
 import com.moromoro.heliopause.recipe.*;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.registry.ItemRegistry;
+import com.moromoro.heliopause.registry.TagRegistry;
 import com.moromoro.heliopause.screen.ConcentratorScreen;
 import com.moromoro.heliopause.screen.RoastingTableScreen;
 import com.moromoro.heliopause.screen.SiderostatScreen;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.registration.IGuiHandlerRegistration;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITag;
+import net.minecraftforge.registries.tags.ITagManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -94,5 +100,13 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeCatalyst(BlockRegistry.ORRERY_CIRCLE_BOARD.get().asItem().getDefaultInstance(), OrreryTransferenceCategory.ORRERY_TRANSFERENCE_TYPE);
         
         registration.addRecipeCatalyst(BlockRegistry.CONCENTRATOR.get().asItem().getDefaultInstance(), StarlightConcentrationCategory.STARLIGHT_CONCENTRATION_TYPE);
+        ITagManager<Block> tagManager = ForgeRegistries.BLOCKS.tags();
+        if(tagManager != null){
+            for (Block block : tagManager.getTag(TagRegistry.Blocks.LENS_BARREL)) {
+                if (block.asItem() != Items.AIR) {
+                    registration.addRecipeCatalyst(block.asItem().getDefaultInstance(), StarlightConcentrationCategory.STARLIGHT_CONCENTRATION_TYPE);
+                }
+            }
+        }
     }
 }

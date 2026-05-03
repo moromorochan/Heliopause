@@ -12,10 +12,12 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -55,7 +57,7 @@ public class OrreryTransferenceCategory implements IRecipeCategory<OrreryTransfe
         IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         drawScale(recipe, guiGraphics);
         icon.draw(guiGraphics, 14, 39);
-        String coreKey = recipe.getCenterStarId();
+        /*String coreKey = recipe.getCenterStarId();
         ItemStack coreItemStack = ImitationCoreItem.getImitationCoreWithTag(coreKey);
         FluidStack coreFluidStack = getCoreFluidUsage(coreItemStack);
         if(!coreFluidStack.isEmpty()) {
@@ -63,6 +65,14 @@ public class OrreryTransferenceCategory implements IRecipeCategory<OrreryTransfe
                 Minecraft.getInstance().font, coreFluidStack.getAmount() +"mb/sec", 14, 20, 0xFFFFFF);
             //builder.addSlot(RecipeIngredientRole.OUTPUT, 14,20).addFluidStack(coreFluidStack.getFluid(), coreFluidStack.getAmount(), coreFluidStack.getTag());
         }
+        FluidStack resultFluidStack = recipe.getResultStellarStack().fluidStack();
+        if(!resultFluidStack.isEmpty()){
+            guiGraphics.drawCenteredString(
+                Minecraft.getInstance().font,
+                resultFluidStack.getAmount() + "mb",
+                22, 82, 0xFFFFFF
+            );
+        }*/
     }
 
     @Override
@@ -100,11 +110,21 @@ public class OrreryTransferenceCategory implements IRecipeCategory<OrreryTransfe
                 drawOrbit(normalizedLength + 1, guiGraphics);
                 int scalePos = SCALE_START + (int)normalizedLength;
                 scale.draw(guiGraphics, scalePos, 57);
+                /*guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(0,0, 1);
                 guiGraphics.drawCenteredString(
                     Minecraft.getInstance().font,
-                    String.valueOf((Math.ceil(normalizedRatio * 10f))/10f),
+                    String.valueOf((Math.floor(normalizedRatio * 10f))/10f),
                     scalePos + 1, 65, 0xFFFFFF
                 );
+                if(!ingredient.fluidStack().isEmpty()){
+                    guiGraphics.drawCenteredString(
+                        Minecraft.getInstance().font,
+                        ingredient.fluidStack().getAmount() + "mb",
+                        scalePos +1, 30, 0xFFFFFF
+                    );
+                }
+                guiGraphics.pose().popPose();*/
             }
         }
     }
@@ -128,7 +148,14 @@ public class OrreryTransferenceCategory implements IRecipeCategory<OrreryTransfe
 
         FluidStack coreFluidStack = getCoreFluidUsage(coreItemStack);
         if(!coreFluidStack.isEmpty()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 14,20).addFluidStack(coreFluidStack.getFluid(), coreFluidStack.getAmount(), coreFluidStack.getTag());
+            builder.addSlot(RecipeIngredientRole.INPUT, 14,20)
+                .addFluidStack(coreFluidStack.getFluid(), coreFluidStack.getAmount(), coreFluidStack.getTag())
+                .setFluidRenderer(1000, false, 16,16)
+                .addTooltipCallback((view, tooltip) -> {
+                    String defaultTooltip = tooltip.get(tooltip.size()-1).getString();
+                    tooltip.remove(tooltip.size()-1);
+                    tooltip.add(Component.literal(defaultTooltip + "/sec").withStyle(ChatFormatting.GRAY));
+                });
         }
 
         // 材料スロット
@@ -146,7 +173,9 @@ public class OrreryTransferenceCategory implements IRecipeCategory<OrreryTransfe
                     builder.addSlot(RecipeIngredientRole.INPUT, scalePos - 7, 39).addIngredients(ingredient.ingredient());
                 } else if (!ingredient.fluidStack().isEmpty()) {
                     FluidStack fluidStack = ingredient.fluidStack();
-                    builder.addSlot(RecipeIngredientRole.INPUT, scalePos - 7, 39).addFluidStack(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
+                    builder.addSlot(RecipeIngredientRole.INPUT, scalePos - 7, 39)
+                        .addFluidStack(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag())
+                        .setFluidRenderer(1000, false, 16,16);;
                 }
             }
 
@@ -159,7 +188,9 @@ public class OrreryTransferenceCategory implements IRecipeCategory<OrreryTransfe
         }
         else if(!result.fluidStack().isEmpty()){
             FluidStack resultFluidStack = result.fluidStack();
-            builder.addSlot(RecipeIngredientRole.OUTPUT, 14,92).addFluidStack(resultFluidStack.getFluid(), resultFluidStack.getAmount(), resultFluidStack.getTag());
+            builder.addSlot(RecipeIngredientRole.OUTPUT, 14,92)
+                .addFluidStack(resultFluidStack.getFluid(), resultFluidStack.getAmount(), resultFluidStack.getTag())
+                .setFluidRenderer(1000, false, 16,16);
         }
     }
 

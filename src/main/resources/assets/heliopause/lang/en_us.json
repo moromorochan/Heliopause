@@ -13,6 +13,8 @@
   "block.heliopause.orrery_circle_board": "Circle of Orrery Transference",
   "block.heliopause.siderostat_base": "Siderostat",
   "block.heliopause.siderostat": "Siderostat",
+  "block.heliopause.stellar_ingredient_dispenser": "Antigravity Dispenser",
+  "block.heliopause.stellar_ingredient_collector": "Antigravity Collector",
 
   "block.heliopause.alt_azimuth_circle_board": "Circle of Starlight Concentration",
   "block.heliopause.concentrator": "Starlight Concentrator",
@@ -79,6 +81,7 @@
   "item.heliopause.quince_steel_ingot": "Quince Steel Ingot",
   "item.heliopause.optical_glass": "Optical Glass",
   "item.heliopause.thermoimmobilant": "Thermoimmobilant",
+  "item.heliopause.gravity_coil": "Gravity Reaction Coil",
 
   "item.heliopause.chalk": "Chalk",
   "item.heliopause.compass": "Circle Drafting Compass",
@@ -113,6 +116,8 @@
   "item.heliopause.imitation_core.description_empty": "Origami Balloon",
   "item.heliopause.imitation_core.description_satellite": "Satellite",
   "item.heliopause.imitation_core.description_crimson_planet": "Crimson Planet",
+  "item.heliopause.imitation_core.description_indigo_marbling": "Indigo Marbling",
+  "item.heliopause.imitation_core.description_ancient_star": "Ancient Star",
 
   "fluid_type.heliopause.starry_mixture": "Starry Mixture",
   "item.heliopause.starry_mixture_bucket": "Starry Bucket",
@@ -162,7 +167,8 @@
   "season.heliopause.time": "%1$s:%2$s",
   "season.heliopause.year_round": "Year-round",
 
-  "entity.heliopause.stellar_ingredient_entity": "Ingredient",
+  "entity.heliopause.stellar_ingredient_entity": "Sphere of Ingredients",
+  "entity.heliopause.ingredient_transporter": "Bottle of Ingredients",
   "entity.heliopause.lens_barrel_entity": "Lens Barrel",
 
   "heliopause.subtitle.siderostat_winding": "Mainspring winds",

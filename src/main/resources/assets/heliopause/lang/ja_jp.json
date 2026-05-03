@@ -13,6 +13,8 @@
   "block.heliopause.orrery_circle_board": "遷天模倣陣",
   "block.heliopause.siderostat_base": "シデロスタット",
   "block.heliopause.siderostat": "シデロスタット",
+  "block.heliopause.stellar_ingredient_dispenser": "反重力ディスペンサー",
+  "block.heliopause.stellar_ingredient_collector": "反重力コレクター",
 
   "block.heliopause.alt_azimuth_circle_board": "星明かり収斂陣",
   "block.heliopause.concentrator": "星明かり収斂器",
@@ -79,6 +81,7 @@
   "item.heliopause.quince_steel_ingot": "クインス鋼インゴット",
   "item.heliopause.optical_glass": "光学ガラス",
   "item.heliopause.thermoimmobilant": "超断熱材",
+  "item.heliopause.gravity_coil": "重力リアクションコイル",
 
   "item.heliopause.chalk": "チョーク",
   "item.heliopause.compass": "作陣用コンパス",
@@ -113,6 +116,8 @@
   "item.heliopause.imitation_core.description_empty": "折り紙風船",
   "item.heliopause.imitation_core.description_satellite": "衛星",
   "item.heliopause.imitation_core.description_crimson_planet": "真紅の惑星",
+  "item.heliopause.imitation_core.description_indigo_marbling": "藍色のマーブリング",
+  "item.heliopause.imitation_core.description_ancient_star": "古代の恒星",
 
   "fluid_type.heliopause.starry_mixture": "夜空の混合流体",
   "item.heliopause.starry_mixture_bucket": "夜空入りバケツ",
@@ -162,7 +167,8 @@
   "season.heliopause.time": "%1$s:%2$s",
   "season.heliopause.year_round": "通年",
 
-  "entity.heliopause.stellar_ingredient_entity": "材料",
+  "entity.heliopause.stellar_ingredient_entity": "素材入り球",
+  "entity.heliopause.ingredient_transporter": "素材入り瓶",
   "entity.heliopause.lens_barrel_entity": "鏡筒",
 
   "heliopause.subtitle.siderostat_winding": "ゼンマイが巻かれる",

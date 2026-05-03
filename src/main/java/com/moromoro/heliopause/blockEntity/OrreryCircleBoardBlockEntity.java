@@ -77,6 +77,10 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
     // 中心星アイテム / 完成品
     //private CircumstellarIngredient.StellarStack centerStack;
     private ItemStack centerItemStack = ItemStack.EMPTY;
+    
+    // tickごとのsetChanged用
+    //private boolean changed = false;
+    
     // 中心星アイテムを格納するスロット
     /*protected ItemStackHandler centerItemHandler = new ItemStackHandler(1){
         // 内容更新毎にセーブ
@@ -134,6 +138,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
             center.contains("fluidStack") ? FluidStack.loadFluidStackFromNBT(center.getCompound("fluidStack")): FluidStack.EMPTY
         );*/
         centerItemStack.deserializeNBT(nbt.getCompound("centerStack"));//.of(nbt.getCompound("center"));
+        //changed = true;
     }
 
     @Override
@@ -287,10 +292,16 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
         double relativeSetPosX = location.x() - worldPosition.getCenter().x();
         double relativeSetPosZ = location.z() - worldPosition.getCenter().z();
         // 範囲内か確認
-        double circleSize = Collections.max(getCircleRadii()) - CLICK_SIZE;
+        double circleSize = Collections.max(getCircleRadii()) + CLICK_SIZE;
         double distance = new Vector2d(relativeSetPosX, relativeSetPosZ).length();
-        if(distance > circleSize || distance < OrreryCircleBoardBlock.InnerLimitRadius){
+        // 範囲外なら処理しない
+        if(distance > circleSize){
             return false;
+        }
+        // 最小半径以下なら最小半径に
+        if(distance < OrreryCircleBoardBlock.InnerLimitRadius){
+            relativeSetPosX *= OrreryCircleBoardBlock.InnerLimitRadius/distance;
+            relativeSetPosZ *= OrreryCircleBoardBlock.InnerLimitRadius/distance;
         }
         // レシピ稼働中は操作不可(クリックは消費)
         if(isCraftingInProgress || isCraftingInFinish){
@@ -321,6 +332,9 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                         worldPosition.getX() + pos.x(), worldPosition.getY(), worldPosition.getZ() + pos.y(),
                         sound, SoundSource.BLOCKS, 1,1);
                 }
+                // アイテムを更新
+                player.setItemInHand(hand, fluidHandler.getContainer());
+                
             }else {
                 // 空の液体保持アイテムなら既存を回収
                 this.retrieveCircumstellarFluid(fluidHandler, player, hand, radius, theta);
@@ -347,8 +361,9 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
 
         //軌道半径順にソート
         ingredients.sort(Comparator.comparing(CircumstellarIngredient::getOrbitalRadius));
-        this.setChanged();
-        level.sendBlockUpdated(blockPos, level.getBlockState(blockPos), level.getBlockState(blockPos), 3);
+        //changed = true;
+        //this.setChanged();
+        //level.sendBlockUpdated(blockPos, level.getBlockState(blockPos), level.getBlockState(blockPos), 3);
         return true;
     }
 
@@ -371,6 +386,9 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                         worldPosition.getX() + pos.x(), worldPosition.getY(), worldPosition.getZ() + pos.y(),
                         sound, SoundSource.BLOCKS, 1,1);
                 }
+                
+                // アイテムを更新
+                player.setItemInHand(hand, fluidHandler.getContainer());
             }
             // 空になったら周転材料を削除
             if(ingredientFluidStack.isEmpty()){
@@ -430,7 +448,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
             setIngredientsBehavior(pos, randomSource);
             // レシピ動作
             operateRecipe(level, pos, blockState);
-
+            
             blockEntity.setChanged();
             level.sendBlockUpdated(pos, blockState, blockState, 3);
         }
@@ -449,6 +467,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                     && starOptional.get() instanceof ImitationCoreAssemblyRecipe star
                     && recipeOptional.get() instanceof OrreryTransferenceRecipe recipe
             ){
+                //changed = true;
                 // 中断中なら
                 /*if(isCraftingInBreak){
                     breakingRecipe(level, pos, recipe);
@@ -464,9 +483,6 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                     progressingRecipe(level, pos, star, recipe);
                     return;
                 }
-                // 更新
-                /*this.setChanged();
-                level.sendBlockUpdated(pos, blockState, blockState, 3);*/
                 return;
             }
         }
@@ -494,6 +510,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                         entity.discard();
                     }
                     entity.setItem(itemStack);
+                    //changed = true;
                     return;
                 }
             }
@@ -510,6 +527,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                     ItemStack itemStack = itemHandler.getStackInSlot(i).copy();
                     if(startRecipe(level, itemStack, pos)){
                         itemHandler.extractItem(i, 1, false);
+                        //changed = true;
                     }
                 }
             }
@@ -570,9 +588,6 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                 particles.setScale((float) Math.max(1.5,(this.getMaxCircleRadius() - CLICK_SIZE) * 0.5));
             }
             return true;
-            // 更新
-                    /*this.setChanged();
-                    level.sendBlockUpdated(pos, blockState, blockState, 3);*/
         }
         return false;
     }
@@ -588,8 +603,6 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                 //isCraftingInProgress = false;
                 //processingRecipe = null;
                 //dropCenter();
-                /*this.setChanged();
-                level.sendBlockUpdated(pos, blockState, blockState, 3);*/
                 return;
             }
         }
@@ -652,7 +665,11 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
             processingRecipe[0] = new ResourceLocation("");
             processingRecipe[1] = new ResourceLocation("");
             processingRecipe = null;
-
+            
+            // 更新
+            this.setChanged();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+            
             //効果音を再生
             level.playSound(null,
                 pos.getX(), pos.getY() + 1, pos.getZ(),
@@ -833,7 +850,6 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
 
                     //公転
                     ingredient.setRevolutionOffset(calcRevProcess(orbitalRadius, ingredient.getRevolutionOffset()));
-                    //setChanged();
 
                     //パーティクル生成
                     if(!ingredient.getFluidStack().isEmpty()){
@@ -846,6 +862,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
             }*/
             // 更新内容を適用
             this.ingredients.set(i, ingredient);
+            //changed = true;
 
             //装飾
             /*if(level != null && isCraftingInProgress && progressTimer >= 0 && progressTimer % 5 == 0 && randomSource.nextInt(8) == 0){

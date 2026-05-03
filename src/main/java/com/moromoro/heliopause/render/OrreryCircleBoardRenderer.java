@@ -275,7 +275,7 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
                 //描画
                 //blockRenderer.renderSingleBlock(itemBlockState, poseStack, bufferSource, LightTexture.FULL_BRIGHT, combinedOverlay, ModelData.EMPTY, RenderType.translucent());
                 blockRenderer.getModelRenderer().renderModel(
-                    poseStack.last(), bufferSource.getBuffer(RenderType.cutout()), null, starModel,
+                    poseStack.last(), bufferSource.getBuffer(RenderType.translucent()), null, starModel,
                     color[0]/255f,color[1]/255f,color[2]/255f, 0xF000F0, combinedOverlay);
                 poseStack.popPose();
             }

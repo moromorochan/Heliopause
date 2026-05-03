@@ -1,6 +1,0 @@
-{
-  "parent": "heliopause:item/large_circle_board",
-  "textures": {
-    "3": "heliopause:block/written_board/alt_azimuth_circle_board"
-  }
-}

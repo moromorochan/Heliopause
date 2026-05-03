@@ -1,0 +1,24 @@
+{
+  "type": "heliopause:starlight_concentration",
+  "ingredient": {
+    "item": "heliopause:imitation_core"
+  },
+  "result": {
+    "item": "heliopause:imitation_core",
+    "nbt": {
+      "star_id":"indigo_marbling"
+    }
+  },
+  "time": 400,
+  "starlight_conditions": {
+    "dimension": "minecraft:overworld",
+    "coverage": [
+      "optic",
+      "alkahestic"
+    ],
+    "season_range": {
+      "start": 0,
+      "end": 359
+    }
+  }
+}

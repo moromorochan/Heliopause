@@ -37,7 +37,6 @@ public class HeliopauseBlockTagGenerator extends BlockTagsProvider {
                 BlockRegistry.BLACKBOARD.get(),
                 BlockRegistry.WRITTEN_BOARD.get(),
                 BlockRegistry.ORRERY_CIRCLE_BOARD.get(),
-                BlockRegistry.ALT_AZIMUTH_CIRCLE_BOARD.get(),
                 BlockRegistry.CONCENTRATOR.get(),
                 BlockRegistry.WOODEN_LENS_BARREL_BLOCK.get(),
                 BlockRegistry.IRON_MAIN_MIRROR_BLOCK.get(),

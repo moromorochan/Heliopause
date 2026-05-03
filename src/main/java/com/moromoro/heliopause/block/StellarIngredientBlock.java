@@ -116,6 +116,8 @@ public class StellarIngredientBlock extends BaseEntityBlock {
                                 blockPos.getX(), blockPos.getY(), blockPos.getZ(),
                                 sound, SoundSource.BLOCKS, 1,1);
                         }
+                        // アイテムを更新
+                        player.setItemInHand(hand, itemFluidCap.getContainer());
                     }
                 }
             });

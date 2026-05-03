@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "heliopause:blackboard"
+          "name": "heliopause:stellar_ingredient_collector"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "heliopause:blocks/alt_azimuth_circle_board"
+  "random_sequence": "heliopause:blocks/stellar_ingredient_collector"
 }

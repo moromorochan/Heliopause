@@ -2,6 +2,7 @@ package com.moromoro.heliopause.compat.jei;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.blockEntity.ConcentratorBlockEntity;
 import com.moromoro.heliopause.registry.enumProperty.LensBarrelCoverageIconValue;
 import com.moromoro.heliopause.generic.Season;
 import com.moromoro.heliopause.recipe.LensBarrelCoverageListener;
@@ -82,14 +83,14 @@ public class StarlightConcentrationCategory implements IRecipeCategory<Starlight
         // レシピの処理時間
         drawRecipeTime(recipe, guiGraphics);
         // 液体の量
-        FluidStack inputFluid = recipe.getIngredientFluid();
+        /*FluidStack inputFluid = recipe.getIngredientFluid();
         if(!inputFluid.isEmpty()) {
             guiGraphics.drawString(font, inputFluid.getAmount() +"mb", 5 + GUI_X, 25, 0xFFFFFF);
         }
         FluidStack outputFluid = recipe.getResultFluid();
         if(!outputFluid.isEmpty()) {
             guiGraphics.drawString(font, outputFluid.getAmount() +"mb", 65 + GUI_X, 25, 0xFFFFFF);
-        }
+        }*/
         StarlightConcentrationRecipe.Conditions conditions = recipe.getConditions();
         // ディメンションの表示
         guiGraphics.blit(TEXTURE, 2, 63, 176, 53, 8, 8);
@@ -107,27 +108,7 @@ public class StarlightConcentrationCategory implements IRecipeCategory<Starlight
         guiGraphics.drawString(font, dateRange, 13, 73, 0x808080, false);
         // 必要な星明かりの表示
         guiGraphics.drawString(font, Component.translatable("recipe.heliopause.starlight_concentration.starlight").getString() + " :", 2, 85, 0x808080, false);
-        // 星明かりの説明を表示
-        if(mouseX >= 2 && mouseX <= background.getWidth() - 4 && mouseY >= 85 && mouseY <= 85 + Minecraft.getInstance().font.lineHeight){
-            int screenWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
-            int screenMouseX = (int) (mouseX + (double) (screenWidth - this.getWidth()) /2);
-            TooltipTransform tooltipTransform = getTooltipTransform(screenWidth, screenMouseX, 10, 200);
-            List<FormattedCharSequence> coverageTooltip = new ArrayList<>();
-            String[] lines = Component.translatable("recipe.heliopause.starlight_concentration.starlight_description").getString().split("\n", -1);
-            int tooltipWidth = 0;
-            for (String line : lines) {
-                coverageTooltip.addAll(font.split(Component.literal(line), tooltipTransform.width()));
-                for (FormattedCharSequence component : coverageTooltip) {
-                    tooltipWidth = Math.max(tooltipWidth, font.width(component));
-                }
-            }
-            
-            if( tooltipTransform.isLeft()) {
-                guiGraphics.renderTooltip(font, coverageTooltip, (int) mouseX - tooltipWidth - 20, (int) mouseY);
-            }else{
-                guiGraphics.renderTooltip(font, coverageTooltip, (int) mouseX, (int) mouseY);
-            }
-        }
+        
         // 内訳を表示
         int slotHeight = 96;
         for (String coverageName : conditions.coverage()) {
@@ -156,6 +137,28 @@ public class StarlightConcentrationCategory implements IRecipeCategory<Starlight
                 }
                 guiGraphics.drawString(font, coverageNameTranslatable, 13, slotHeight, 0x808080, false);
                 slotHeight += 10;
+            }
+        }
+        
+        // 星明かりの説明を表示
+        if(mouseX >= 2 && mouseX <= background.getWidth() - 4 && mouseY >= 85 && mouseY <= 85 + Minecraft.getInstance().font.lineHeight){
+            int screenWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+            int screenMouseX = (int) (mouseX + (double) (screenWidth - this.getWidth()) /2);
+            TooltipTransform tooltipTransform = getTooltipTransform(screenWidth, screenMouseX, 10, 200);
+            List<FormattedCharSequence> coverageTooltip = new ArrayList<>();
+            String[] lines = Component.translatable("recipe.heliopause.starlight_concentration.starlight_description").getString().split("\n", -1);
+            int tooltipWidth = 0;
+            for (String line : lines) {
+                coverageTooltip.addAll(font.split(Component.literal(line), tooltipTransform.width()));
+                for (FormattedCharSequence component : coverageTooltip) {
+                    tooltipWidth = Math.max(tooltipWidth, font.width(component));
+                }
+            }
+            
+            if( tooltipTransform.isLeft()) {
+                guiGraphics.renderTooltip(font, coverageTooltip, (int) mouseX - tooltipWidth - 20, (int) mouseY);
+            }else{
+                guiGraphics.renderTooltip(font, coverageTooltip, (int) mouseX, (int) mouseY);
             }
         }
     }
@@ -223,7 +226,9 @@ public class StarlightConcentrationCategory implements IRecipeCategory<Starlight
         }
         FluidStack inputFluid = recipe.getIngredientFluid();
         if(!inputFluid.isEmpty()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 5 + GUI_X, 41).addFluidStack(inputFluid.getFluid(), inputFluid.getAmount(), inputFluid.getTag());
+            builder.addSlot(RecipeIngredientRole.INPUT, 5 + GUI_X, 25)
+                .addFluidStack(inputFluid.getFluid(), inputFluid.getAmount(), inputFluid.getTag())
+                .setFluidRenderer(ConcentratorBlockEntity.TANK_CAPACITY, true, 16, 32);
         }
         // 結果スロット
         ItemStack resultItem = recipe.getResultItem(null);
@@ -232,7 +237,9 @@ public class StarlightConcentrationCategory implements IRecipeCategory<Starlight
         }
         FluidStack outputFluid = recipe.getResultFluid();
         if(!outputFluid.isEmpty()) {
-            builder.addSlot(RecipeIngredientRole.OUTPUT, 65 + GUI_X, 41).addFluidStack(outputFluid.getFluid(), outputFluid.getAmount(), outputFluid.getTag());
+            builder.addSlot(RecipeIngredientRole.OUTPUT, 65 + GUI_X, 25)
+                .addFluidStack(outputFluid.getFluid(), outputFluid.getAmount(), outputFluid.getTag())
+                .setFluidRenderer(ConcentratorBlockEntity.TANK_CAPACITY, true, 16, 32);;
         }
     }
 }

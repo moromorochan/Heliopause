@@ -82,14 +82,6 @@ public class BlockEntityRegistry {
                 ).build(null)
             );
 
-    public static final RegistryObject<BlockEntityType<AltAzimuthCircleBoardBlockEntity>> ALT_AZIMUTH_CIRCLE_BOARD_BE =
-        BLOCKENTITIES.register("alt_azimuth_circle_board", () ->
-            BlockEntityType.Builder.of(
-                AltAzimuthCircleBoardBlockEntity::new,
-                BlockRegistry.ALT_AZIMUTH_CIRCLE_BOARD.get()
-            ).build(null)
-        );
-
     // 星明かり収斂器架台
     public static final RegistryObject<BlockEntityType<ConcentratorBlockEntity>> CONCENTRATOR_BE =
         BLOCKENTITIES.register("concentrator", () ->
@@ -124,5 +116,21 @@ public class BlockEntityRegistry {
                                 BlockRegistry.COMET_CORE.get()
                         ).build(null)
                 );*/
+    
+    // 周天材料コレクター/ディスペンサー
+    public static final RegistryObject<BlockEntityType<StellarIngredientDispenserBlockEntity>> INGREDIENT_DISPENSER_BE =
+        BLOCKENTITIES.register("stellar_ingredient_dispenser", () ->
+            BlockEntityType.Builder.of(
+                StellarIngredientDispenserBlockEntity::new,
+                BlockRegistry.INGREDIENT_DISPENSER.get()
+            ).build(null)
+            );
+    public static final RegistryObject<BlockEntityType<StellarIngredientCollectorBlockEntity>> INGREDIENT_COLLECTOR_BE =
+        BLOCKENTITIES.register("stellar_ingredient_collector", () ->
+            BlockEntityType.Builder.of(
+                StellarIngredientCollectorBlockEntity::new,
+                BlockRegistry.INGREDIENT_COLLECTOR.get()
+            ).build(null)
+        );
 }
 

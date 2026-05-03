@@ -1,7 +1,0 @@
-{
-  "parent": "heliopause:block/large_written_board",
-  "render_type": "minecraft:cutout",
-  "textures": {
-    "layer": "heliopause:block/written_board/alt_azimuth_circle_board"
-  }
-}

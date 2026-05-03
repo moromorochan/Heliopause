@@ -36,6 +36,8 @@ public class CreativeTabRegistry {
                 output.accept(BlockRegistry.CRUCIBLE.get());
                 //output.accept(ItemRegistry.COMET_CORE_ITEM.get());
                 output.accept(BlockRegistry.CONCENTRATOR.get());
+                //output.accept(BlockRegistry.INGREDIENT_DISPENSER.get());
+                //output.accept(BlockRegistry.INGREDIENT_COLLECTOR.get());
 
                 // 鏡筒
                 output.accept(BlockRegistry.WOODEN_LENS_BARREL_BLOCK.get());
@@ -69,6 +71,7 @@ public class CreativeTabRegistry {
                 output.accept(ItemRegistry.CELESTITE.get());
                 output.accept(ItemRegistry.OPTICAL_GLASS.get());
                 output.accept(ItemRegistry.THERMOIMMOBILANT.get());
+                output.accept(ItemRegistry.GRAVITY_COIL.get());
 
                 //液体
                 output.accept(FluidRegistry.STARRY_MIXTURE.bucket().get());
@@ -94,6 +97,8 @@ public class CreativeTabRegistry {
                 output.accept(ItemRegistry.IMITATION_CORE_ITEM.get());
                 output.accept(ImitationCoreItem.getImitationCoreWithTag("satellite"));/*,"rocky", 0.8f, 255,255,255, 0.5f*/
                 output.accept(ImitationCoreItem.getImitationCoreWithTag("crimson_planet"));
+                output.accept(ImitationCoreItem.getImitationCoreWithTag("indigo_marbling"));
+                output.accept(ImitationCoreItem.getImitationCoreWithTag("ancient_star"));
                 
                 // 建材
                 output.accept(BlockRegistry.POLISHED_BIRON_BLOCK.get());

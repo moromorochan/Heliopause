@@ -99,6 +99,8 @@ public class ItemRegistry {
         ITEMS.register("optical_glass", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> THERMOIMMOBILANT =
         ITEMS.register("thermoimmobilant", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> GRAVITY_COIL =
+        ITEMS.register("gravity_coil", () -> new Item(new Item.Properties()));
 
     //鉱石
     public static final RegistryObject<Item> CELESTITE =

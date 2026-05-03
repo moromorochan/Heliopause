@@ -1,0 +1,23 @@
+{
+  "type": "heliopause:orrery_transference",
+  "center": "indigo_marbling",
+  "result": {
+    "fluid": "minecraft:lava",
+    "amount": 2000
+  },
+  "ingredients": [
+    {
+      "fluid": "minecraft:lava",
+      "amount": 1000,
+      "ratio": 1.0
+    },
+    {
+      "item": "minecraft:cobblestone",
+      "ratio": 2.0
+    },
+    {
+      "item": "minecraft:cobblestone",
+      "ratio": 3.0
+    }
+  ]
+}

@@ -2,6 +2,8 @@ package com.moromoro.heliopause.block;
 
 import com.moromoro.heliopause.blockEntity.AbstractWrittenBoardBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -34,10 +36,13 @@ public class BlackBoardBlock extends Block {
 
     @Override
     public void onRemove(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState newState, boolean isMoving) {
-        if (!(newState.getBlock() instanceof AbstractWrittenBoardBlock)) {
+        if (newState.getBlock() instanceof AbstractWrittenBoardBlock) {
+            level.playSound(null, blockPos, SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.BLOCKS, 0.5f, 1.0f);
+        } else {
 
             for (AbstractWrittenBoardBlockEntity node : getNodeList(level, blockPos)) {
                 node.eraseFromPos(blockPos.getCenter(), (Math.sqrt(2)/2) + AbstractWrittenBoardBlockEntity.CLICK_SIZE);
+                level.playSound(null, blockPos, SoundEvents.WOOL_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
             }
 
             //クリック位置からPREVIEW_LIMIT_SIZEまで走査

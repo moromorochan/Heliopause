@@ -1,0 +1,8 @@
+{
+	"credit": "Made by moromorochan with Blockbench",
+	"parent": "heliopause:decoration/imitation_star/gas_plain",
+	"textures": {
+		"0": "heliopause:decoration/imitation_star/gas_stripes",
+		"particle": "heliopause:decoration/imitation_star/gas_stripes"
+	}
+}

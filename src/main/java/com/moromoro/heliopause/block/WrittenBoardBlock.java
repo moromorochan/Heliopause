@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.block;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.registry.enumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.blockEntity.AbstractWrittenBoardBlockEntity;
 import com.moromoro.heliopause.blockEntity.WrittenBoardBlockEntity;
@@ -15,6 +16,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +29,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class WrittenBoardBlock extends AbstractWrittenBoardBlock{
     public WrittenBoardBlock(Properties properties) {
@@ -43,9 +47,12 @@ public class WrittenBoardBlock extends AbstractWrittenBoardBlock{
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if(level.getBlockEntity(blockPos) instanceof AbstractWrittenBoardBlockEntity boardEntity){
-            ItemStack useItemStack = player.getUseItem();
+            ItemStack useItemStack = player.getItemInHand(hand);
             if(boardEntity.isRoot(level)){
-                operateRecipe(level, blockPos, useItemStack);
+                if(operateRecipe(level, blockPos, useItemStack)){
+                    player.setItemInHand(hand, useItemStack);
+                    return InteractionResult.sidedSuccess(!level.isClientSide());
+                }
             }
             else if (!(player.getItemInHand(hand).getItem() instanceof CompassItem)) {
                 BlockPos rootPos = boardEntity.getRootPos(level, blockPos);
@@ -73,7 +80,7 @@ public class WrittenBoardBlock extends AbstractWrittenBoardBlock{
         super.neighborChanged(state, level, pos, block, neighbor, update);
     }
 
-    private void operateRecipe(Level level, BlockPos blockPos, ItemStack itemStack) {
+    private boolean operateRecipe(Level level, BlockPos blockPos, ItemStack itemStack) {
         // レシピ確認用コンテナを作成
         Container matchContainer = new SimpleContainer(itemStack);
         // 全レシピ確認
@@ -83,21 +90,54 @@ public class WrittenBoardBlock extends AbstractWrittenBoardBlock{
                 continue;
             }
             // 陣の構造確認
-            if(MagicCircleAssemblyRecipe.matchesAt(level, blockPos, recipe)){
+            List<BlockPos> matchCircles = MagicCircleAssemblyRecipe.matchesAt(level, blockPos, recipe);
+            if(matchCircles != null){
+                // トリガー確認
+                boolean triggerIsBlock = recipe.getTrigger().type().equals("place_on");
+                if(triggerIsBlock){
+                    if(!level.getBlockState(blockPos.above()).getBlock().asItem().equals(itemStack.getItem())){
+                        continue;
+                    }
+                }
                 // 結果ブロックを確認
-                Block resultBlock = ForgeRegistries.BLOCKS.getValue(recipe.getResult());
-                if(resultBlock!=null){
+                MagicCircleAssemblyRecipe.Result result = recipe.getResult();
+                if(result == null){
+                    continue;
+                }
+                if(result.isBlock()){
+                    Block resultBlock = ForgeRegistries.BLOCKS.getValue(result.blockOrItem());
+                    if(resultBlock==null){
+                        continue;
+                    }
                     AbstractWrittenBoardBlockEntity.changeCircleBoardBlock(level, blockPos, resultBlock.defaultBlockState());
                 }
+                else{
+                    Item resultItem = ForgeRegistries.ITEMS.getValue(result.blockOrItem());
+                    if(resultItem == null){
+                        continue;
+                    }
+                    // 陣全体を消す
+                    for (BlockPos matchPos : matchCircles) {
+                        if(level.getBlockEntity(matchPos) instanceof AbstractWrittenBoardBlockEntity entity){
+                            entity.eraseNetwork();
+                        }
+                    }
+                    // 中心を消す
+                    AbstractWrittenBoardBlockEntity.changeCircleBoardBlock(level, blockPos, BlockRegistry.BLACKBOARD.get().defaultBlockState());
+                    itemStack.shrink(1);
+                    // アイテムをドロップ
+                    level.addFreshEntity(new ItemEntity(level, blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(),new ItemStack(resultItem)));
+                }
                 // デバッグ用
-                if(!level.isClientSide()){
+                /*if(!level.isClientSide()){
                     Heliopause.LOGGER.debug(recipe.getResult().toString());
                     EntityType.FIREWORK_ROCKET.spawn((ServerLevel) level, blockPos.above(2), MobSpawnType.COMMAND);
-                }
+                }*/
                 // 最初の一致を適用して終了
-                break;
+                return true;
             }
         }
+        return false;
     }
 
 }

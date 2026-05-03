@@ -169,12 +169,6 @@ public class BlockRegistry {
             BlockBehaviour.Properties.copy(BLACKBOARD.get())
         ));
 
-    // 経緯台陣
-    public static final RegistryObject<Block> ALT_AZIMUTH_CIRCLE_BOARD =
-        registerBlock("alt_azimuth_circle_board", ()-> new AltAzimuthCircleBoardBlock(
-            BlockBehaviour.Properties.copy(BLACKBOARD.get())
-        ));
-
     // 星明かり収斂器架台
     public static final RegistryObject<Block> CONCENTRATOR =
         registerBlock("concentrator", ()-> new ConcentratorBlock(
@@ -225,6 +219,21 @@ public class BlockRegistry {
             BlockBehaviour.Properties.of()
                 .strength(1.0f)
                 .sound(SoundType.COPPER)
+                .dynamicShape()
+        ));
+    
+    
+    public static final RegistryObject<Block> INGREDIENT_COLLECTOR =
+        registerBlock("stellar_ingredient_collector",() -> new StellarIngredientCollectorBlock(
+            BlockBehaviour.Properties.of()
+                .sound(SoundType.METAL)
+                .dynamicShape()
+        ));
+    
+    public static final RegistryObject<Block> INGREDIENT_DISPENSER =
+        registerBlock("stellar_ingredient_dispenser",() -> new StellarIngredientDispenserBlock(
+            BlockBehaviour.Properties.of()
+                .sound(SoundType.METAL)
                 .dynamicShape()
         ));
 

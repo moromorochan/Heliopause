@@ -110,19 +110,27 @@ public class StellarIngredientBlockRenderer<T extends StellarIngredientBlockEnti
         Vec3 satPos, float satSize, float satRot, FluidStack fluidStack,
         float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay){
 
-        float fluidSatSize = satSize * 1.6f;
+        float fluidSatSize = satSize * 1.6f * 0.90f;
         float satRotAngle = (float) (satRot * 180 / Math.PI);
-        float itemWaveOffset = ((1 + fluidSatSize)*0.005f * Math.cos(satRot*(int)(1.0f/satSize)));
+        float itemWaveOffset = ((1 + satSize)*0.005f * Math.cos(satRot*(int)(1.0f/satSize))) * Math.sqrt(3) * 2;
         //渡すデータをつくる
-        HashMap<String,Object> renderingRequires = new HashMap<>();
+        /*HashMap<String,Object> renderingRequires = new HashMap<>();
         renderingRequires.put("fluidStack",fluidStack);
 
         renderingRequires.put("combinedLight", combinedLight);
 
         renderingRequires.put("orbSize", fluidSatSize);
-        renderingRequires.put("rotationOffset", satRotAngle);
-        renderingRequires.put("waveOffset", /*calcOffsetY(satSize) + */itemWaveOffset);
-        renderingRequires.put("combinedOffset",satPos);
+        renderingRequires.put("rotationOffset", satRotAngle - 15);
+        renderingRequires.put("waveOffset", *//*calcOffsetY(satSize) + *//*0f);
+        renderingRequires.put("combinedOffset", satPos.add(0, itemWaveOffset, 0));*/
+        AbstractFluidOrbBlockRenderer.renderFluidRequires renderingRequires = new AbstractFluidOrbBlockRenderer.renderFluidRequires(
+            fluidStack,
+            fluidSatSize,
+            satRotAngle - 15,
+            0f,
+            satPos.add(0, itemWaveOffset, 0),
+            combinedLight
+        );
 
         //親モデルをスタックに保管して、子モデルの編集をはじめる
         poseStack.pushPose();

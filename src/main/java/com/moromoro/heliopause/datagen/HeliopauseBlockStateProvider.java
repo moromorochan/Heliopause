@@ -1,14 +1,12 @@
 package com.moromoro.heliopause.datagen;
 
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.block.RectangularBlock;
+import com.moromoro.heliopause.block.*;
 import com.moromoro.heliopause.registry.enumProperty.SiderostatTopState;
-import com.moromoro.heliopause.block.LensBarrelBlock;
-import com.moromoro.heliopause.block.SiderostatTopBlock;
-import com.moromoro.heliopause.block.AbstractWrittenBoardBlock;
 import com.moromoro.heliopause.registry.enumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.registry.FluidRegistry;
+import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
@@ -16,10 +14,12 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 public class HeliopauseBlockStateProvider extends net.minecraftforge.client.model.generators.BlockStateProvider {
     public HeliopauseBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
@@ -56,6 +56,9 @@ public class HeliopauseBlockStateProvider extends net.minecraftforge.client.mode
 
         simpleBlockItem(BlockRegistry.CONCENTRATOR.get(), models().getExistingFile(modLoc("block/concentrator/base_disable")));
         
+        directionalPoweredBlockWithItem(BlockRegistry.INGREDIENT_COLLECTOR.get(), modLoc("block/stellar_ingredient_collector"));
+        directionalPoweredBlockWithItem(BlockRegistry.INGREDIENT_DISPENSER.get(), modLoc("block/stellar_ingredient_dispenser"));
+        
         // 鏡筒
         lensBarrelBlockWithItem(BlockRegistry.WOODEN_LENS_BARREL_BLOCK, "wooden");
         lensBarrelBlockWithItem(BlockRegistry.STONE_LENS_BARREL_BLOCK, "stone");
@@ -91,7 +94,6 @@ public class HeliopauseBlockStateProvider extends net.minecraftforge.client.mode
                 ));
         writtenBoardBlock(BlockRegistry.WRITTEN_BOARD);
         largeWrittenBoardBlock(BlockRegistry.ORRERY_CIRCLE_BOARD);
-        largeWrittenBoardBlock(BlockRegistry.ALT_AZIMUTH_CIRCLE_BOARD);
 
         /*fluidBlock(FluidRegistry.STARRY_MIXTURE,"cutout");
         fluidBlock(FluidRegistry.LIQUEFIED_STARLIGHT, "translucent");
@@ -100,6 +102,29 @@ public class HeliopauseBlockStateProvider extends net.minecraftforge.client.mode
 
     private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
         simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
+    }
+    
+    public void directionalBlockWithItem(Block block, ModelFile model) {
+        directionalBlock(block, model);
+        simpleBlockItem(block, model);
+    }
+    
+    public void directionalPoweredBlockWithItem(@NotNull Block block, ResourceLocation model) {
+        ModelFile offModel = models().getExistingFile(model);
+        ModelFile onModel  = models().getExistingFile(new ResourceLocation(model + "_on"));
+        
+        getVariantBuilder(block).forAllStates(state -> {
+            Direction dir = state.getValue(BlockStateProperties.FACING);
+            boolean powered = state.getValue(BlockStateProperties.POWERED);
+            
+            return ConfiguredModel.builder()
+                .modelFile(powered ? onModel : offModel)
+                .rotationX(dir == Direction.DOWN ? 180 : dir == Direction.UP ? 0 : 90)
+                .rotationY(dir.getAxis().isVertical() ? 0 : ((int) dir.toYRot() + 180) % 360)
+                .build();
+        });
+        
+        simpleBlockItem(block, offModel);
     }
 
     private void slabBlockWithItem(RegistryObject<SlabBlock> slabBlockRegistryObject, RegistryObject<Block> baseBlock) {

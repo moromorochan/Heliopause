@@ -271,80 +271,59 @@ public abstract class AbstractWrittenBoardBlockEntity extends BlockEntity {
             }
         }
     }
-    /*public void eraseDrawn(Boolean eraseWithConnect, Boolean eraseWithCircle) {
-        if(level == null){
-            return;
-        }
-        BlockState blockState = level.getBlockState(worldPosition);
-        boolean isWrittenBoard = blockState.is(BlockRegistry.WRITTEN_BOARD.get());
-
-        // 同心円を持つなら
-        if(!getCircleRadii().isEmpty()){
-            if(!eraseWithConnect) {
-                setParentPos(level, this, worldPosition);
-                return;
+    
+    // ネットワークをまるごと消す
+    public void eraseNetwork(){
+        if (level == null) return;
+        
+        Set<BlockPos> visited = new HashSet<>();
+        Queue<BlockPos> queue = new ArrayDeque<>();
+        
+        queue.add(this.worldPosition);
+        visited.add(this.worldPosition);
+        
+        while (!queue.isEmpty()) {
+            BlockPos pos = queue.poll();
+            
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (!(blockEntity instanceof AbstractWrittenBoardBlockEntity nodeEntity)) {
+                continue;
             }
-            // シンボルを消してノードに
-            if(isWrittenBoard){
-                level.setBlock(worldPosition, BlockRegistry.WRITTEN_BOARD.get().defaultBlockState()
-                    .setValue(AbstractWrittenBoardBlock.CIRCLE_TYPE, WrittenBoardDrawType.CHILD_NODE), 3);
-            }
-            // 繋がりを消す
-            eraseLineConnect(level, this);
-            // 円も消す場合
-            if(eraseWithCircle){
-                for(double radius : getCircleRadii()){
-
-                    // 円周を消す
-                    removeCircleRadius(level,this,radius);
+            
+            // 線分を探索
+            for (BlockPos pair : nodeEntity.getLinePairs()) {
+                if (!visited.contains(pair)) {
+                    visited.add(pair);
+                    queue.add(pair);
                 }
             }
-        }
-        // 線分を持つなら、ペアから自身を消す
-        else if (!getLinePairs().isEmpty()) {
-            if(!eraseWithConnect) {
-                setParentPos(level, this, worldPosition);
-                return;
-            }
-            // 繋がりを消す
-            eraseLineConnect(level, this);
-            // 自身を消す
-            if(isWrittenBoard) {
-                level.setBlock(worldPosition, BlockRegistry.BLACKBOARD.get().defaultBlockState(), 3);
-            }
-        }
-        // 円周に含まれるなら、円を消す
-        else if(!getCircleCenters().isEmpty() && eraseWithConnect){
-            for(BlockPos parentPos : getCircleCenters()) {
-                if (!getBlockPos().equals(parentPos) && level.getBlockEntity(parentPos) instanceof AbstractWrittenBoardBlockEntity parentEntity) {
-                    double radius = worldPosition.getCenter().distanceTo(parentPos.getCenter());
-                    // 自身が円周に含まれているなら
-                    if (parentEntity.getCircleRadii().contains(radius)) {
-                        // 自身以外の円周上のノードを消す
-                        for (BlockPos nodePos : getCircleLatticePos(parentPos, radius)) {
-                            if(level.getBlockEntity(nodePos)instanceof AbstractWrittenBoardBlockEntity nodeEntity){
-                                nodeEntity.eraseDrawn(false, false);
-                            }
-                        }
-                        // 円周を消す
-                        parentEntity.removeCircleRadius(level,parentEntity,radius);
-                    }else{
-                        removeCircleCenterPos(level, this,parentPos);
-                        if(getCircleCenters().isEmpty()){
-                            level.setBlock(worldPosition, BlockRegistry.BLACKBOARD.get().defaultBlockState(), 3);
-                            return;
-                        }
+            
+            // 中心から円周上を探索
+            for (double radius : nodeEntity.getCircleRadii()) {
+                List<BlockPos> latticeNodes = AbstractWrittenBoardBlockEntity.getCircleLatticePos(pos, radius);
+                for (BlockPos nodePos : latticeNodes) {
+                    if (!visited.contains(nodePos)) {
+                        visited.add(nodePos);
+                        queue.add(nodePos);
                     }
                 }
             }
-
+            
+            // 円周上から中心を探索
+            for (BlockPos center : nodeEntity.getCircleCenters()) {
+                if (!visited.contains(center)) {
+                    visited.add(center);
+                    queue.add(center);
+                }
+            }
         }
-        // 繋がりがないなら、自身を消す
-        else if(isWrittenBoard){
-            level.setBlock(worldPosition, BlockRegistry.BLACKBOARD.get().defaultBlockState(), 3);
+        
+        // 消去を実行
+        for (BlockPos pos : visited) {
+            level.setBlock(pos, BlockRegistry.BLACKBOARD.get().defaultBlockState(), 3);
         }
-    }*/
-
+    }
+    
     // 線を消す
     public boolean eraseFromPos(Vec3 clickLocation, double clickSize) {
         if(level== null){

@@ -1,0 +1,10 @@
+{
+  "type": "heliopause:imitation_core_assembly",
+  "key": "ancient_star",
+  "model":"fixed_star",
+  "scale":1.25,
+  "color":[127,211,255],
+  "cent_force": 1.5,
+  "fluid": "heliopause:winter_star_essence",
+  "usage_per_sec": 50
+}

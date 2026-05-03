@@ -30,6 +30,7 @@ public class HeliopauseItemModelProvider extends net.minecraftforge.client.model
         simpleItem(ItemRegistry.IMITATION_CORE_ITEM);
         simpleItem(ItemRegistry.OPTICAL_GLASS);
         simpleItem(ItemRegistry.THERMOIMMOBILANT);
+        simpleItem(ItemRegistry.GRAVITY_COIL);
         simpleItem(FluidRegistry.STARRY_MIXTURE.bucket());
         simpleItem(FluidRegistry.LIQUEFIED_STARLIGHT.bucket());
         simpleItem(FluidRegistry.LIQUEFIED_TWILIGHT.bucket());

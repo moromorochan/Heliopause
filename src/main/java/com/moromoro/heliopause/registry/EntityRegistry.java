@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.entity.IngredientTransporterEntity;
 import com.moromoro.heliopause.entity.LensBarrelEntity;
 import com.moromoro.heliopause.entity.StellarIngredientEntity;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +38,16 @@ public class EntityRegistry {
                 .sized(StellarIngredientEntity.SIZE,StellarIngredientEntity.SIZE)
                 .build(new ResourceLocation(Heliopause.MODID, "stellar_ingredient_entity").toString())
         );
+    
+    // 材料輸送エンティティ
+    public static final RegistryObject<EntityType<IngredientTransporterEntity>> INGREDIENT_TRANSPORTER_E =
+        ENTITIES.register("stellar_ingredient_transporter",() ->
+            EntityType.Builder.<IngredientTransporterEntity>of(
+                    IngredientTransporterEntity::new, MobCategory.MISC
+                )
+                .sized(IngredientTransporterEntity.SIZE, IngredientTransporterEntity.SIZE)
+                .build(new ResourceLocation(Heliopause.MODID, "stellar_ingredient_transporter").toString())
+            );
 
     // 組み立てた鏡筒エンティティ
     public static final RegistryObject<EntityType<LensBarrelEntity>> LENS_BARREL_E =
