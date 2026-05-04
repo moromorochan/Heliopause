@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moromoro.heliopause.registry.enumProperty.SiderostatTopState;
 import com.moromoro.heliopause.block.SiderostatTopBlock;
 import com.moromoro.heliopause.blockEntity.SiderostatBlockEntity;
@@ -190,6 +191,20 @@ public class SiderostatRenderer<T extends SiderostatBlockEntity> implements Bloc
         poseStack.mulPose(new Quaternionf().rotateZ(currentMoonAngle));
         poseStack.translate(-0.5,-0.5,-0.5);
         blockRenderer.renderSingleBlock(bowBlockState, poseStack, bufferSource, combinedLight, combinedOverlay, ModelData.EMPTY, RenderType.cutout());
+        // デバッグ描画 視線
+        if (Minecraft.getInstance().options.renderDebug) {
+            VertexConsumer buffer = bufferSource.getBuffer(RenderType.LINE_STRIP);
+            poseStack.translate(0.5,0.5,0.5);
+            buffer.vertex(poseStack.last().pose(), 0, 0, 0)
+                .color(255, 0, 0, 255)
+                .normal(0,0,0)
+                .endVertex();
+            poseStack.translate(-20, 0,0);
+            buffer.vertex(poseStack.last().pose(), 0, 0, 0)
+                .color(255, 0, 0, 255)
+                .normal(0,0,0)
+                .endVertex();
+        }
     }
 
     private void renderSpring(PoseStack poseStack, MultiBufferSource bufferSource, float currentMoonAngle, int combinedLight, int combinedOverlay) {

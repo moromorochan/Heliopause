@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moromoro.heliopause.entity.LensBarrelEntity;
 import com.moromoro.heliopause.registry.CustomModelRegistry;
 import net.minecraft.client.Minecraft;
@@ -140,6 +141,21 @@ public class LensBarrelEntityRenderer extends EntityRenderer<LensBarrelEntity> {
                     1,1,1, combinedLight, 0
             );
             poseStack.translate(0,-i,0);
+        }
+        
+        // デバッグ描画 視線
+        if (Minecraft.getInstance().options.renderDebug) {
+            VertexConsumer buffer = bufferSource.getBuffer(RenderType.LINE_STRIP);
+            poseStack.translate(0.5,0.5,0.5);
+            buffer.vertex(poseStack.last().pose(), 0, 0, 0)
+                .color(255, 0, 0, 255)
+                .normal(0,0,0)
+                .endVertex();
+            poseStack.translate(0, 20,0);
+            buffer.vertex(poseStack.last().pose(), 0, 0, 0)
+                .color(255, 0, 0, 255)
+                .normal(0,0,0)
+                .endVertex();
         }
         poseStack.popPose();
     }

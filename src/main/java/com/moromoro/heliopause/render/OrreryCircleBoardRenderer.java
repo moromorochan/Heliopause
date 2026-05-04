@@ -576,15 +576,22 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.LINE_STRIP);
         //円の描画
         for (int i = 0; i <= segments; i++) {
-            float angle = Math.toRadians(angleStart) + i * angleIncrement;
+            //float angle = Math.toRadians(angleStart) + i * angleIncrement;
             //頂点座標を用意
-            float x1 = circleRadius * Math.cos(angle);
-            float y1 = circleRadius * Math.sin(angle);
-
-            buffer.vertex(poseStack.last().pose(), x1, 0, y1)
+            //float x1 = circleRadius * Math.cos(angle);
+            //float y1 = circleRadius * Math.sin(angle);
+            // 角度を変える
+            poseStack.mulPose(new Quaternionf().rotateY(angleIncrement));
+            // 円周上に合わせる
+            poseStack.translate(circleRadius, 0, 0);
+            
+            buffer.vertex(poseStack.last().pose(), 0, 0, 0)
                 .color(red, green, blue, 255)
                 .normal(0,0,0)
                 .endVertex();
+            
+            // 中心に戻す
+            poseStack.translate(-circleRadius, 0, 0);
         }
         //終了
         poseStack.popPose();

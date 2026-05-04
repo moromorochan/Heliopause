@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +74,9 @@ public class ConcentratorScreen extends AbstractContainerScreen<ConcentratorMenu
         int screenTop = (int)Math.max(1, Math.floor((double)height * fluidStack.getAmount())/tankCapacity);
         // テクスチャ取得
         ResourceLocation atlasLocation = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getStillTexture(fluidStack);
-        
+        Color tint = new Color(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack));
+        graphics.setColor(tint.getRed() / 255f, tint.getGreen() / 255f, tint.getBlue() / 255f, tint.getAlpha() / 255f);
+        RenderSystem.enableBlend();
         for (int spriteY = 0; spriteY < screenTop; spriteY+=16) {
             int partialRemainY = Math.min(16, screenTop - spriteY);
             for (int spriteX = 0; spriteX < width; spriteX+=16) {
@@ -80,6 +84,8 @@ public class ConcentratorScreen extends AbstractContainerScreen<ConcentratorMenu
                 blitSprite(atlasLocation, graphics, x + spriteX, y + height - spriteY - partialRemainY, 0, 0, partialRemainX, partialRemainY);
             }
         }
+        RenderSystem.disableBlend();
+        graphics.setColor(1f, 1f, 1f, 1f);
         // ツールチップ表示
         if(mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height){
             List<Component> tooltip = new ArrayList<>();

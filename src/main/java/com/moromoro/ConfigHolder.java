@@ -14,7 +14,7 @@ public class ConfigHolder {
     public static final ForgeConfigSpec SPEC;
 
     // 液体の名前と色情報を格納する辞書配列を作成
-    public static final Map<String, ForgeConfigSpec.IntValue> FLUID_COLORS = new HashMap<>();
+    //public static final Map<String, ForgeConfigSpec.IntValue> FLUID_COLORS = new HashMap<>();
 
     // 季節オフセット
     public static final ForgeConfigSpec.IntValue SEASON_OFFSET;

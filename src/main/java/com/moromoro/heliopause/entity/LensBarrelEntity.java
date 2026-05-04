@@ -85,10 +85,10 @@ public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
         this.setNoGravity(true);
         this.setPos(pos);
         this.setRot(180, -90);
-        this.setYRotLast(180);
-        this.setYRotToward(180);
-        this.setXRotLast(-90);
-        this.setXRotToward(-90);
+        this.YRotLast = 180;
+        this.YRotToward = 180;
+        this.XRotLast = -90;
+        this.XRotToward = -90;
         //this.setUpdateTimer(COUNT_UPDATE);
         this.setLastUpdateTime(level.getGameTime() - COUNT_UPDATE);
         assemble(initBarrels);
@@ -169,12 +169,6 @@ public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
-        this.entityData.set(syncTag, nbt);
-    }
-
-    @Override
     public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key) {
         super.onSyncedDataUpdated(key);
         if(key.equals(syncTag)){
@@ -194,11 +188,13 @@ public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
         }
         //setUpdateTimer(nbt.getInt("timer"));
         setLastUpdateTime(nbt.getLong("lastUpdate"));
-        setYRotToward(nbt.getFloat("yRotToward"));
-        setXRotToward(nbt.getFloat("xRotToward"));
-        setYRotLast(nbt.getFloat("yRotLast"));
-        setXRotLast(nbt.getFloat("xRotLast"));
+        this.YRotLast = nbt.getFloat("yRotLast");
+        this.XRotLast = nbt.getFloat("xRotLast");
+        this.YRotToward = nbt.getFloat("yRotToward");
+        this.XRotToward = nbt.getFloat("xRotToward");
         setSyncedToStar(nbt.getBoolean("isSyncedToStar"));
+        
+        //this.entityData.set(syncTag, nbt);
     }
 
     @Override
@@ -210,10 +206,10 @@ public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
         nbt.put("barrels", barrelTags);
         //nbt.putInt("timer", getUpdateTimer());
         nbt.putLong("lastUpdate", getLastUpdateTime());
-        nbt.putFloat("yRotToward", getYRotToward());
-        nbt.putFloat("xRotToward", getXRotToward());
         nbt.putFloat("yRotLast", getYRotLast());
         nbt.putFloat("xRotLast", getXRotLast());
+        nbt.putFloat("yRotToward", getYRotToward());
+        nbt.putFloat("xRotToward", getXRotToward());
         nbt.putBoolean("isSyncedToStar", isSyncedToStar());
     }
 
@@ -221,11 +217,10 @@ public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
     public void baseTick() {
         Level level = level();
         if(!level.isClientSide){
-            if(level.getGameTime() - getLastUpdateTime() >= COUNT_UPDATE){
+            if(level.getGameTime() - getLastUpdateTime() >= COUNT_UPDATE || this.firstTick){
+                this.firstTick = false;
                 setLastUpdateTime(level.getGameTime());
                 BlockPos blockEntityPos = BlockPos.containing(getPosition(0)).below();
-
-                this.setRot(180, -90);
 
                 // 真下が収斂器か確認
                 if (level.getBlockEntity(blockEntityPos) instanceof ConcentratorBlockEntity blockEntity) {
@@ -238,10 +233,10 @@ public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
                         float tempYLast = this.getYRotToward();
                         float tempXLast = this.getXRotToward();
                         // 値を適用
-                        this.setYRotToward(targetVec.y());
-                        this.setXRotToward(targetVec.x());
                         this.setYRotLast(tempYLast);
                         this.setXRotLast(tempXLast);
+                        this.setYRotToward(targetVec.y());
+                        this.setXRotToward(targetVec.x());
                         
                         if(serverLevel.isNight() && !serverLevel.isRaining() && !serverLevel.isThundering()) {
                             this.setSyncedToStar(canSeeSky());
@@ -349,14 +344,14 @@ public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
     }
 
     public boolean setXRotToward(float XRotToward) {
-        float deltaXRot = (XRotToward - this.XRotToward);
+        float deltaXRot = (XRotToward - this.XRotLast);
         deltaXRot = Math.min(Math.max(deltaXRot, -ROT_SPEED), ROT_SPEED);
-        this.XRotToward = Math.min(this.XRotToward + deltaXRot,0);
+        this.XRotToward = Math.min(this.XRotLast + deltaXRot,0);
         return Math.abs(deltaXRot) <= ROT_SPEED;
     }
 
     public boolean setYRotToward(float YRotToward) {
-        float deltaYRot = (360 + YRotToward - this.YRotToward)% 360;
+        float deltaYRot = (360 + YRotToward - this.YRotLast)% 360;
         if(deltaYRot > 180){
             deltaYRot -= 360;
         }

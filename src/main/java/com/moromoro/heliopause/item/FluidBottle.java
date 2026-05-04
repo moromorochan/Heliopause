@@ -61,9 +61,9 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IHasHoverTex
     private int getFluidColor(FluidStack fluidStack){
         //液体のidを取得
         String fluidName = ForgeRegistries.FLUIDS.getKey(fluidStack.getFluid()).toString();
-        if(ConfigHolder.FLUID_COLORS.containsKey(fluidName)){
+        /*if(ConfigHolder.FLUID_COLORS.containsKey(fluidName)){
             return ConfigHolder.FLUID_COLORS.get(fluidName).get();
-        }
+        }*/
         //configに無ければ、テクスチャから生成
         //液体の種類を取り出す
         IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());

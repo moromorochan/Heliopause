@@ -359,9 +359,9 @@ public class LensBarrelBlock extends Block implements IHasHoverDrawBlock {
                     continue;
                 }
                 int[] color = data.icon_color();
-                RenderSystem.setShaderColor(color[0]/255f, color[1]/255f, color[2]/255f, 1f);
+                graphics.setColor(color[0]/255f, color[1]/255f, color[2]/255f, 1f);
                 graphics.blit(COVERAGE_ICON, coverageX + coverageOffsetX, slotHeight + 4,icon.ordinal() * 7,0,7,7, 32, 16);
-                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                graphics.setColor(1f, 1f, 1f, 1f);
                 coverageOffsetX += 8;
             }
             if(i < iterateLength - 1){
