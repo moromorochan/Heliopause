@@ -14,14 +14,14 @@ import org.lwjgl.glfw.GLFW;
 public enum KeyMapRegistry {
 
     BOTTLE_DRAIN("bottle_drain", GLFW.GLFW_KEY_LEFT_SHIFT),
-
+    CIRCLE_SELECT("circle_select",GLFW.GLFW_KEY_LEFT_ALT),
     ;
 
     private KeyMapping keyMapping;
-    private String keyApplication;
-    private int keyCode;
+    private final String keyApplication;
+    private final int keyCode;
 
-    private KeyMapRegistry(String application, int defaultKey){
+    KeyMapRegistry(String application, int defaultKey){
         this.keyApplication = "keybinding."+ Heliopause.MODID + "."+ application;
         this.keyCode = defaultKey;
     }

@@ -1,0 +1,18 @@
+{
+  "type": "heliopause:roasting",
+  "ingredients": [
+    {
+      "item":"minecraft:wheat"
+    },
+    {
+      "item":"minecraft:wheat"
+    },
+    {
+      "item":"minecraft:wheat"
+    }
+  ],
+  "result": {
+    "item":"minecraft:bread",
+    "count": 3
+  }
+}

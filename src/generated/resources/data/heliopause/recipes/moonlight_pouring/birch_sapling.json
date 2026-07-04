@@ -1,0 +1,12 @@
+{
+  "type": "heliopause:moonlight_pouring",
+  "experience": 0.1,
+  "ingredient": {
+    "item": "minecraft:birch_sapling"
+  },
+  "result": {
+    "count": 1,
+    "item": "minecraft:birch_leaves"
+  },
+  "time": 400
+}

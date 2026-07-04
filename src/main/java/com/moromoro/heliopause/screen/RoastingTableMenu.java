@@ -1,6 +1,5 @@
 package com.moromoro.heliopause.screen;
 
-import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.RoastingTableBlockEntity;
 import com.moromoro.heliopause.recipe.RoastingRecipe;
 import com.moromoro.heliopause.registry.BlockRegistry;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
-import org.jline.utils.Log;
 
 import java.util.Optional;
 
@@ -85,7 +83,7 @@ public class RoastingTableMenu extends AbstractContainerMenu {
 
         //バニラのスロットを表示
         addPlayerInventory(playerInv);//index = 6~32
-        addPlayerHotbar(playerInv);//index = 33~41
+        addPlayerHotBar(playerInv);//index = 33~41
 
         addDataSlots(data);
     }
@@ -100,7 +98,7 @@ public class RoastingTableMenu extends AbstractContainerMenu {
     }
 
     //GUIにプレイヤーのホットバーを表示
-    private void addPlayerHotbar(Inventory playerInv){
+    private void addPlayerHotBar(Inventory playerInv){
         for (int i = 0; i < 9; i++) {
             this.addSlot(new Slot(playerInv,i,8+i*18,142));
         }
@@ -108,6 +106,9 @@ public class RoastingTableMenu extends AbstractContainerMenu {
 
     //シフトクリックでの移動に対応させる
     public ItemStack quickMoveStack(Player player, int slotId) {
+        final int invStart = 6;
+        final int hotStart = 33;
+        final int hotEnd = 41;
         //スロットの中身を格納するアイテムスタックを宣言
         ItemStack itemstack = ItemStack.EMPTY;
         //スロットを取得
@@ -121,7 +122,7 @@ public class RoastingTableMenu extends AbstractContainerMenu {
             if (slotId == RESULT_SLOT_INDEX) {
                 tempItemStack.getItem().onCraftedBy(tempItemStack, level, player);
                 //インベントリかホットバーに入れようとする
-                if (!this.moveItemStackTo(tempItemStack, 6, 42, true)) {
+                if (!this.moveItemStackTo(tempItemStack, invStart, hotEnd, true)) {
                     //失敗したらスキップ
                     return ItemStack.EMPTY;
                 }
@@ -129,27 +130,27 @@ public class RoastingTableMenu extends AbstractContainerMenu {
                 slot.onQuickCraft(tempItemStack, itemstack);
             }
             //操作スロットがプレイヤーのスロットなら
-            else if (slotId >= 6 && slotId < 42) {
-                //燃料スロットかクラフトスロットに入れようとする
-                if (!this.moveItemStackTo(tempItemStack, 1, 6, false)) {
+            else if (slotId >= invStart && slotId < hotEnd) {
+                //材料スロットに入れようとする
+                if (!this.moveItemStackTo(tempItemStack, 1, invStart, false)) {
                     //失敗した場合
                     //操作スロットがインベントリスロットなら
-                    if (slotId < 33) {
+                    if (slotId < hotStart) {
                         //ホットバーに入れようとする
-                        if (!this.moveItemStackTo(tempItemStack, 33, 42, false)) {
+                        if (!this.moveItemStackTo(tempItemStack, hotStart, hotEnd, false)) {
                             //失敗したらスキップ
                             return ItemStack.EMPTY;
                         }
                     }
                     //操作スロットがホットバーならインベントリに入れようとする
-                    else if (!this.moveItemStackTo(tempItemStack, 6, 33, false)) {
+                    else if (!this.moveItemStackTo(tempItemStack, invStart, hotStart, false)) {
                         //失敗したらスキップ
                         return ItemStack.EMPTY;
                     }
                 }
             }
             //操作スロットがクラフトスロットでない(ブロックのスロットあるいはその他の追加スロット)なら、インベントリかホットバーに入れようとする
-            else if (!this.moveItemStackTo(tempItemStack, 6, 42, false)) {
+            else if (!this.moveItemStackTo(tempItemStack, invStart, hotEnd, false)) {
                 //失敗したらスキップ
                 return ItemStack.EMPTY;
             }

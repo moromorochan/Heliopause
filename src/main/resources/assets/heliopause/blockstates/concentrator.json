@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "enabled=false": {
+      "model": "heliopause:block/concentrator/base_disable"
+    },
+    "enabled=true": {
+      "model": "heliopause:block/concentrator/base_enable"
+    }
+  }
+}

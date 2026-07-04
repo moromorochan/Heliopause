@@ -1,0 +1,24 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sapling": {
+      "items": [
+        {
+          "items": [
+            "minecraft:spruce_sapling"
+          ]
+        }
+      ]
+    }
+  },
+  "requirements": [
+    [
+      "has_sapling"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "heliopause:moonlight_pouring/spruce_sapling"
+    ]
+  }
+}

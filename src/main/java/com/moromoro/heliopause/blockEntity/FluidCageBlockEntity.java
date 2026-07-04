@@ -56,7 +56,7 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
     }
 
     protected void updateRenderData() {
-        FluidCageBlockRenderer.updateData(this.getBlockPos(), this.mainTank.getFluid());
+        FluidCageBlockRenderer.updateData(this.getBlockPos(), this.tank.getFluid());
     }
 
     protected void removeRenderData() {
@@ -97,7 +97,7 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
     public @NotNull FluidStack getFluidInTank(int tank) {
         FluidCageBlockEntity entity = getOperationBlockEntity();
         if(entity!=null) {
-            return entity.mainTank.getFluidInTank(tank);
+            return entity.tank.getFluidInTank(tank);
         }
         return FluidStack.EMPTY;
     }
@@ -106,7 +106,7 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
     public int getTankCapacity(int tank) {
         FluidCageBlockEntity entity = getOperationBlockEntity();
         if(entity!=null) {
-            return entity.mainTank.getTankCapacity(tank);
+            return entity.tank.getTankCapacity(tank);
         }
         return 0;
     }
@@ -115,7 +115,7 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
     public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
         FluidCageBlockEntity entity = getOperationBlockEntity();
         if(entity!=null) {
-            return entity.mainTank.isFluidValid(tank, stack);
+            return entity.tank.isFluidValid(tank, stack);
         }
         return false;
     }
@@ -124,7 +124,7 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
     public int fill(FluidStack resource, FluidAction action) {
         FluidCageBlockEntity entity = getOperationBlockEntity();
         if(entity!=null) {
-            return entity.mainTank.fill(resource, action);
+            return entity.tank.fill(resource, action);
         }
         return 0;
     }
@@ -134,7 +134,7 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
     public FluidStack drain(FluidStack resource, FluidAction action) {
         FluidCageBlockEntity entity = getOperationBlockEntity();
         if(entity!=null) {
-            return entity.mainTank.drain(resource,action);
+            return entity.tank.drain(resource,action);
         }
         return FluidStack.EMPTY;
     }
@@ -144,7 +144,7 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
     public FluidStack drain(int maxDrain, FluidAction action) {
         FluidCageBlockEntity entity = getOperationBlockEntity();
         if(entity!=null) {
-            return entity.mainTank.drain(maxDrain, action);
+            return entity.tank.drain(maxDrain, action);
         }
         return FluidStack.EMPTY;
     }

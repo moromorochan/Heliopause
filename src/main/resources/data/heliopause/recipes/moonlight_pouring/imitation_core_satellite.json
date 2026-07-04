@@ -1,0 +1,15 @@
+{
+  "type": "heliopause:moonlight_pouring",
+  "experience": 0.1,
+  "ingredient": {
+    "item": "heliopause:imitation_core"
+  },
+  "result": {
+    "count": 1,
+    "item": "heliopause:imitation_core",
+    "nbt": {
+      "star_id":"satellite"
+    }
+  },
+  "time": 600
+}

@@ -1,0 +1,7 @@
+// 1.20.1	2026-01-22T19:28:36.7973178	Tags for minecraft:block mod id heliopause
+d1990ef0bcb3e98eae8e669f7f6900022fd492e1 data/heliopause/tags/blocks/main_mirror_barrel.json
+21d4b4f5d1be9001b07df0bf599dde7af1b47f5a data/heliopause/tags/blocks/secondary_mirror_barrel.json
+23001d0e26dc921d1a34d7bd985b64983977b2bd data/heliopause/tags/blocks/wooden_lens_barrel.json
+46e8095c6db0d0118f6b5e1402241384067cf9e2 data/minecraft/tags/blocks/campfires.json
+f23e103b9544f7406d2f50a01e7bf49638521bfd data/minecraft/tags/blocks/mineable/axe.json
+8cad6da0b84d082204c644495d5bf287f1993932 data/minecraft/tags/blocks/mineable/pickaxe.json

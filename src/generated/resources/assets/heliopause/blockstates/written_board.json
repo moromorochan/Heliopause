@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "type=blank_circle": {
+      "model": "heliopause:block/written_board/blank_circle"
+    },
+    "type=child_node": {
+      "model": "heliopause:block/written_board/child_node"
+    },
+    "type=cross_circle": {
+      "model": "heliopause:block/written_board/cross_circle"
+    },
+    "type=diamond": {
+      "model": "heliopause:block/written_board/diamond"
+    },
+    "type=diamond_star": {
+      "model": "heliopause:block/written_board/diamond_star"
+    },
+    "type=large_symbol": {
+      "model": "heliopause:block/written_board/large_symbol"
+    },
+    "type=square": {
+      "model": "heliopause:block/written_board/square"
+    }
+  }
+}

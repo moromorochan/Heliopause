@@ -1,0 +1,22 @@
+{
+  "type": "heliopause:starlight_concentration",
+  "ingredient": {
+    "item":"minecraft:redstone"
+  },
+  "result": {
+    "fluid": "heliopause:scarlet_starbead",
+    "amount": 600
+  },
+  "time": 400,
+  "starlight_conditions": {
+    "dimension": "minecraft:overworld",
+    "coverage": [
+      "infra_red",
+      "rose_pulse"
+    ],
+    "season_range": {
+      "start": 0,
+      "end": 359
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "alcahestic",
+  "block": [
+    "heliopause:alchemy_biron_lens_barrel",
+    "heliopause:silver_main_mirror",
+    "heliopause:silver_second_mirror"
+  ],
+  "icon": "circle",
+  "icon_color": [255,200,67]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "minecraft:planks"
+    },
+    "B": {
+      "item": "minecraft:barrel"
+    }
+  },
+  "pattern": [
+    "ABA"
+  ],
+  "result": {
+    "item": "heliopause:wooden_lens_barrel"
+  },
+  "show_notification": true
+}

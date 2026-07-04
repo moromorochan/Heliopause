@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "minecraft:planks"
+    },
+    "B": {
+      "tag": "forge:glass/colorless"
+    },
+    "C": {
+      "tag": "forge:ingots/iron"
+    },
+    "D": {
+      "tag": "minecraft:wooden_slabs"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "ACA",
+    " D "
+  ],
+  "result": {
+    "item": "heliopause:siderostat"
+  },
+  "show_notification": true
+}

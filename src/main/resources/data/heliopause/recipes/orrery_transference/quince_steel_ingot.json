@@ -1,0 +1,26 @@
+{
+  "type": "heliopause:orrery_transference",
+  "center": "ancient_star",
+  "result": {
+    "item": "heliopause:alchemy_steel_ingot",
+    "count": 9
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:ender_pearl",
+      "ratio": 1.0
+    },
+    {
+      "item": "heliopause:glowstone_alloy_block",
+      "ratio": 1.7
+    },
+    {
+      "item": "minecraft:charcoal",
+      "ratio": 2.9
+    },
+    {
+      "item": "minecraft:charcoal",
+      "ratio": 4.9
+    }
+  ]
+}

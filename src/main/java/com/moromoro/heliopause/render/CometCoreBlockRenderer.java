@@ -1,9 +1,9 @@
 package com.moromoro.heliopause.render;
 
-import com.moromoro.heliopause.blockEntity.CometCoreBlockEntity;
+//import com.moromoro.heliopause.blockEntity.CometCoreBlockEntity;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import org.joml.Math;
-
+/*
 public class CometCoreBlockRenderer extends AbstractCoreBlockRenderer<CometCoreBlockEntity>{
     public CometCoreBlockRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -18,3 +18,4 @@ public class CometCoreBlockRenderer extends AbstractCoreBlockRenderer<CometCoreB
         return 7.5f;
     }
 }
+*/

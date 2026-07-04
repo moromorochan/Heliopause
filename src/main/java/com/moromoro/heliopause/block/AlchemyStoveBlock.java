@@ -16,13 +16,9 @@ import org.jetbrains.annotations.NotNull;
 public class AlchemyStoveBlock extends HorizontalFacingEntityBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    public AlchemyStoveBlock() {
-        super(BlockBehaviour.Properties.of()
-                .strength(2.0F)
-                .sound(SoundType.LANTERN)
-                .lightLevel(blockState -> blockState.getValue(LIT) ? 15 : 9)
-        );
-        this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(DIRECTION, Direction.NORTH));
+    public AlchemyStoveBlock(Properties properties) {
+        super(properties);
+        this.registerDefaultState(this.defaultBlockState().setValue(DIRECTION,Direction.NORTH).setValue(LIT,false));
     }
 
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context){

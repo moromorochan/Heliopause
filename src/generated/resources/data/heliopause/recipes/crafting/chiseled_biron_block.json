@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": {
+      "tag": "forge:storage_blocks/alchemy_biron"
+    },
+    "B": {
+      "item": "heliopause:alchemy_biron_ingot"
+    }
+  },
+  "pattern": [
+    " B ",
+    "BAB",
+    " B "
+  ],
+  "result": {
+    "count": 4,
+    "item": "heliopause:chiseled_biron_block"
+  },
+  "show_notification": true
+}

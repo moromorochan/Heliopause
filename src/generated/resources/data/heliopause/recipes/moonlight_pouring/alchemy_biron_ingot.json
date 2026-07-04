@@ -1,0 +1,12 @@
+{
+  "type": "heliopause:moonlight_pouring",
+  "experience": 0.1,
+  "ingredient": {
+    "tag": "forge:ingots/copper"
+  },
+  "result": {
+    "count": 1,
+    "item": "heliopause:alchemy_biron_ingot"
+  },
+  "time": 600
+}

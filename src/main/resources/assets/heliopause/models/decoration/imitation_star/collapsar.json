@@ -1,0 +1,8 @@
+{
+	"credit": "Made by moromorochan with Blockbench",
+	"parent": "heliopause:decoration/imitation_star/fixed_star",
+	"textures": {
+		"0": "heliopause:decoration/imitation_star/collapsar",
+		"particle": "heliopause:decoration/imitation_star/collapsar"
+	}
+}

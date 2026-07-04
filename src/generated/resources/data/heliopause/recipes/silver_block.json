@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "heliopause:silver_ingot"
+    },
+    {
+      "item": "heliopause:silver_ingot"
+    },
+    {
+      "item": "heliopause:silver_ingot"
+    },
+    {
+      "item": "heliopause:silver_ingot"
+    },
+    {
+      "item": "heliopause:silver_ingot"
+    },
+    {
+      "item": "heliopause:silver_ingot"
+    },
+    {
+      "item": "heliopause:silver_ingot"
+    },
+    {
+      "item": "heliopause:silver_ingot"
+    },
+    {
+      "item": "heliopause:silver_ingot"
+    }
+  ],
+  "result": {
+    "item": "heliopause:silver_block"
+  }
+}

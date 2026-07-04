@@ -1,37 +1,50 @@
 package com.moromoro;
 
 import com.mojang.logging.LogUtils;
+import com.moromoro.heliopause.compat.TerraFirmaCraftModCompat;
+import com.moromoro.heliopause.compat.kubeJS.HeliopauseKubeJSCompat;
 import com.moromoro.heliopause.event.TooltipEventHandler;
 import com.moromoro.heliopause.item.FluidBottle;
+import com.moromoro.heliopause.network.NetworkChannel;
+import com.moromoro.heliopause.recipe.LensBarrelCoverageListener;
+import com.moromoro.heliopause.recipe.LensBarrelCoveragePacket;
 import com.moromoro.heliopause.registry.*;
+import com.moromoro.heliopause.screen.ConcentratorScreen;
 import com.moromoro.heliopause.screen.RoastingTableScreen;
+import com.moromoro.heliopause.screen.SiderostatScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.network.PacketDistributor;
 import org.slf4j.Logger;
+
+import static com.moromoro.heliopause.registry.BlockEntityRegistry.BLOCKENTITIES;
+import static com.moromoro.heliopause.registry.BlockRegistry.BLOCKS;
+import static com.moromoro.heliopause.registry.CreativeTabRegistry.CREATIVE_MODE_TABS;
+import static com.moromoro.heliopause.registry.EntityRegistry.ENTITIES;
+import static com.moromoro.heliopause.registry.FluidRegistry.FLUIDS;
+import static com.moromoro.heliopause.registry.FluidRegistry.FLUID_TYPES;
+import static com.moromoro.heliopause.registry.ItemRegistry.ITEMS;
+import static com.moromoro.heliopause.registry.MenuTypeRegistry.MENU_TYPES;
+import static com.moromoro.heliopause.registry.ParticleRegistry.PARTICLE_TYPES;
+import static com.moromoro.heliopause.registry.RecipeSerializerRegistry.RECIPE_SERIALIZERS;
+import static com.moromoro.heliopause.registry.RecipeTypeRegistry.RECIPE_TYPES;
+import static com.moromoro.heliopause.registry.SoundRegistry.SOUNDS;
 
 @Mod(Heliopause.MODID)
 public class Heliopause {
@@ -43,72 +56,29 @@ public class Heliopause {
     // slf4j logger を参照
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    IEventBus modEventBus;
+
     //ブロック・ブロックエンティティ・アイテムの登録
-
-    // mod名前空間に登録されるブロックを保持するための遅延レジスタを作成
-    public static final DeferredRegister<Block> BLOCKS = BlockRegistry.BLOCKS;
-
-    // mod名前空間に登録されるブロックエンティティを保持するための遅延レジスタを作成
-    public static final DeferredRegister<BlockEntityType<?>> BLOCKENTITIES = BlockEntityRegistry.BLOCKENTITIES;
-
-    // mod名前空間に登録されるアイテムを保持するための遅延レジスタを作成
-    public static final DeferredRegister<Item> ITEMS = ItemRegistry.ITEMS;
-
-    // mod名前空間に登録されるパーティクルタイプを保持するための遅延レジスタを作成
-    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = ParticleRegistry.PARTICLE_TYPES;
-
-    // mod名前空間に登録されるGUI画面を保持するための遅延レジスタを作成
-    public static final DeferredRegister<MenuType<?>> MENU_TYPES = MenuTypeRegistry.MENU_TYPES;
-
-    // mod名前空間に登録されるクリエイティブモードタブを保持するための遅延レジスタを作成
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-
-    // mod名前空間に登録されるカスタムレシピタイプを保持するための遅延レジスタを作成
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = RecipeSerializerRegistry.SERIALIZERS;
-
-    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = RecipeTypeRegistry.RECIPE_TYPES;
-
-    // aquosolis:example_tab クリエイティブタブを作成
-    public static final RegistryObject<CreativeModeTab> HELIOPAUSE_TAB_MAIN = CREATIVE_MODE_TABS.register("heliopause_main", () -> CreativeModeTab.builder()
-            //.withTabsBefore(CreativeModeTabs.COMBAT)
-            .title(Component.translatable("itemGroup.heliopause_main"))
-            .icon(() -> ItemRegistry.ALCHEMY_STOVE_ITEM.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-                output.accept(ItemRegistry.ALCHEMY_STOVE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-                output.accept(ItemRegistry.ROASTING_TABLE_ITEM.get());
-                output.accept(ItemRegistry.CRUCIBLE_ITEM.get());
-                output.accept(ItemRegistry.FLUID_CAGE_ITEM.get());
-                output.accept(ItemRegistry.FLUID_SPREADER_ITEM.get());
-                output.accept(ItemRegistry.LOW_COPPER_PIPE_ITEM.get());
-                output.accept(ItemRegistry.MEDIUM_COPPER_PIPE_ITEM.get());
-                output.accept(ItemRegistry.HIGH_COPPER_PIPE_ITEM.get());
-                output.accept(ItemRegistry.COMET_CORE_ITEM.get());
-                output.accept(ItemRegistry.ALCHEMY_BIRON_BLOCK_ITEM.get());
-                output.accept(ItemRegistry.ALCHEMY_BIRON_INGOT_ITEM.get());
-                output.accept(ItemRegistry.ALCHEMY_BIRON_NUGGET_ITEM.get());
-                output.accept(ItemRegistry.GLOWSTONE_ALLOY_BLOCK_ITEM.get());
-                output.accept(ItemRegistry.GLOWSTONE_ALLOY_INGOT_ITEM.get());
-                output.accept(ItemRegistry.GLOWSTONE_ALLOY_NUGGET_ITEM.get());
-                output.accept(ItemRegistry.IMITATION_CORE_ITEM.get());
-                output.accept(ItemRegistry.VIAL_ITEM.get());
-                output.accept(ItemRegistry.LARGE_BOTTLE_ITEM.get());
-                output.accept(ItemRegistry.PAPERBUSH_BLOCK_ITEM.get());
-                output.accept(ItemRegistry.PAPERBUSH_LEAVES_BLOCK_ITEM.get());
-                output.accept(ItemRegistry.PAPERBUSH_TWIGS_ITEM.get());
-            }).build());
-
     public Heliopause()
     {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        // 互換性登録
+        modEventBus.addListener(this::commonSetup);
+
         // Deferred Register を MOD イベント バスに登録して、ブロック・アイテム・クリエイティブタブが登録されるように
         BLOCKS.register(modEventBus);
         BLOCKENTITIES.register(modEventBus);
         ITEMS.register(modEventBus);
+        FLUIDS.register(modEventBus);
+        FLUID_TYPES.register(modEventBus);
+        ENTITIES.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
         MENU_TYPES.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         RECIPE_SERIALIZERS.register(modEventBus);
         RECIPE_TYPES.register(modEventBus);
+        SOUNDS.register(modEventBus);
 
         //configファイルの登録
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHolder.SPEC);
@@ -118,6 +88,9 @@ public class Heliopause {
 
         //ブロックへのホバーでツールチップを表示する
         MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
+
+        // ネットワークのパケット登録
+        NetworkChannel.register();
     }
 
     // SubscribeEvent を使用することで、イベントバスが呼び出すメソッドを検出できるようになる
@@ -126,6 +99,33 @@ public class Heliopause {
     {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+
+        // カスタムjsonの同期
+        LensBarrelCoveragePacket packet = new LensBarrelCoveragePacket(LensBarrelCoverageListener.getMap());
+
+        for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
+            NetworkChannel.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+        }
+
+    }
+
+    // カスタムjsonを読み込み
+    @SubscribeEvent
+    public void onAddReloadListener(AddReloadListenerEvent event){
+        LOGGER.info("HELLO from adding reloadListener");
+        event.addListener(new LensBarrelCoverageListener());
+    }
+
+    private void commonSetup(final FMLCommonSetupEvent event) {
+        LOGGER.info("HELLO FROM COMMON SETUP");
+        event.enqueueWork(() -> {
+            if(ModList.get().isLoaded("tfc")){
+                TerraFirmaCraftModCompat.init(modEventBus);
+            }
+            if(ModList.get().isLoaded("kubejs")){
+                new HeliopauseKubeJSCompat();
+            }
+        });
     }
 
     // EventBusSubscriber を使用すると、@SubscribeEvent アノテーションが付けられたクラス内のすべての静的メソッドを自動的に登録できる
@@ -141,9 +141,19 @@ public class Heliopause {
 
             //メニューとスクリーンを紐づけ
             MenuScreens.register(MenuTypeRegistry.ROASTING_TABLE_MENU.get(), RoastingTableScreen::new);
+            MenuScreens.register(MenuTypeRegistry.SIDEROSTAT_MENU.get(), SiderostatScreen::new);
+            MenuScreens.register(MenuTypeRegistry.CONCENTRATOR_MENU.get(), ConcentratorScreen::new);
 
             //キーコンフィグの追加
 
+            // 模造天体のデータ登録
+            /*Minecraft.getInstance().execute(() -> {
+                if(Minecraft.getInstance().getResourceManager() instanceof ReloadableResourceManager manager){
+                    manager.registerReloadListener(
+                        new ImitationCoreAssemblyRecipe(new Gson(), "imitation_core")
+                    );
+                }
+            });*/
 
             // アイテムの色を登録
             registerItemColors(ItemRegistry.VIAL_ITEM.get(),1);

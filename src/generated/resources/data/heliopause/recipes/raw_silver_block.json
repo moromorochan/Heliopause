@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "heliopause:raw_silver"
+    },
+    {
+      "item": "heliopause:raw_silver"
+    },
+    {
+      "item": "heliopause:raw_silver"
+    },
+    {
+      "item": "heliopause:raw_silver"
+    },
+    {
+      "item": "heliopause:raw_silver"
+    },
+    {
+      "item": "heliopause:raw_silver"
+    },
+    {
+      "item": "heliopause:raw_silver"
+    },
+    {
+      "item": "heliopause:raw_silver"
+    },
+    {
+      "item": "heliopause:raw_silver"
+    }
+  ],
+  "result": {
+    "item": "heliopause:raw_silver_block"
+  }
+}

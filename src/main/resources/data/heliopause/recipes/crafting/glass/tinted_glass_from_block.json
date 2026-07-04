@@ -6,7 +6,7 @@
   ],
   "key": {
     "A": {
-      "tag": "forge:glass"
+      "tag": "forge:glass/colorless"
     },
     "B": {
       "item": "minecraft:amethyst_block"

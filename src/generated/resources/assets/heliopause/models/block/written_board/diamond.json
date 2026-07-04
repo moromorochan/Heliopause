@@ -1,0 +1,7 @@
+{
+  "parent": "heliopause:block/written_board",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "layer": "heliopause:block/written_board/diamond"
+  }
+}

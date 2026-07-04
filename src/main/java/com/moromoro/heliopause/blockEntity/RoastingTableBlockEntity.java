@@ -1,6 +1,5 @@
 package com.moromoro.heliopause.blockEntity;
 
-import com.moromoro.Heliopause;
 import com.moromoro.heliopause.block.RoastingTableBlock;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.screen.RoastingTableMenu;
@@ -39,10 +38,11 @@ public class RoastingTableBlockEntity extends BlockEntity implements MenuProvide
         @Override
         protected void onContentsChanged(int slot) {
             super.onContentsChanged(slot);
-
+            RoastingTableBlockEntity.this.setChanged();
             // アイテムが変更されたときにslotsChangedを呼び出す
-            if (level != null && !level.isClientSide) {
-                if (menu != null) {
+            if (level != null) {
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+                if (!level.isClientSide && menu != null) {
                     menu.slotsChanged(new SimpleContainer(itemHandler.getStackInSlot(0)));
                     //Heliopause.LOGGER.debug("slotChanged called in BE");
                 }

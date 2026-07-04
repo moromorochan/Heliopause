@@ -1,0 +1,1641 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "heliopause:block/chiseled_biron_block/top"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/single"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/single_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/single_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/single_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "true",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "true",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_b",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_c",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_d",
+          "y": 90
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_b",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_c",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_d",
+          "y": 90
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "true",
+        "south": "false",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "false",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_b",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_c",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_d",
+          "y": 180
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "true",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_b",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_c",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_d",
+          "y": 180
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_b",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_c",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/side_d",
+          "y": 270
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_b",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_c",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/corner_d",
+          "y": 270
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "false",
+        "south": "true",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/single/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "false",
+        "south": "true",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/single"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/single_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/single_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/single_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "false",
+        "south": "true",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "false",
+        "south": "true",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_b",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_c",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_d",
+          "y": 90
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_b",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_c",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_d",
+          "y": 90
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "true",
+        "south": "false",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "true",
+        "south": "false",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_b",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_c",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_d",
+          "y": 180
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "true",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_b",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_c",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_d",
+          "y": 180
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "true",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_b",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_c",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/side_d",
+          "y": 270
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_b",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_c",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/corner_d",
+          "y": 270
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "false",
+        "south": "true",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/top/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "false",
+        "south": "true",
+        "up": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/single"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/single_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/single_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/single_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "true",
+        "south": "true",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "false",
+        "south": "false",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "true",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "true",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "true",
+        "south": "true",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_b",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_c",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_d",
+          "y": 90
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_b",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_c",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_d",
+          "y": 90
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "true",
+        "south": "false",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "false",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_b",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_c",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_d",
+          "y": 180
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "true",
+        "south": "false",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_b",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_c",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_d",
+          "y": 180
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "false",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_b",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_c",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/side_d",
+          "y": 270
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "false",
+        "south": "false",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_b",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_c",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/corner_d",
+          "y": 270
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "false",
+        "south": "true",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/bottom/inner_d"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "true",
+        "north": "false",
+        "south": "true",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/single"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/single_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/single_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/single_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "true",
+        "south": "true",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "false",
+        "south": "false",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "false",
+        "south": "true",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "false",
+        "south": "true",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "true",
+        "south": "true",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_b",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_c",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_d",
+          "y": 90
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_b",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_c",
+          "y": 90
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_d",
+          "y": 90
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "true",
+        "south": "false",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "true",
+        "south": "false",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_b",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_c",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_d",
+          "y": 180
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "false",
+        "north": "true",
+        "south": "false",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_b",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_c",
+          "y": 180
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_d",
+          "y": 180
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "true",
+        "south": "false",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_b",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_c",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/side_d",
+          "y": 270
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "false",
+        "south": "false",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_b",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_c",
+          "y": 270
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/corner_d",
+          "y": 270
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "false",
+        "south": "true",
+        "up": "true",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_b"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_c"
+        },
+        {
+          "model": "heliopause:block/chiseled_biron_block/middle/inner_d"
+        }
+      ],
+      "when": {
+        "down": "true",
+        "east": "true",
+        "north": "false",
+        "south": "true",
+        "up": "true",
+        "west": "true"
+      }
+    }
+  ]
+}

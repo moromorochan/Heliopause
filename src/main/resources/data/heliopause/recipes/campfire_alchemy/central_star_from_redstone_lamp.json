@@ -1,0 +1,17 @@
+{
+  "type": "heliopause:campfire_alchemy",
+  "ingredient": {
+    "block": "minecraft:redstone_lamp"
+  },
+  "result": {
+    "block": "heliopause:central_star",
+    "nbt": {
+      "CenterBlockState": {
+        "Name": "minecraft:redstone_lamp",
+        "Properties": {
+          "lit": "true"
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.item;
 
 import com.moromoro.ConfigHolder;
+import com.moromoro.heliopause.implementable.IHasHoverTexts;
 import com.moromoro.heliopause.registry.KeyMapRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -25,6 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
@@ -38,7 +41,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHoverTexts {
+import static com.moromoro.heliopause.generic.StackControl.transferFluid;
+
+public class FluidBottle extends Item implements IFluidHandlerItem, IHasHoverTexts {
 
     private static final String FLUID_NBT_KEY = "FluidStack";
     public static final String COLOR_NBT_KEY = "color";
@@ -56,9 +61,9 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
     private int getFluidColor(FluidStack fluidStack){
         //液体のidを取得
         String fluidName = ForgeRegistries.FLUIDS.getKey(fluidStack.getFluid()).toString();
-        if(ConfigHolder.FLUID_COLORS.containsKey(fluidName)){
+        /*if(ConfigHolder.FLUID_COLORS.containsKey(fluidName)){
             return ConfigHolder.FLUID_COLORS.get(fluidName).get();
-        }
+        }*/
         //configに無ければ、テクスチャから生成
         //液体の種類を取り出す
         IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());
@@ -222,61 +227,93 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
         tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.amount", fluidAmount,tankCapacity));
     }
     //ツールチップをクロスヘアの右側に表示
-    public @NotNull List<Component> getBlockHoverTexts(ClientLevel clientLevel, ItemStack itemStack, BlockPos pos){
+    public @NotNull List<Component> getBlockHoverTexts(ClientLevel clientLevel, ItemStack itemStack, HitResult hitResult){
         List<Component> tooltip = new ArrayList<>();
         Minecraft instance = Minecraft.getInstance();
-        BlockEntity blockEntity = clientLevel.getBlockEntity(pos);
-        if(blockEntity==null){return tooltip;}
-        if(blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()){
-            //操作キーを取得
-            Component useKey = instance.options.keyUse.getTranslatedKeyMessage();
-            Component drainKey = KeyMapRegistry.BOTTLE_DRAIN.getKeyMapping().getTranslatedKeyMessage();
-        if (itemStack.getCount() == 1) {
-            //操作キーを押している間は行を反転
-            if(!KeyMapRegistry.BOTTLE_DRAIN.isPressed()){
-                tooltip.add(Component.literal("[").append(useKey).append("] :"));
-                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));
-                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
-                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2").withStyle(ChatFormatting.GRAY));
-            }else{
-                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
-                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2"));
-                tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
-                tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1").withStyle(ChatFormatting.GRAY));
+
+        //ブロックエンティティの場合
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockPos pos = ((BlockHitResult) hitResult).getBlockPos();
+            BlockEntity blockEntity = clientLevel.getBlockEntity(pos);
+            if (blockEntity == null) {
+                return tooltip;
             }
-        } else {
-            //シフトを押している間は行を反転
-            if(!KeyMapRegistry.BOTTLE_DRAIN.isPressed()){
-                tooltip.add(Component.literal("[").append(useKey).append("] :"));
-                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));
-                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
-                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2").withStyle(ChatFormatting.GRAY));
-            }else{
-                tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
-                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
-                tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
-                tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1").withStyle(ChatFormatting.GRAY));
+            if (blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()) {
+                //操作キーを取得
+                Component useKey = instance.options.keyUse.getTranslatedKeyMessage();
+                Component drainKey = KeyMapRegistry.BOTTLE_DRAIN.getKeyMapping().getTranslatedKeyMessage();
+                if (itemStack.getCount() == 1) {
+                    //操作キーを押している間は行を反転
+                    if (!KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
+                        tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2").withStyle(ChatFormatting.GRAY));
+                    } else {
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2"));
+                        tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1").withStyle(ChatFormatting.GRAY));
+                    }
+                } else {
+                    //操作キーを押している間は行を反転
+                    if (!KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
+                        tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2").withStyle(ChatFormatting.GRAY));
+                    } else {
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
+                        tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1").withStyle(ChatFormatting.GRAY));
+                    }
+                }
             }
         }
-        }
+        //エンティティの場合
+        /*else if (hitResult.getType() == HitResult.Type.ENTITY) {
+            Entity entity = ((EntityHitResult) hitResult).getEntity();
+            if(entity.isRemoved()){
+                return tooltip;
+            }
+            if(entity instanceof OrreryInteractionOperatorEntity){
+                //操作キーを取得
+                Component useKey = instance.options.keyUse.getTranslatedKeyMessage();
+                Component drainKey = KeyMapRegistry.BOTTLE_DRAIN.getKeyMapping().getTranslatedKeyMessage();
+                if (itemStack.getCount() == 1) {
+                    //操作キーを押している間は行を反転
+                    if (!KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
+                        *//*tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1"));*//*
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2").withStyle(ChatFormatting.GRAY));
+                    } else {
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description2"));
+                        *//*tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottle.tooltip.description1").withStyle(ChatFormatting.GRAY));*//*
+                    }
+                } else {
+                    //操作キーを押している間は行を反転
+                    if (!KeyMapRegistry.BOTTLE_DRAIN.isPressed()) {
+                        *//*tooltip.add(Component.literal("[").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1"));*//*
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2").withStyle(ChatFormatting.GRAY));
+                    } else {
+                        tooltip.add(Component.literal("[").append(drainKey).append(" + ").append(useKey).append("] :"));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description2"));
+                        *//*tooltip.add(Component.literal("[").append(useKey).append("] :").withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("item.heliopause.bottleStack.tooltip.description1").withStyle(ChatFormatting.GRAY));*//*
+                    }
+                }
+            }
+        }*/
         return tooltip;
     }
 
-    //液体の移動
-    private FluidStack transferFluid(IFluidHandler fillStack,IFluidHandler drainStack, int maxTransfer){
-        // fillStackにどれだけ流し入れられるか確認 0なら動作を終わる
-        int fillAllowance = fillStack.fill(drainStack.drain(maxTransfer,FluidAction.SIMULATE),FluidAction.SIMULATE);
-        if (fillAllowance > 0) {
-            // drainStackから液体を取り出す
-            FluidStack drainAllowance = drainStack.drain(fillAllowance,FluidAction.EXECUTE);
-            if (!drainAllowance.isEmpty()) {
-                // fillStackの液体を増やす
-                fillStack.fill(drainAllowance, FluidAction.EXECUTE);
-            }
-            return drainAllowance;
-        }
-        return FluidStack.EMPTY;
-    }
+
 
     //アイテムを渡す 渡せないならドロップ
     private void addOrDrop(Player player, Level level, BlockPos pos, ItemStack resultItem) {
@@ -306,20 +343,31 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
     public InteractionResult useOn(UseOnContext context) {
         //干渉するブロックエンティティのデータを取得
         BlockPos pos = context.getClickedPos();
+        Level level = context.getLevel();
         BlockEntity blockEntity = context.getLevel().getBlockEntity(pos);
-        if(blockEntity == null){return InteractionResult.PASS;}
+        if(blockEntity == null){
+            if (level.isClientSide()) {
+                return InteractionResult.SUCCESS;
+            }
+            return InteractionResult.PASS;
+        }
 
         //ブロックエンティティ側が対応しているか確認
         if (blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()) {
             IFluidHandler blockFluidHandler =
                     blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER)
-                    .orElseThrow(() -> new RuntimeException("blockEntityCapacity is null. pos:"+ pos));
+                    .orElseThrow(() -> new RuntimeException("blockEntityCapability is null. pos:"+ pos));
             //その他のデータを取得
             Player player = context.getPlayer();
             //プレイヤー以外の操作はパス
-            if(player==null){return InteractionResult.PASS;}
+            if(player==null){
+                if (level.isClientSide()) {
+                    return InteractionResult.SUCCESS;
+                }
+                return InteractionResult.PASS;
+            }
             //ワールドとアイテムを取得
-            Level level = context.getLevel();
+            //Level level = context.getLevel();
             ItemStack heldItem = player.getItemInHand(context.getHand());
 
             //nbtを取り出す
@@ -485,7 +533,13 @@ public class FluidBottle extends Item implements IFluidHandlerItem, IhasBlockHov
                     }
                 }
             }
+            if (level.isClientSide()) {
+                return InteractionResult.SUCCESS;
+            }
             return InteractionResult.PASS;
+        }
+        if (level.isClientSide()) {
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

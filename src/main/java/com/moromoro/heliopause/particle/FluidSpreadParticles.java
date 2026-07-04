@@ -117,10 +117,10 @@ public class FluidSpreadParticles extends TextureSheetParticle {
         float minV = this.getV0();
         float maxV = this.getV1();
         int j = this.getLightColor(partialTicks);
-        buffer.vertex((double)vertexPosArray[0].x(), (double)vertexPosArray[0].y(), (double)vertexPosArray[0].z()).uv(maxU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        buffer.vertex((double)vertexPosArray[1].x(), (double)vertexPosArray[1].y(), (double)vertexPosArray[1].z()).uv(maxU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        buffer.vertex((double)vertexPosArray[2].x(), (double)vertexPosArray[2].y(), (double)vertexPosArray[2].z()).uv(minU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        buffer.vertex((double)vertexPosArray[3].x(), (double)vertexPosArray[3].y(), (double)vertexPosArray[3].z()).uv(minU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(vertexPosArray[0].x(), vertexPosArray[0].y(), vertexPosArray[0].z()).uv(maxU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(vertexPosArray[1].x(), vertexPosArray[1].y(), vertexPosArray[1].z()).uv(maxU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(vertexPosArray[2].x(), vertexPosArray[2].y(), vertexPosArray[2].z()).uv(minU, minV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(vertexPosArray[3].x(), vertexPosArray[3].y(), vertexPosArray[3].z()).uv(minU, maxV).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
     }
 
     private Vec3 getVelocity() {

@@ -3,6 +3,9 @@ package com.moromoro.heliopause.render;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.FluidCageBlockEntity;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Math;
 
 public class FluidCageBlockRenderer extends AbstractFluidOrbBlockRenderer<FluidCageBlockEntity> {
@@ -18,6 +21,11 @@ public class FluidCageBlockRenderer extends AbstractFluidOrbBlockRenderer<FluidC
             Heliopause.LOGGER.error("Rendering failure on orb size calculation.");
         }
         return size;
+    }
+
+    @Override
+    public boolean shouldRender(FluidCageBlockEntity entity, Vec3 vec3) {
+        return (entity.getBlockState().getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER) && super.shouldRender(entity, vec3);
     }
 
     @Override

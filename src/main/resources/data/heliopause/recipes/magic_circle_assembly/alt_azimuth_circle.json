@@ -1,0 +1,100 @@
+{
+  "type": "heliopause:magic_circle_assembly",
+  "trigger": {
+    "type": "consume",
+    "item": "heliopause:crucible"
+  },
+  "result": {
+    "item": "heliopause:concentrator"
+  },
+  "parts": [
+    {
+      "type": "circle",
+      "key": "a",
+      "center": "ORIGIN",
+      "contains": [
+        "E","F","G","H"
+      ]
+    },
+    {
+      "type": "circle",
+      "key": "b",
+      "center": "ORIGIN",
+      "contains": [
+        "A","B","C","D"
+      ]
+    },
+    {
+      "type": "circle",
+      "key": "c",
+      "center": "A",
+      "contains": [
+        "E"
+      ]
+    },
+    {
+      "type": "circle",
+      "key": "d",
+      "center": "B",
+      "contains": [
+        "F"
+      ]
+    },
+    {
+      "type": "circle",
+      "key": "e",
+      "center": "C",
+      "contains": [
+        "G"
+      ]
+    },
+    {
+      "type": "circle",
+      "key": "f",
+      "center": "D",
+      "contains": [
+        "H"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "A",
+      "contains": []
+    },
+    {
+      "type": "node",
+      "key": "B",
+      "contains": []
+    },
+    {
+      "type": "node",
+      "key": "C",
+      "contains": []
+    },
+    {
+      "type": "node",
+      "key": "D",
+      "contains": []
+    },
+    {
+      "type": "node",
+      "key": "E",
+      "contains": []
+    },
+    {
+      "type": "node",
+      "key": "F",
+      "contains": []
+    },
+    {
+      "type": "node",
+      "key": "G",
+      "contains": []
+    },
+    {
+      "type": "node",
+      "key": "H",
+      "contains": []
+    }
+  ]
+}

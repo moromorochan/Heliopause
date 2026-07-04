@@ -1,0 +1,25 @@
+{
+  "type": "heliopause:starlight_concentration",
+  "ingredient": {
+    "fluid":"minecraft:water",
+    "amount": 250
+  },
+  "result": {
+    "fluid": "heliopause:starry_mixture",
+    "amount": 250
+  },
+  "time": 200,
+  "starlight_conditions": {
+    "dimension": "minecraft:overworld",
+    "coverage": [
+      "optic",
+      "aetheric",
+      "infra_red",
+      "rose_pulse"
+    ],
+    "season_range": {
+      "start": 0,
+      "end": 359
+    }
+  }
+}

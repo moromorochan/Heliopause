@@ -3,7 +3,7 @@ package com.moromoro.heliopause.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.blockEntity.AbstractCoreBlockEntity;
+import com.moromoro.heliopause.blockEntity.AbstractFluidOrbBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -20,7 +20,7 @@ import org.joml.Vector3f;
 
 import java.util.HashMap;
 
-public class AbstractCoreBlockRenderer<T extends AbstractCoreBlockEntity> extends AbstractFluidOrbBlockRenderer<T> {
+public class AbstractCoreBlockRenderer<T extends AbstractFluidOrbBlockEntity> extends AbstractFluidOrbBlockRenderer<T> {
     public AbstractCoreBlockRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
     }
@@ -69,12 +69,12 @@ public class AbstractCoreBlockRenderer<T extends AbstractCoreBlockEntity> extend
         float orbSize = getMinOrbSize();
 
         //渡すデータをつくる
-        HashMap<String,Object> renderingRequires = new HashMap<>();
+        //HashMap<String,Object> renderingRequires = new HashMap<>();
 
         //タンクが空なら液体の描画処理をスキップ
         if (fluidStack != null && !fluidStack.isEmpty()) {
 
-            renderingRequires.put("fluidStack",fluidStack);
+            //renderingRequires.put("fluidStack",fluidStack);
 
             //内容量の見た目スムージングを計算
             entity.setSmoothedTankAmount(Math.max(0.01f,Math.lerp(entity.getSmoothedTankAmount(), fluidStack.getAmount(), Math.min(1.0f,deltaTime * 15f))));
@@ -101,22 +101,31 @@ public class AbstractCoreBlockRenderer<T extends AbstractCoreBlockEntity> extend
         //上下動オフセットに加算
         entity.setWaveOffset(entity.getWaveOffset() + (deltaTime / orbSize) * 170f);
 
-        renderingRequires.put("orbSize",orbSize);
+        /*renderingRequires.put("orbSize",orbSize);
         renderingRequires.put("rotationOffset", entity.getRotationOffset() * getCoreRotationRatio());
         renderingRequires.put("waveOffset", entity.getWaveOffset());
         renderingRequires.put("combinedOffset",entity.centerOffset().add(new Vec3(0,calcOffsetY(orbSize),0)));
-        renderingRequires.put("combinedLight", combinedLight);
+        renderingRequires.put("combinedLight", combinedLight);*/
 
         //親モデルをスタックに保管して、子モデルの編集をはじめる
         poseStack.pushPose();
 
         //液体の見た目をつくるメソッドを呼び出す
         if(fluidStack!=null&&!fluidStack.isEmpty()) {
+            renderFluidRequires renderingRequires = new renderFluidRequires(
+                fluidStack,
+                orbSize,
+                entity.getRotationOffset() * getCoreRotationRatio(),
+                entity.getWaveOffset(),
+                entity.centerOffset().add(new Vec3(0,calcOffsetY(orbSize),0)),
+                combinedLight
+            );
+            
             renderFluid(poseStack, bufferSource, renderingRequires);
         }
 
         //コアの見た目をつくるメソッドを呼び出す
-        renderCore(poseStack, bufferSource, renderingRequires);
+        //renderCore(poseStack, bufferSource, renderingRequires);
 
         //親モデルをスタックから取り出して、子モデルの編集をおわる
         poseStack.popPose();
@@ -170,7 +179,7 @@ public class AbstractCoreBlockRenderer<T extends AbstractCoreBlockEntity> extend
                     new Vector2f(16*i/3f,8)
             };
             //メッシュを定義するメソッドを呼び出す
-            renderQuads(renderingRequires,vertPos0,vertUV0);
+            //renderQuads(renderingRequires,vertPos0,vertUV0);
 
             //下面
             Vector3f[] vertPos1 = {
@@ -186,7 +195,7 @@ public class AbstractCoreBlockRenderer<T extends AbstractCoreBlockEntity> extend
                     new Vector2f(16*i/3f,0)
             };
             //メッシュを定義するメソッドを呼び出す
-            renderQuads(renderingRequires,vertPos1,vertUV1);
+            //renderQuads(renderingRequires,vertPos1,vertUV1);
         }
     }
 

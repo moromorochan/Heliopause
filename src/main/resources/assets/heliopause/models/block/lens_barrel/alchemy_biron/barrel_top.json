@@ -1,0 +1,7 @@
+{
+	"parent": "heliopause:block/lens_barrel/wooden/barrel_top",
+	"textures": {
+		"1": "heliopause:block/lens_barrel/alchemy_biron_barrel",
+		"particle": "heliopause:block/alchemy_biron_block"
+	}
+}

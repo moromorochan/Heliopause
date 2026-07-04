@@ -1,0 +1,1 @@
+com.moromoro.heliopause.compat.kubeJS.HeliopauseKubeJSCompat heliopause

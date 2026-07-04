@@ -1,0 +1,24 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sapling": {
+      "items": [
+        {
+          "items": [
+            "minecraft:flowering_azalea"
+          ]
+        }
+      ]
+    }
+  },
+  "requirements": [
+    [
+      "has_sapling"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "heliopause:moonlight_pouring/flowering_azalea"
+    ]
+  }
+}

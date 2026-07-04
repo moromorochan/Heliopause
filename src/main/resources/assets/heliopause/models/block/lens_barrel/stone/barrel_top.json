@@ -1,0 +1,7 @@
+{
+	"parent": "heliopause:block/lens_barrel/wooden/barrel_top",
+	"textures": {
+		"1": "heliopause:block/lens_barrel/stone_barrel",
+		"particle": "minecraft:block/stone_bricks"
+	}
+}

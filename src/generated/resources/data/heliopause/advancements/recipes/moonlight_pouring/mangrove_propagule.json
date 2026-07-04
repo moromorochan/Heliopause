@@ -1,0 +1,24 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sapling": {
+      "items": [
+        {
+          "items": [
+            "minecraft:mangrove_propagule"
+          ]
+        }
+      ]
+    }
+  },
+  "requirements": [
+    [
+      "has_sapling"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "heliopause:moonlight_pouring/mangrove_propagule"
+    ]
+  }
+}

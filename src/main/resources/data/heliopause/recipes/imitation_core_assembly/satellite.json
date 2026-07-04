@@ -1,0 +1,10 @@
+{
+  "type": "heliopause:imitation_core_assembly",
+  "key": "satellite",
+  "model":"rocky",
+  "scale":1.0,
+  "color":[217,228,255],
+  "cent_force": 0.5,
+  "fluid": "minecraft:water",
+  "usage_per_sec": 30
+}

@@ -1,0 +1,16 @@
+{
+  "name": "rose_pulse",
+  "block": [
+    "heliopause:wooden_lens_barrel",
+    "heliopause:iron_main_mirror",
+    "heliopause:iron_second_mirror",
+    "heliopause:stone_lens_barrel",
+    "heliopause:graphite_main_mirror",
+    "heliopause:graphite_second_mirror",
+    "heliopause:alchemy_biron_lens_barrel",
+    "heliopause:silver_main_mirror",
+    "heliopause:silver_second_mirror"
+  ],
+  "icon": "double_circle",
+  "icon_color": [250,178,128]
+}

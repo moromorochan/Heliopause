@@ -1,0 +1,31 @@
+{
+  "values": [
+    "heliopause:alchemy_biron_block",
+    "heliopause:polished_biron_block",
+    "heliopause:chiseled_biron_block",
+    "heliopause:glowstone_alloy_block",
+    "heliopause:silver_block",
+    "heliopause:silver_ore",
+    "heliopause:deepslate_silver_ore",
+    "heliopause:raw_silver_block",
+    "heliopause:copper_pipe",
+    "heliopause:alchemy_stove",
+    "heliopause:crucible",
+    "heliopause:blackboard",
+    "heliopause:written_board",
+    "heliopause:orrery_circle_board",
+    "heliopause:concentrator",
+    "heliopause:wooden_lens_barrel",
+    "heliopause:iron_main_mirror",
+    "heliopause:iron_second_mirror",
+    "heliopause:stone_lens_barrel",
+    "heliopause:graphite_main_mirror",
+    "heliopause:graphite_second_mirror",
+    "heliopause:alchemy_biron_lens_barrel",
+    "heliopause:silver_main_mirror",
+    "heliopause:silver_second_mirror",
+    "heliopause:thermoimmobilant_lens_barrel",
+    "heliopause:alchemy_steel_main_mirror",
+    "heliopause:alchemy_steel_second_mirror"
+  ]
+}

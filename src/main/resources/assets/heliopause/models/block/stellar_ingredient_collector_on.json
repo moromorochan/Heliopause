@@ -1,0 +1,8 @@
+{
+  "parent": "heliopause:block/stellar_ingredient_collector",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "0": "heliopause:block/stellar_ingredient_collector_on",
+    "particle": "heliopause:block/stellar_ingredient_collector_on"
+  }
+}

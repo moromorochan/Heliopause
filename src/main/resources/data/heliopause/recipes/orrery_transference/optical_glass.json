@@ -1,0 +1,22 @@
+{
+  "type": "heliopause:orrery_transference",
+  "center": "satellite",
+  "result": {
+    "item": "heliopause:optical_glass",
+    "count": 3
+  },
+  "ingredients": [
+    {
+      "tag": "forge:glass/colorless",
+      "ratio": 1.0
+    },
+    {
+      "item": "heliopause:celestite_shard",
+      "ratio": 2.2
+    },
+    {
+      "item": "heliopause:celestite_shard",
+      "ratio": 2.7
+    }
+  ]
+}

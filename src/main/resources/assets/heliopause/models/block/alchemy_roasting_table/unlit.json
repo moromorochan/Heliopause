@@ -1,0 +1,8 @@
+{
+	"parent": "minecraft:block/cube_bottom_top",
+	"textures": {
+		"bottom": "heliopause:block/alchemy_roasting_table/bottom",
+		"side": "heliopause:block/alchemy_roasting_table/side",
+		"top": "heliopause:block/alchemy_roasting_table/top"
+	}
+}

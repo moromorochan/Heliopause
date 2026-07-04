@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "heliopause:glowstone_alloy_nugget"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_nugget"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_nugget"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_nugget"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_nugget"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_nugget"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_nugget"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_nugget"
+    },
+    {
+      "item": "heliopause:glowstone_alloy_nugget"
+    }
+  ],
+  "result": {
+    "item": "heliopause:glowstone_alloy_ingot"
+  }
+}

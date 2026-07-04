@@ -1,0 +1,21 @@
+{
+  "type": "heliopause:orrery_transference",
+  "center": "indigo_marble",
+  "result": {
+    "item": "heliopause:imitation_core",
+    "nbt": {
+      "star_id":"ancient_star"
+    }
+  },
+  "ingredients": [
+    {
+      "fluid": "heliopause:liquefied_starlight",
+      "amount": 1000,
+      "ratio": 1.0
+    },
+    {
+      "item": "minecraft:soul_torch",
+      "ratio": 3.0
+    }
+  ]
+}

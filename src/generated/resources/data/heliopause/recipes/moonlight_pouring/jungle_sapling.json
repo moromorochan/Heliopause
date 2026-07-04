@@ -1,0 +1,12 @@
+{
+  "type": "heliopause:moonlight_pouring",
+  "experience": 0.1,
+  "ingredient": {
+    "item": "minecraft:jungle_sapling"
+  },
+  "result": {
+    "count": 1,
+    "item": "minecraft:jungle_leaves"
+  },
+  "time": 400
+}

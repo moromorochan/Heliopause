@@ -19,14 +19,15 @@ public class CrucibleBlock extends AbstractFluidTankBlock {
         super(p_49224_);
     }
 
+    public static VoxelShape INNER = Block.box(2, 2, 2, 14, 16, 14);
     public static VoxelShape SHAPE =
             Shapes.join(
                     Shapes.join(
-                            Block.box(0, 4, 0, 16, 16, 16),
-                            Block.box(2, 5, 2, 14, 16, 14),
+                            Block.box(0, 2, 0, 16, 16, 16),
+                            INNER,
                             BooleanOp.ONLY_FIRST
                     ),
-                    Block.box(2,2,2,14,4,14),
+                    Block.box(2,0,2,14,2,14),
                     BooleanOp.OR
             );
 

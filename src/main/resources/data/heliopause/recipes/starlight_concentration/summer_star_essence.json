@@ -1,0 +1,25 @@
+{
+  "type": "heliopause:starlight_concentration",
+  "ingredient": {
+    "item": "minecraft:glowstone",
+    "fluid":"heliopause:scarlet_starbead",
+    "amount": 600
+  },
+  "result": {
+    "item": "minecraft:glowstone_dust",
+    "count": 4,
+    "fluid": "heliopause:summer_star_essence",
+    "amount": 300
+  },
+  "time": 800,
+  "starlight_conditions": {
+    "dimension": "minecraft:overworld",
+    "coverage": [
+      "rose_pulse"
+    ],
+    "season_range": {
+      "start": 150,
+      "end": 239
+    }
+  }
+}

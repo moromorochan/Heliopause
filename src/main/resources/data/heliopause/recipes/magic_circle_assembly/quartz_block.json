@@ -1,0 +1,48 @@
+{
+  "type": "heliopause:magic_circle_assembly",
+  "trigger": {
+    "type": "consume",
+    "item": "minecraft:amethyst_block"
+  },
+  "result": {
+    "item": "minecraft:quartz_block"
+  },
+  "parts": [
+    {
+      "type": "circle",
+      "key": "a",
+      "center": "ORIGIN",
+      "contains": [
+        "A","B","C","D"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "A",
+      "contains": [
+        "D","B"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "B",
+      "contains": [
+        "A","C"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "C",
+      "contains": [
+        "B","D"
+      ]
+    },
+    {
+      "type": "node",
+      "key": "D",
+      "contains": [
+        "C","A"
+      ]
+    }
+  ]
+}

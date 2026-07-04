@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "heliopause:block/alchemy_roasting_table/unlit"
+    },
+    "lit=true": {
+      "model": "heliopause:block/alchemy_roasting_table/lit"
+    }
+  }
+}

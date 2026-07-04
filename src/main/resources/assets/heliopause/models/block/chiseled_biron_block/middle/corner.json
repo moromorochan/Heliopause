@@ -1,0 +1,20 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made by moromorochan with Blockbench",
+	"textures": {
+		"particle": "heliopause:block/chiseled_biron_block/a",
+		"side": "heliopause:block/chiseled_biron_block/a"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [4, 8, 8, 12], "texture": "#side", "cullface": "north"},
+				"east": {"uv": [12, 8, 16, 12], "texture": "#side", "cullface": "east"},
+				"south": {"uv": [8, 8, 12, 12], "texture": "#side", "cullface": "south"},
+				"west": {"uv": [8, 8, 12, 12], "texture": "#side", "cullface": "west"}
+			}
+		}
+	]
+}

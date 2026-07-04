@@ -1,0 +1,18 @@
+{
+	"credit": "Made by moromorochan with Blockbench",
+	"textures": {
+		"all": "heliopause:decoration/orrery/orbit",
+		"particle": "#all"
+	},
+	"elements": [
+		{
+			"from": [0, 0.5, 8],
+			"to": [16, 15.5, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 15], "texture": "#all"},
+				"south": {"uv": [16, 0, 0, 15], "texture": "#all"}
+			}
+		}
+	]
+}

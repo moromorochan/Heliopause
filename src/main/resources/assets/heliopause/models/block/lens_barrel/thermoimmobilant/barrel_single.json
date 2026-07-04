@@ -1,0 +1,7 @@
+{
+	"parent": "heliopause:block/lens_barrel/wooden/barrel_single",
+	"textures": {
+		"1": "heliopause:block/lens_barrel/thermoimmobilant_barrel",
+		"particle": "heliopause:block/silver_block"
+	}
+}

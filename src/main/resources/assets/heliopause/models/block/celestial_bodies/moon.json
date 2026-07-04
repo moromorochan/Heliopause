@@ -1,0 +1,56 @@
+{
+	"credit": "Made by moromorochan with Blockbench",
+	"textures": {
+		"particle": "heliopause:block/celestial_bodies/moon/lightside",
+		"lightside": "heliopause:block/celestial_bodies/moon/lightside",
+		"darkside": "heliopause:block/celestial_bodies/moon/darkside",
+		"halo": "heliopause:block/celestial_bodies/moon/atmosphere"
+	},
+	"elements": [
+		{
+			"name": "lithosphere",
+			"from": [2, 2, 2],
+			"to": [14, 14, 14],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [2, 2, 14, 14], "texture": "#lightside"},
+				"east": {"uv": [2, 2, 14, 14], "rotation": 90, "texture": "#lightside"},
+				"south": {"uv": [2, 2, 14, 14], "rotation": 90, "texture": "#darkside"},
+				"west": {"uv": [2, 2, 14, 14], "texture": "#darkside"},
+				"up": {"uv": [2, 2, 14, 14], "rotation": 90, "texture": "#lightside"},
+				"down": {"uv": [2, 2, 14, 14], "rotation": 180, "texture": "#darkside"}
+			}
+		},
+		{
+			"name": "halo_inner",
+			"from": [1.5, 1.5, 14.5],
+			"to": [14.5, 14.5, 1.5],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 1, 1]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 16], "texture": "#halo"},
+				"east": {"uv": [0, 0, 1, 16], "texture": "#halo"},
+				"south": {"uv": [0, 0, 1, 16], "texture": "#halo"},
+				"west": {"uv": [0, 0, 1, 16], "texture": "#halo"},
+				"up": {"uv": [0, 0, 1, 16], "texture": "#halo"},
+				"down": {"uv": [0, 0, 1, 16], "texture": "#halo"}
+			}
+		},
+		{
+			"name": "halo_outer",
+			"from": [0.5, 0.5, 15.5],
+			"to": [15.5, 15.5, 0.5],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 1, 1]},
+			"faces": {
+				"north": {"uv": [1, 0, 3, 16], "texture": "#halo"},
+				"east": {"uv": [1, 0, 3, 16], "texture": "#halo"},
+				"south": {"uv": [1, 0, 3, 16], "texture": "#halo"},
+				"west": {"uv": [1, 0, 3, 16], "texture": "#halo"},
+				"up": {"uv": [1, 0, 3, 16], "texture": "#halo"},
+				"down": {"uv": [1, 0, 3, 16], "texture": "#halo"}
+			}
+		}
+	]
+}

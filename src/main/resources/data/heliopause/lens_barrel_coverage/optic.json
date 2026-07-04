@@ -1,0 +1,16 @@
+{
+  "name": "optic",
+  "block": [
+    "heliopause:wooden_lens_barrel",
+    "heliopause:iron_main_mirror",
+    "heliopause:iron_second_mirror",
+    "heliopause:alchemy_biron_lens_barrel",
+    "heliopause:silver_main_mirror",
+    "heliopause:silver_second_mirror",
+    "heliopause:thermoimmobilant_lens_barrel",
+    "heliopause:alchemy_steel_main_mirror",
+    "heliopause:alchemy_steel_second_mirror"
+  ],
+  "icon": "diamond",
+  "icon_color": [255,255,255]
+}

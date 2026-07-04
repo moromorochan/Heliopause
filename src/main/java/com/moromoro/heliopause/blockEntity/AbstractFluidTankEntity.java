@@ -8,6 +8,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.joml.Math;
 
+//液体を扱う、液体を描画するブロックエンティティ
 public abstract class AbstractFluidTankEntity extends AbstractFluidConcealBlockEntity {
 
     //直前の描画時刻を格納
@@ -18,7 +19,7 @@ public abstract class AbstractFluidTankEntity extends AbstractFluidConcealBlockE
 
     public AbstractFluidTankEntity(BlockEntityType<?> blockEntityType,BlockPos pos, BlockState state, int capacity) {
         super(blockEntityType, pos, state,capacity);
-        this.mainTank = new FluidTank(capacity){
+        this.tank = new FluidTank(capacity){
             //内容が更新されたときの挙動
             @Override
             protected void onContentsChanged() {

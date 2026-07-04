@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "heliopause:alchemy_biron_nugget"
+    },
+    {
+      "item": "heliopause:alchemy_biron_nugget"
+    },
+    {
+      "item": "heliopause:alchemy_biron_nugget"
+    },
+    {
+      "item": "heliopause:alchemy_biron_nugget"
+    },
+    {
+      "item": "heliopause:alchemy_biron_nugget"
+    },
+    {
+      "item": "heliopause:alchemy_biron_nugget"
+    },
+    {
+      "item": "heliopause:alchemy_biron_nugget"
+    },
+    {
+      "item": "heliopause:alchemy_biron_nugget"
+    },
+    {
+      "item": "heliopause:alchemy_biron_nugget"
+    }
+  ],
+  "result": {
+    "item": "heliopause:alchemy_biron_ingot"
+  }
+}

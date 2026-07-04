@@ -1,0 +1,23 @@
+{
+  "parent": "heliopause:item/draw_tool/compass",
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "heliopause:item/draw_tool/beam_compass"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "heliopause:item/draw_tool/ruler"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 3
+      },
+      "model": "heliopause:item/draw_tool/eraser"
+    }
+  ]
+}

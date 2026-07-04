@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "top=false,bottom=false": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_middle"
+    },
+    "top=false,bottom=true": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_bottom"
+    },
+    "top=true,bottom=false": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_top"
+    },
+    "top=true,bottom=true": {
+      "model": "heliopause:block/fluid_spreader_tower/fluid_spreader_top"
+    }
+  }
+}

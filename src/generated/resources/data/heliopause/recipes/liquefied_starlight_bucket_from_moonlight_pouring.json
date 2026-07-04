@@ -1,0 +1,12 @@
+{
+  "type": "heliopause:moonlight_pouring",
+  "experience": 0.1,
+  "ingredient": {
+    "item": "heliopause:starry_mixture_bucket"
+  },
+  "result": {
+    "count": 1,
+    "item": "heliopause:liquefied_starlight_bucket"
+  },
+  "time": 200
+}

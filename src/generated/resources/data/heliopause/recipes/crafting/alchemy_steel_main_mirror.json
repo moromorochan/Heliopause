@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "heliopause:thermoimmobilant_lens_barrel"
+    },
+    "B": {
+      "item": "heliopause:optical_glass"
+    },
+    "C": {
+      "item": "heliopause:alchemy_steel_ingot"
+    },
+    "D": {
+      "item": "heliopause:gravity_coil"
+    }
+  },
+  "pattern": [
+    " C ",
+    "DAD",
+    " B "
+  ],
+  "result": {
+    "item": "heliopause:alchemy_steel_main_mirror"
+  },
+  "show_notification": true
+}

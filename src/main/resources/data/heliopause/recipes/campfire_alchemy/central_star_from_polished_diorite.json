@@ -1,0 +1,14 @@
+{
+  "type": "heliopause:campfire_alchemy",
+  "ingredient": {
+    "block": "minecraft:polished_diorite"
+  },
+  "result": {
+    "block": "heliopause:central_star",
+    "nbt": {
+      "CenterBlockState": {
+        "Name": "minecraft:polished_diorite"
+      }
+    }
+  }
+}

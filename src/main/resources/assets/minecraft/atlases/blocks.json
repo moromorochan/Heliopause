@@ -1,0 +1,35 @@
+{
+  "sources": [
+    {"type": "minecraft:single", "resource": "heliopause:decoration/imitation_star/rocky"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/imitation_star/gas_stripes"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/imitation_star/gas_plain"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/imitation_star/fixed_star"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/imitation_star/collapsar"},
+
+    {"type": "minecraft:single", "resource": "heliopause:decoration/orrery/item_sphere"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/orrery/concealed_sphere"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/orrery/sub_sphere"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/orrery/orbit"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/orrery/orbit_end"},
+
+    {"type": "minecraft:single", "resource": "heliopause:decoration/siderostat/moon"},
+
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/cylinder_deco_extensive"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/cylinder_pipes"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/turntable_deco"},
+    {"type": "minecraft:single", "resource": "heliopause:decoration/concentrator/turntable_deco_extensive"},
+
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_circle_dotted"},
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_line_dotted"},
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/arrow_default"},
+
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_circle_default"},
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_line_default"},
+
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_circle_orrery"},
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_line_orrery"},
+
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_circle_alt_azimuth"},
+    {"type": "minecraft:single","resource": "heliopause:decoration/circle/multi_line_alt_azimuth"}
+  ]
+}
