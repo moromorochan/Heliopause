@@ -1,5 +1,6 @@
 package com.moromoro.heliopause.compat.jei;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.ingredient.CircumstellarIngredient;
 import com.moromoro.heliopause.item.ImitationCoreItem;
@@ -8,6 +9,7 @@ import com.moromoro.heliopause.recipe.OrreryTransferenceRecipe;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.registry.RecipeTypeRegistry;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -26,6 +28,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
+import org.joml.Quaternionf;
 
 import java.util.*;
 
@@ -42,6 +45,10 @@ public class OrreryTransferenceCategory implements IRecipeCategory<OrreryTransfe
     private final IDrawable icon;
     private final IDrawable scale;
     private final IDrawable dot;
+    private final IDrawable dotShade;
+    private final IDrawable orbitHide;
+    private final ITickTimer orbitTimer;
+    private static final float DOT_SCALE = 8;
 
     public OrreryTransferenceCategory(IGuiHelper helper){
         // アイコン設定
@@ -49,7 +56,10 @@ public class OrreryTransferenceCategory implements IRecipeCategory<OrreryTransfe
         // 背景
         this.background = helper.createDrawable(TEXTURE, 3,10, 173-3,115);
         this.scale = helper.createDrawable(TEXTURE, imageWidth, 0, 2, 7);
-        this.dot = helper.createDrawable(TEXTURE, imageWidth + 2, 0, 1, 2);
+        this.dot = helper.createDrawable(TEXTURE, imageWidth + 2, 0, 2, 2);
+        this.dotShade = helper.createDrawable(TEXTURE, imageWidth + 2, 2, 2, 2);
+        this.orbitHide = helper.createDrawable(TEXTURE, 3, 10, 40, 115);
+        this.orbitTimer = helper.createTickTimer(30, 30, false);
     }
 
     @Override
@@ -107,7 +117,7 @@ public class OrreryTransferenceCategory implements IRecipeCategory<OrreryTransfe
             for (OrreryTransferenceRecipe.StellarIngredient ingredient : stellarIngredients) {
                 double normalizedRatio = ingredient.resonanceRatio() / minRatio;
                 double normalizedLength = (SCALE_END - SCALE_START) * (normalizedRatio / normalizedMaxRatio);
-                drawOrbit(normalizedLength + 1, guiGraphics);
+                drawOrbit(normalizedLength, guiGraphics);
                 int scalePos = SCALE_START + (int)normalizedLength;
                 scale.draw(guiGraphics, scalePos, 57);
                 /*guiGraphics.pose().pushPose();
@@ -129,14 +139,43 @@ public class OrreryTransferenceCategory implements IRecipeCategory<OrreryTransfe
         }
     }
 
-    private void drawOrbit(double normalizedLength, GuiGraphics guiGraphics) {
-        double angleEnd = Math.acos(16/normalizedLength);
-        for (double i = -angleEnd; i < angleEnd; i+=.005f) {
-            int posX = SCALE_START + (int)(Math.cos(i)*normalizedLength);
-            int posOffsetY = (int)(Math.sin(i)*normalizedLength * 0.36);
-            dot.draw(guiGraphics, posX, 61 + posOffsetY);
-            //dot.draw(guiGraphics, posX, 61 - posOffsetY);
+    private void drawOrbit(double radius, GuiGraphics guiGraphics) {
+        PoseStack poseStack = guiGraphics.pose();
+        //double angleEnd = 180 - Math.acos(16/radius) * 180 / Math.PI;
+        float length = (float) ((radius - 0.5) * Math.PI);
+        int circleDiv = (int) (length/DOT_SCALE);
+        float rotOffset = ((orbitTimer.getValue() * (360f/circleDiv) / 30f) * (int)(200f/ radius)) % (360f/circleDiv) - 360f/circleDiv;
+        float dotScale = length / circleDiv + 0.5f;
+        // 影の描画
+        poseStack.pushPose();
+        poseStack.translate(SCALE_START, 63, 0);
+        poseStack.scale(1, 0.36f, 1);
+        poseStack.mulPose(new Quaternionf().rotateZ((float) ((180 + rotOffset) * Math.PI / 180)));
+        for (double dotId = 0; dotId < 180 - (180f / circleDiv); dotId+=(360f / circleDiv)) {
+            poseStack.mulPose(new Quaternionf().rotateZ((float) ((360f/circleDiv) * Math.PI / 180)));
+            poseStack.translate(-dotScale, (radius - 0.5), 0);
+            poseStack.scale(dotScale, 1f, 1f);
+            dotShade.draw(guiGraphics, 0, 0);
+            poseStack.scale(1f/dotScale, 1f, 1f);
+            poseStack.translate(dotScale, -(radius - 0.5), 0);
         }
+        poseStack.popPose();
+        // 線の描画
+        poseStack.pushPose();
+        poseStack.translate(SCALE_START, 62, 0);
+        poseStack.scale(1, 0.36f, 1);
+        poseStack.mulPose(new Quaternionf().rotateZ((float) ((180 + rotOffset) * Math.PI / 180)));
+        for (double dotId = 0; dotId < 180 - (180f / circleDiv); dotId+=(360f / circleDiv)) {
+            poseStack.mulPose(new Quaternionf().rotateZ((float) ((360f/circleDiv) * Math.PI / 180)));
+            poseStack.translate(-dotScale, (radius - 0.5), 0);
+            poseStack.scale(dotScale, 1f, 1f);
+            dot.draw(guiGraphics, 0, 0);
+            poseStack.scale(1f/dotScale, 1f, 1f);
+            poseStack.translate(dotScale, -(radius - 0.5), 0);
+        }
+        poseStack.popPose();
+        // 隠す
+        orbitHide.draw(guiGraphics,0, 0);
     }
 
     @Override

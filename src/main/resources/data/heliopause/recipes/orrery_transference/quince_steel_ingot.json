@@ -2,7 +2,7 @@
   "type": "heliopause:orrery_transference",
   "center": "ancient_star",
   "result": {
-    "item": "heliopause:quince_steel_ingot",
+    "item": "heliopause:alchemy_steel_ingot",
     "count": 9
   },
   "ingredients": [

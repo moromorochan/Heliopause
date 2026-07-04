@@ -2,12 +2,10 @@ package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.item.*;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.antlr.v4.tool.Rule;
 
 public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Heliopause.MODID);
@@ -91,8 +89,8 @@ public class ItemRegistry {
         ITEMS.register("silver_ingot", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> SILVER_NUGGET =
         ITEMS.register("silver_nugget", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> QUINCE_STEEL_INGOT =
-        ITEMS.register("quince_steel_ingot", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ALCHEMY_STEEL_INGOT =
+        ITEMS.register("alchemy_steel_ingot", () -> new Item(new Item.Properties()));
 
         // 素材
     public static final RegistryObject<Item> OPTICAL_GLASS =

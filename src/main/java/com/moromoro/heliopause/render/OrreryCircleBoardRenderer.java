@@ -76,6 +76,7 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
         Minecraft instance = Minecraft.getInstance();
         if(instance.level == null){return;}
         BlockPos entityPos = entity.getBlockPos();
+        partialTicks = Math.min(Math.max(partialTicks, 0), 1);
 
         // 材料の描画
         if(Minecraft.getInstance().options.renderDebug){//惑星圏のデバッグ表示/追加UI表示

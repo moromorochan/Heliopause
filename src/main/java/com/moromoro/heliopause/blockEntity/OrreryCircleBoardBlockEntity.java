@@ -370,7 +370,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
     // 液体を回収
     private boolean retrieveCircumstellarFluid(IFluidHandlerItem fluidHandler, Player player, InteractionHand hand, double radius, double theta) {
         CircumstellarIngredient ingredient = getCircumStellarFromPos(this.ingredients, radius, theta, CLICK_SIZE * 2);
-        if(ingredient == null){
+        if(ingredient == null || !ingredient.isFluid()){
             return false;
         }
         FluidStack ingredientFluidStack = ingredient.getFluidStack();
@@ -402,7 +402,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
     // アイテムを回収
     private boolean retrieveCircumstellarItem(Player player, InteractionHand hand, double radius, double theta) {
         CircumstellarIngredient ingredient = getCircumStellarFromPos(this.ingredients, radius, theta, CLICK_SIZE * 2);
-        if(ingredient == null){
+        if(ingredient == null || !ingredient.isItem()){
             return false;
         }
         player.setItemInHand(hand, ingredient.getItemStack());

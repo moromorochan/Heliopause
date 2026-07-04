@@ -25,7 +25,7 @@ public class HeliopauseItemModelProvider extends net.minecraftforge.client.model
         simpleItem(ItemRegistry.SILVER_INGOT);
         simpleItem(ItemRegistry.SILVER_NUGGET);
         simpleItem(ItemRegistry.RAW_SILVER);
-        simpleItem(ItemRegistry.QUINCE_STEEL_INGOT);
+        simpleItem(ItemRegistry.ALCHEMY_STEEL_INGOT);
         simpleItem(ItemRegistry.CELESTITE);
         simpleItem(ItemRegistry.IMITATION_CORE_ITEM);
         simpleItem(ItemRegistry.OPTICAL_GLASS);

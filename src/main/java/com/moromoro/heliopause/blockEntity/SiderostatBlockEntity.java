@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.blockEntity;
 
 import com.moromoro.ConfigHolder;
+import com.moromoro.heliopause.generic.StackControl;
 import com.moromoro.heliopause.registry.enumProperty.SiderostatTopState;
 import com.moromoro.heliopause.block.SiderostatBaseBlock;
 import com.moromoro.heliopause.block.SiderostatTopBlock;
@@ -171,93 +172,17 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
                 return super.getCapability(cap, side);
             }
             if(side == Direction.DOWN){
-                final IntArrayList downSlot = IntArrayList.of(0);
-                return lazyItemHandler.lazyMap(map -> createFilteredItemHandler(map, downSlot, false, true)).cast();
+                return lazyItemHandler.lazyMap(map ->
+                    StackControl.createFilteredItemHandler(map, IntArrayList.of(0), false, true)).cast();
             }
             if(side.getAxis().isHorizontal()){
-                final IntArrayList sideSlot = IntArrayList.of(1);
-                return lazyItemHandler.lazyMap(map -> createFilteredItemHandler(map, sideSlot, true, true)).cast();
+                return lazyItemHandler.lazyMap(map ->
+                    StackControl.createFilteredItemHandler(map, IntArrayList.of(1), true, true)).cast();
             }
         }
         return super.getCapability(cap, side);
     }
-
-    private @NotNull IItemHandler createFilteredItemHandler(IItemHandler itemHandler, IntArrayList allowedSlots, boolean allowInsert, boolean allowExtract) {
-        // 重複を無くす
-        List<Integer> whiteList = new IntArrayList(new LinkedHashSet<>(allowedSlots));
-
-        return new IItemHandler() {
-            @Override
-            public int getSlots() {
-                return whiteList.size();
-            }
-
-            // 外部2内部
-            private int toInternal(int externalSlot) {
-                if (externalSlot < 0 || externalSlot >= whiteList.size()) {
-                    return -1;
-                }
-                return whiteList.get(externalSlot);
-            }
-
-            // 内部2外部
-            private int toExternal(int internalSlot) {
-                return whiteList.indexOf(internalSlot);
-            }
-
-            @Override
-            public @NotNull ItemStack getStackInSlot(int slot) {
-                int internal = toInternal(slot);
-                if (internal != -1) {
-                    return itemHandler.getStackInSlot(internal);
-                }
-                return ItemStack.EMPTY;
-            }
-
-            @Override
-            public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                if (allowInsert) {
-                    int internal = toInternal(slot);
-                    if (internal != -1) {
-                        return itemHandler.insertItem(internal, stack, simulate);
-                    }
-                }
-                return stack;
-            }
-
-            @Override
-            public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-                if (allowExtract) {
-                    int internal = toInternal(slot);
-                    if (internal != -1) {
-                        return itemHandler.extractItem(internal, amount, simulate);
-                    }
-                }
-                return ItemStack.EMPTY;
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                int internal = toInternal(slot);
-                if (internal != -1) {
-                    return itemHandler.getSlotLimit(internal);
-                }
-                return 0;
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-                if (allowInsert) {
-                    int internal = toInternal(slot);
-                    if (internal != -1) {
-                        return itemHandler.isItemValid(internal, stack);
-                    }
-                }
-                return false;
-            }
-        };
-    }
-
+    
     @Override
     public void onLoad() {
         super.onLoad();

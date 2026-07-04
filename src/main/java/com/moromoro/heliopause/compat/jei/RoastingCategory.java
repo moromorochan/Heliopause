@@ -80,9 +80,17 @@ public class RoastingCategory implements IRecipeCategory<RoastingRecipe> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RoastingRecipe recipe, IFocusGroup focuses) {
         //素材スロット
+        int itemcount = 0;
         for(int i = 0; i < 2; ++i) {
             for(int j = 0; j < 2; ++j) {
-                builder.addSlot(RecipeIngredientRole.INPUT, 48-23 + j * 18, 26-23 + i * 18).addIngredients(recipe.getIngredients().get(j + i * 2));
+                builder.addSlot(RecipeIngredientRole.INPUT, 48-23 + j * 18, 26-23 + i * 18).addIngredients(recipe.getIngredients().get(itemcount));
+                itemcount++;
+                if(recipe.getIngredients().size() == itemcount){
+                    break;
+                }
+            }
+            if(recipe.getIngredients().size() == itemcount){
+                break;
             }
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT,124-23,35-23).addItemStack(recipe.getResultItem(null));

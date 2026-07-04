@@ -1,15 +1,20 @@
 package com.moromoro.heliopause.block;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.particle.StarRippleParticles;
 import com.moromoro.heliopause.registry.BlockRegistry;
+import com.moromoro.heliopause.registry.ParticleRegistry;
 import com.moromoro.heliopause.registry.enumProperty.WrittenBoardDrawType;
 import com.moromoro.heliopause.blockEntity.AbstractWrittenBoardBlockEntity;
 import com.moromoro.heliopause.blockEntity.WrittenBoardBlockEntity;
 import com.moromoro.heliopause.item.CompassItem;
 import com.moromoro.heliopause.recipe.MagicCircleAssemblyRecipe;
 import com.moromoro.heliopause.registry.RecipeTypeRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -29,6 +34,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Math;
 
 import java.util.List;
 
@@ -127,6 +133,18 @@ public class WrittenBoardBlock extends AbstractWrittenBoardBlock{
                     itemStack.shrink(1);
                     // アイテムをドロップ
                     level.addFreshEntity(new ItemEntity(level, blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(),new ItemStack(resultItem)));
+                    // 効果音を再生
+                    level.playSound(null,
+                        blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(),
+                        SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1f, 1f);
+                    // パーティクルを生成
+                    StarRippleParticles particles = (StarRippleParticles) Minecraft.getInstance().particleEngine.createParticle(
+                        ParticleRegistry.STAR_RIPPLE_PARTICLES.get(),
+                        blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(), 0,0,0
+                    );
+                    if(particles!=null) {
+                        particles.setScale(1.5f);
+                    }
                 }
                 // デバッグ用
                 /*if(!level.isClientSide()){

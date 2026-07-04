@@ -83,7 +83,7 @@ public class SiderostatRenderer<T extends SiderostatBlockEntity> implements Bloc
                         }
                     }else{
                         // ゼンマイの角度を採用
-                        currentBowAngle = (float) Math.toRadians(entity.getSpringAmount() + 180 - (Math.ceil(entity.getSpringCharge() / 2.0) * (1.0 - partialTicks)));
+                        currentBowAngle = (float) Math.toRadians(entity.getSpringAmount() + 180 - (Math.ceil(entity.getSpringCharge() / 2.0) * partialTicks));
                     }
 
                     // 時刻に合わせて回転

@@ -29,12 +29,15 @@
   "gui.heliopause.lens_barrel_coverage_check.disassemble": "Disassemble",
   "gui.heliopause.lens_barrel_coverage_check.invalid_length": "The\nstructure\nis too long",
   "gui.heliopause.lens_barrel_coverage_check.invalid_mirror": "The mirror\nplacement\nis invalid",
-  "gui.heliopause.lens_barrel_coverage_check.invalid_concentrator": "Requires a\nStarlight\nConcentrator",
+  "gui.heliopause.lens_barrel_coverage_check.invalid_concentrator": "Concentrator\nis required\nat the bottom",
 
-  "gui.heliopause.lens_barrel_coverage.optic": "Optic",
+  "gui.heliopause.lens_barrel_coverage.optic": "Optic Ray",
   "gui.heliopause.lens_barrel_coverage.infra_red": "Infra Red",
-  "gui.heliopause.lens_barrel_coverage.aetheric": "Aetheric",
-  "gui.heliopause.lens_barrel_coverage.alkahestic": "Alkahestic",
+  "gui.heliopause.lens_barrel_coverage.rose_pulse": "Rose Pulse",
+  "gui.heliopause.lens_barrel_coverage.trail_of_mist": "Trail of Mist",
+  "gui.heliopause.lens_barrel_coverage.aetheric": "Aetheric Wave",
+  "gui.heliopause.lens_barrel_coverage.alcahestic": "alcahestic Ray",
+  "gui.heliopause.lens_barrel_coverage.gravity_wave": "Gravity Wave",
 
   "block.heliopause.wooden_lens_barrel": "Wooden Lens Barrel",
   "block.heliopause.stone_lens_barrel": "Stone Lens Barrel",
@@ -46,8 +49,8 @@
   "block.heliopause.graphite_second_mirror": "Graphite Secondary Mirror",
   "block.heliopause.silver_main_mirror": "Silver Main Mirror",
   "block.heliopause.silver_second_mirror": "Silver Secondary Mirror",
-  "block.heliopause.quince_steel_main_mirror": "Quince Steel Main Mirror",
-  "block.heliopause.quince_steel_second_mirror": "Quince Steel Secondary Mirror",
+  "block.heliopause.alchemy_steel_main_mirror": "Alchemy Steel Main Mirror",
+  "block.heliopause.alchemy_steel_second_mirror": "Alchemy Steel Secondary Mirror",
 
   "block.heliopause.silver_ore": "Silver Ore",
   "block.heliopause.deepslate_silver_ore": "Deepslate Silver Ore",
@@ -78,7 +81,7 @@
   "item.heliopause.silver_ingot": "Silver Ingot",
   "item.heliopause.silver_nugget": "Silver Nugget",
 
-  "item.heliopause.quince_steel_ingot": "Quince Steel Ingot",
+  "item.heliopause.alchemy_steel_ingot": "Alchemy Steel Ingot",
   "item.heliopause.optical_glass": "Optical Glass",
   "item.heliopause.thermoimmobilant": "Thermoimmobilant",
   "item.heliopause.gravity_coil": "Gravity Reaction Coil",
@@ -116,7 +119,7 @@
   "item.heliopause.imitation_core.description_empty": "Origami Balloon",
   "item.heliopause.imitation_core.description_satellite": "Satellite",
   "item.heliopause.imitation_core.description_crimson_planet": "Crimson Planet",
-  "item.heliopause.imitation_core.description_indigo_marbling": "Indigo Marbling",
+  "item.heliopause.imitation_core.description_indigo_marble": "Indigo Marble",
   "item.heliopause.imitation_core.description_ancient_star": "Ancient Star",
 
   "fluid_type.heliopause.starry_mixture": "Starry Mixture",

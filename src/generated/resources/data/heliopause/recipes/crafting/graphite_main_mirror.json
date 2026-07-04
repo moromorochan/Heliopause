@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "heliopause:stone_lens_barrel"
+    },
+    "B": {
+      "item": "heliopause:optical_glass"
+    },
+    "C": {
+      "item": "minecraft:charcoal"
+    }
+  },
+  "pattern": [
+    "C",
+    "A",
+    "B"
+  ],
+  "result": {
+    "item": "heliopause:graphite_main_mirror"
+  },
+  "show_notification": true
+}

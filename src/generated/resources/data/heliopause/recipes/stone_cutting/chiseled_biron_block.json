@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 3,
+  "ingredient": {
+    "tag": "forge:storage_blocks/alchemy_biron"
+  },
+  "result": "heliopause:chiseled_biron_block"
+}

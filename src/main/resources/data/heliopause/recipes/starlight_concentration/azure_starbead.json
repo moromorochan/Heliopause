@@ -12,7 +12,8 @@
     "dimension": "minecraft:overworld",
     "coverage": [
       "optic",
-      "alkahestic"
+      "rose_pulse",
+      "aetheric"
     ],
     "season_range": {
       "start": 0,

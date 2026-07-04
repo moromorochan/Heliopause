@@ -1,6 +1,6 @@
 {
   "type": "heliopause:orrery_transference",
-  "center": "indigo_marbling",
+  "center": "indigo_marble",
   "result": {
     "fluid": "minecraft:lava",
     "amount": 2000

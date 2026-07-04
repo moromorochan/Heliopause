@@ -1,11 +1,14 @@
 package com.moromoro.heliopause.datagen;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.block.LensBarrelBlock;
 import com.moromoro.heliopause.recipe.MoonlightPouringRecipe;
 import com.moromoro.heliopause.recipe.MoonlightPouringRecipeBuilder;
 import com.moromoro.heliopause.registry.BlockRegistry;
+import com.moromoro.heliopause.registry.FluidRegistry;
 import com.moromoro.heliopause.registry.ItemRegistry;
-import net.dries007.tfc.common.recipes.ScrapingRecipe;
+import com.moromoro.heliopause.registry.TagRegistry;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
@@ -13,11 +16,13 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,6 +53,35 @@ public class HeliopauseRecipeProvider extends net.minecraft.data.recipes.RecipeP
         // 磨かれた錬金赤銅ブロック
         unPackerRecipe(consumer, RecipeCategory.MISC, ItemRegistry.ALCHEMY_BIRON_INGOT.get(), 9, BlockRegistry.POLISHED_BIRON_BLOCK.get());
         
+        // 模様入り錬金赤銅ブロック
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.CHISELED_BIRON_BLOCK.get(),4)
+            .pattern(" B ")
+            .pattern("BAB")
+            .pattern(" B ")
+            .define('A', TagRegistry.Items.ALCHEMY_BIRON_BLOCKS)
+            .define('B', ItemRegistry.ALCHEMY_BIRON_INGOT.get())
+            .unlockedBy("has_alchemy_biron", has(ItemRegistry.ALCHEMY_BIRON_INGOT.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+ BlockRegistry.CHISELED_BIRON_BLOCK.getId().getPath()));
+        // 模様入り 石切りから
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(TagRegistry.Items.ALCHEMY_BIRON_BLOCKS), RecipeCategory.BUILDING_BLOCKS, BlockRegistry.CHISELED_BIRON_BLOCK.get(), 3)
+            .unlockedBy("has_alchemy_biron", has(ItemRegistry.ALCHEMY_BIRON_INGOT.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "stone_cutting/"+ BlockRegistry.CHISELED_BIRON_BLOCK.getId().getPath()));
+        // リサイクル
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemRegistry.ALCHEMY_BIRON_INGOT.get(), 3)
+            .requires(BlockRegistry.CHISELED_BIRON_BLOCK.get())
+            .unlockedBy("has_alchemy_biron", has(ItemRegistry.ALCHEMY_BIRON_INGOT.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+ BlockRegistry.CHISELED_BIRON_BLOCK.getId().getPath()+"_recycling"));
+        
+        // 錬金赤銅ガラス
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.ALCHEMY_BIRON_GLASS.get(),4)
+            .pattern(" B ")
+            .pattern("BAB")
+            .pattern(" B ")
+            .define('A', Tags.Items.GLASS_COLORLESS)
+            .define('B', ItemRegistry.ALCHEMY_BIRON_INGOT.get())
+            .unlockedBy("has_alchemy_biron", has(ItemRegistry.ALCHEMY_BIRON_INGOT.get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+ BlockRegistry.ALCHEMY_BIRON_GLASS.getId().getPath()));
+        
         //錬金赤銅の初期ステージ作成
         /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.ALCHEMY_BIRON_INGOT.get())
             .pattern("AB")
@@ -57,7 +91,18 @@ public class HeliopauseRecipeProvider extends net.minecraft.data.recipes.RecipeP
             .unlockedBy("has_copper", has(Tags.Items.INGOTS_COPPER))
             .unlockedBy("has_gold", has(Tags.Items.INGOTS_GOLD))
             .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+ ItemRegistry.ALCHEMY_BIRON_INGOT.getId().getPath()));
-*/
+        */
+        
+        // ホイロ
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.ROASTING_TABLE.get())
+            .pattern("ABA")
+            .pattern("ACA")
+            .define('A', ItemTags.PLANKS)
+            .define('B', Items.PAPER)
+            .define('C', Items.FURNACE)
+            .unlockedBy("has_charcoal", has(Items.CHARCOAL))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+ BlockRegistry.ROASTING_TABLE.getId().getPath()));
+        
         // 黒板
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.BLACKBOARD.get(),16)
             .pattern("AAA")
@@ -179,15 +224,151 @@ public class HeliopauseRecipeProvider extends net.minecraft.data.recipes.RecipeP
             600,0.1f
         ).unlockedBy("has_celestite", has(ItemRegistry.CELESTITE.get()))
             .save(consumer, new ResourceLocation(Heliopause.MODID, MoonlightPouringRecipe.Type.ID + "/" + Items.CALCITE));
-
-        // 衛星コア
-        /*MoonlightPouringRecipeBuilder.moonlightPouring(
-                Ingredient.of(ItemRegistry.IMITATION_CORE_ITEM.get()),
-                ImitationCoreItem.getImitationCoreWithTag("satellite"),
-                600,0.1f
-            ).unlockedBy("has_imitation_core", has(ItemRegistry.IMITATION_CORE_ITEM.get()))
-            .save(consumer, new ResourceLocation(Heliopause.MODID, MoonlightPouringRecipe.Type.ID + "/" + ItemRegistry.IMITATION_CORE_ITEM.getId().getPath()+"_satellite"));
-*/
+        
+        // 液化星明かり分離
+        SimpleCookingRecipeBuilder.smelting(
+            Ingredient.of(FluidRegistry.STARRY_MIXTURE.bucket().get()),
+            RecipeCategory.MISC, FluidRegistry.LIQUEFIED_TWILIGHT.bucket().get(), 1.0f, 200)
+            .unlockedBy("has_starry_mixture", has(FluidRegistry.STARRY_MIXTURE.bucket().get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, FluidRegistry.LIQUEFIED_TWILIGHT.bucket().getId().getPath()+"_from_smelting"));
+        MoonlightPouringRecipeBuilder.moonlightPouring(
+                Ingredient.of(FluidRegistry.STARRY_MIXTURE.bucket().get()),
+                FluidRegistry.LIQUEFIED_STARLIGHT.bucket().get(),1,
+                200,0.1f
+            ).unlockedBy("has_starry_mixture", has(FluidRegistry.STARRY_MIXTURE.bucket().get()))
+            .save(consumer, new ResourceLocation(Heliopause.MODID, FluidRegistry.LIQUEFIED_STARLIGHT.bucket().getId().getPath()+"_from_moonlight_pouring"));
+        
+        // 鏡筒・鏡
+        
+        // 木製
+        {
+            String unlock = "has_optical_glass";
+            InventoryChangeTrigger.TriggerInstance trigger = has(ItemRegistry.OPTICAL_GLASS.get());
+            RegistryObject<LensBarrelBlock> barrel = BlockRegistry.WOODEN_LENS_BARREL_BLOCK;
+            RegistryObject<LensBarrelBlock> main = BlockRegistry.IRON_MAIN_MIRROR_BLOCK;
+            RegistryObject<LensBarrelBlock> second = BlockRegistry.IRON_SECOND_MIRROR_BLOCK;
+            
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, barrel.get())
+                .pattern("ABA")
+                .define('A', ItemTags.PLANKS)
+                .define('B', Items.BARREL)
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+barrel.getId().getPath()));
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, main.get())
+                .pattern("C")
+                .pattern("A")
+                .pattern("B")
+                .define('A', barrel.get())
+                .define('B', ItemRegistry.OPTICAL_GLASS.get())
+                .define('C', Tags.Items.INGOTS_IRON)
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+main.getId().getPath()));
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, second.get())
+                .requires(main.get())
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+second.getId().getPath()+"_from_main_mirror"));
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, main.get())
+                .requires(second.get())
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+main.getId().getPath()+"_from_second_mirror"));
+        }
+        // 石製
+        {
+            String unlock = "has_optical_glass";
+            InventoryChangeTrigger.TriggerInstance trigger = has(ItemRegistry.OPTICAL_GLASS.get());
+            RegistryObject<LensBarrelBlock> barrel = BlockRegistry.STONE_LENS_BARREL_BLOCK;
+            RegistryObject<LensBarrelBlock> main = BlockRegistry.GRAPHITE_MAIN_MIRROR_BLOCK;
+            RegistryObject<LensBarrelBlock> second = BlockRegistry.GRAPHITE_SECOND_MIRROR_BLOCK;
+            
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, barrel.get())
+                .pattern("ABA")
+                .define('A', Items.STONE_BRICKS)
+                .define('B', Items.BARREL)
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+barrel.getId().getPath()));
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, main.get())
+                .pattern("C")
+                .pattern("A")
+                .pattern("B")
+                .define('A', barrel.get())
+                .define('B', ItemRegistry.OPTICAL_GLASS.get())
+                .define('C', Items.CHARCOAL)
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+main.getId().getPath()));
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, second.get())
+                .requires(main.get())
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+second.getId().getPath()+"_from_main_mirror"));
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, main.get())
+                .requires(second.get())
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+main.getId().getPath()+"_from_second_mirror"));
+        }
+        // 錬金赤銅
+        {
+            String unlock = "has_silver";
+            InventoryChangeTrigger.TriggerInstance trigger = has(ItemRegistry.SILVER_INGOT.get());
+            RegistryObject<LensBarrelBlock> barrel = BlockRegistry.ALCHEMY_BIRON_LENS_BARREL_BLOCK;
+            RegistryObject<LensBarrelBlock> main = BlockRegistry.SILVER_MAIN_MIRROR_BLOCK;
+            RegistryObject<LensBarrelBlock> second = BlockRegistry.SILVER_SECOND_MIRROR_BLOCK;
+            
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, barrel.get())
+                .pattern("ABA")
+                .define('A', ItemRegistry.ALCHEMY_BIRON_INGOT.get())
+                .define('B', Items.BARREL)
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+barrel.getId().getPath()));
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, main.get())
+                .pattern("C")
+                .pattern("A")
+                .pattern("B")
+                .define('A', barrel.get())
+                .define('B', ItemRegistry.OPTICAL_GLASS.get())
+                .define('C', TagRegistry.Items.FORGE_SILVER_INGOTS)
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+main.getId().getPath()));
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, second.get())
+                .requires(main.get())
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+second.getId().getPath()+"_from_main_mirror"));
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, main.get())
+                .requires(second.get())
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+main.getId().getPath()+"_from_second_mirror"));
+        }
+        // 超断熱材
+        {
+            String unlock = "has_thermoimmobilant";
+            InventoryChangeTrigger.TriggerInstance trigger = has(ItemRegistry.THERMOIMMOBILANT.get());
+            RegistryObject<LensBarrelBlock> barrel = BlockRegistry.THERMOIMMOBILANT_LENS_BARREL_BLOCK;
+            RegistryObject<LensBarrelBlock> main = BlockRegistry.ALCHEMY_STEEL_MAIN_MIRROR_BLOCK;
+            RegistryObject<LensBarrelBlock> second = BlockRegistry.ALCHEMY_STEEL_SECOND_MIRROR_BLOCK;
+            
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, barrel.get())
+                .pattern("ABA")
+                .define('A', ItemRegistry.THERMOIMMOBILANT.get())
+                .define('B', Items.BARREL)
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+barrel.getId().getPath()));
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, main.get())
+                .pattern(" C ")
+                .pattern("DAD")
+                .pattern(" B ")
+                .define('A', barrel.get())
+                .define('B', ItemRegistry.OPTICAL_GLASS.get())
+                .define('C', ItemRegistry.ALCHEMY_STEEL_INGOT.get())
+                .define('D', ItemRegistry.GRAVITY_COIL.get())
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+main.getId().getPath()));
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, second.get())
+                .requires(main.get())
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+second.getId().getPath()+"_from_main_mirror"));
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, main.get())
+                .requires(second.get())
+                .unlockedBy(unlock, trigger)
+                .save(consumer, new ResourceLocation(Heliopause.MODID, "crafting/"+main.getId().getPath()+"_from_second_mirror"));
+        }
     }
 
     protected static void metalBlockIngotNuggetRecipe(Consumer<FinishedRecipe> consumer, ItemLike BlockItem, ItemLike IngotItem, ItemLike NuggetItem) {

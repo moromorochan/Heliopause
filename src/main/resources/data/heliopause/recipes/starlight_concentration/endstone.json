@@ -1,0 +1,25 @@
+{
+  "type": "heliopause:starlight_concentration",
+  "ingredient": {
+    "item": "minecraft:end_stone",
+    "fluid": "heliopause:liquefied_twilight",
+    "amount": 1000
+  },
+  "result": {
+    "item": "minecraft:end_stone",
+    "count": 2,
+    "fluid": "minecraft:water",
+    "amount": 300
+  },
+  "time": 800,
+  "starlight_conditions": {
+    "dimension": "minecraft:overworld",
+    "coverage": [
+      "rose_pulse"
+    ],
+    "season_range": {
+      "start": 330,
+      "end": 59
+    }
+  }
+}

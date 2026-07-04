@@ -5,11 +5,13 @@ import com.moromoro.heliopause.block.ConcentratorBlock;
 import com.moromoro.heliopause.block.LensBarrelBlock;
 import com.moromoro.heliopause.entity.LensBarrelEntity;
 import com.moromoro.heliopause.generic.Season;
+import com.moromoro.heliopause.generic.StackControl;
 import com.moromoro.heliopause.recipe.LensBarrelCoverageListener.BarrelCoverageData;
 import com.moromoro.heliopause.recipe.StarlightConcentrationRecipe;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
 import com.moromoro.heliopause.registry.TagRegistry;
 import com.moromoro.heliopause.screen.ConcentratorMenu;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +22,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
@@ -73,12 +76,8 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
     // アイテム・液体スロット
     public static final int SLOT_INPUT_ITEM = 0;
     public static final int SLOT_OUTPUT_ITEM = 1;
-    public static final int SLOT_FLUID_IN = 2;
-    public static final int SLOT_FLUID_IN_RESULT = 3;
-    public static final int SLOT_FLUID_OUT = 4;
-    public static final int SLOT_FLUID_OUT_RESULT = 5;
 
-    private final ItemStackHandler itemHandler = new ItemStackHandler(6){
+    private final ItemStackHandler itemHandler = new ItemStackHandler(2){
         @Override
         protected void onContentsChanged(int slot) {
             super.onContentsChanged(slot);
@@ -89,14 +88,13 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         }
 
         // アイテム搬入できるかどうか制御
-        /*@Override
+        @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             // 搬出専用のスロット判定
-            if(slot == SLOT_OUTPUT_ITEM || slot == SLOT_FLUID_IN_RESULT || slot == SLOT_FLUID_OUT_RESULT){
+            /*if(slot == SLOT_OUTPUT_ITEM){
                 return stack;
-            }
-            return super.insertItem(slot, stack, simulate);
-            *//*ItemStack existingStack = this.getStackInSlot(slot);
+            }*/
+            ItemStack existingStack = this.getStackInSlot(slot);
             // 既存のスタックが空、または同種のアイテムでスタックが満杯でない場合
             if (
                 existingStack.isEmpty() ||
@@ -109,8 +107,8 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
             } else {
                 // 種類が一致しないか、スタックが満杯の場合
                 return stack;
-            }*//*
-        }*/
+            }
+        }
     };
     public static final int TANK_CAPACITY = 2000;
     private static final int TANK_COUNT = 2;
@@ -189,17 +187,21 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            for (FluidTank fluidTank : fluidTanks) {
+            // 入力タンクのみ
+            return fillTo(SLOT_INPUT_FLUID, resource, action);
+            /*for (FluidTank fluidTank : fluidTanks) {
                 int amount = fluidTank.fill(resource, action);
                 if(amount > 0){
                     return amount;
                 }
             }
-            return 0;
+            return 0;*/
         }
 
         @Override
         public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+            // 種類指定があるなら順番に
+            //return drainFrom(SLOT_OUTPUT_FLUID, resource, action);
             for (FluidTank fluidTank : fluidTanks) {
                 FluidStack drained = fluidTank.drain(resource, action);
                 if(!drained.isEmpty()){
@@ -211,21 +213,23 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
 
         @Override
         public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-            for (FluidTank fluidTank : fluidTanks) {
+            // 出力タンクのみ
+            return drainFrom(SLOT_OUTPUT_FLUID, maxDrain, action);
+            /*for (FluidTank fluidTank : fluidTanks) {
                 FluidStack drained = fluidTank.drain(maxDrain, action);
                 if(!drained.isEmpty()){
                     return drained;
                 }
             }
-            return FluidStack.EMPTY;
+            return FluidStack.EMPTY;*/
         }
     };
     private final FluidTankHandler fluidHandler = new FluidTankHandler();
     public FluidStack getInputFluid() {
-        return fluidHandler.getFluidInTank(0);
+        return fluidHandler.getFluidInTank(SLOT_INPUT_FLUID);
     }
     public FluidStack getOutputFluid() {
-        return fluidHandler.getFluidInTank(1);
+        return fluidHandler.getFluidInTank(SLOT_OUTPUT_FLUID);
     }
     
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
@@ -304,12 +308,22 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
-        if(side==Direction.UP || side==Direction.DOWN){
+        if(side==Direction.UP){
             return super.getCapability(cap, side);
         }
 
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return lazyItemHandler.cast();
+            if(side == null) {
+                return lazyItemHandler.cast();
+            }
+            if(side == Direction.DOWN){
+                return lazyItemHandler.lazyMap(map ->
+                    StackControl.createFilteredItemHandler(map,IntArrayList.of(SLOT_OUTPUT_ITEM), false, true)).cast();
+            }
+            if(side.getAxis().isHorizontal()){
+                return lazyItemHandler.lazyMap(map ->
+                    StackControl.createFilteredItemHandler(map,IntArrayList.of(SLOT_INPUT_ITEM), true, true)).cast();
+            }
         }
         if (cap == ForgeCapabilities.FLUID_HANDLER){
             return lazyFluidHandler.cast();
@@ -558,21 +572,48 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         progress = 0;
     }
     
-    private void operateTankInOut(){
-        // 入力タンク
-        handleTankIO(SLOT_INPUT_FLUID, SLOT_FLUID_IN, SLOT_FLUID_IN_RESULT, true);
-        // 出力タンク
-        handleTankIO(SLOT_OUTPUT_FLUID, SLOT_FLUID_OUT, SLOT_FLUID_OUT_RESULT, false);
+    private void finishRecipe(StarlightConcentrationRecipe recipe){
+        // 消費
+        if (!recipe.getIngredientItem().isEmpty()) {
+            itemHandler.extractItem(SLOT_INPUT_ITEM, 1, false);
+        }
+        if (!recipe.getIngredientFluid().isEmpty()) {
+            FluidStack required = recipe.getIngredientFluid();
+            fluidHandler.drainFrom(SLOT_INPUT_FLUID, required.getAmount(), FluidAction.EXECUTE);
+        }
+        // 追加
+        if (!recipe.getResultItem(null).isEmpty()) {
+            ItemStack result = recipe.getResultItem(null).copy();
+            itemHandler.insertItem(SLOT_OUTPUT_ITEM, result, false);
+        }
+        if (!recipe.getResultFluid().isEmpty()) {
+            FluidStack resultFluid = recipe.getResultFluid().copy();
+            fluidHandler.fillTo(SLOT_OUTPUT_FLUID, resultFluid, FluidAction.EXECUTE);
+        }
+        this.setChanged();
     }
     
-    private void handleTankIO(int tankId, int slotIn, int slotOut, boolean allowFill) {
-        
-        ItemStack container = itemHandler.getStackInSlot(slotIn);
+    private void operateTankInOut(){
+        // プレイヤーごとに操作を見る
+        for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+            if (player.containerMenu instanceof ConcentratorMenu) {
+                ConcentratorMenu menu = (ConcentratorMenu) player.containerMenu;
+                if (menu.blockEntity.getBlockPos().equals(this.getBlockPos())) {
+                    handleTankIO(menu, SLOT_INPUT_FLUID, 0, 1, true);
+                    handleTankIO(menu, SLOT_OUTPUT_FLUID, 2, 3, false);
+                }
+                menu.broadcastChanges();
+            }
+        }
+    }
+    
+    public void handleTankIO(ConcentratorMenu menu, int tankId, int slotIn, int slotOut, boolean allowFill) {
+        ItemStack container = menu.getGuiStack(slotIn);
         if (container.isEmpty()) {
             return;
         }
         // 出力スロットが埋まっている場合は処理しない
-        if (!itemHandler.getStackInSlot(slotOut).isEmpty()) {
+        if (!menu.getGuiStack(slotOut).isEmpty()) {
             return;
         }
         
@@ -599,8 +640,10 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
                 fluidHandler.fillTo(tankId, drained, FluidAction.EXECUTE);
                 
                 ItemStack empty = handler.getContainer().copy();
-                itemHandler.extractItem(slotIn, 1, false);
-                itemHandler.insertItem(slotOut, empty, false);
+                ItemStack remaining = container.copy();
+                remaining.shrink(1);
+                menu.setGuiStack(slotIn, remaining.isEmpty() ? ItemStack.EMPTY : remaining);
+                menu.setGuiStack(slotOut, empty);
                 return;
             }
             // タンクから取り出し
@@ -612,29 +655,11 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
             FluidStack drained = fluidHandler.drainFrom(tankId, fillSim, FluidAction.EXECUTE);
             handler.fill(drained, FluidAction.EXECUTE);
             ItemStack filled = handler.getContainer().copy();
-            itemHandler.extractItem(slotIn, 1, false);
-            itemHandler.insertItem(slotOut, filled, false);
+            ItemStack remaining = container.copy();
+            remaining.shrink(1);
+            menu.setGuiStack(slotIn, remaining.isEmpty() ? ItemStack.EMPTY : remaining);
+            menu.setGuiStack(slotOut, filled);
         });
     }
     
-    private void finishRecipe(StarlightConcentrationRecipe recipe){
-        // 消費
-        if (!recipe.getIngredientItem().isEmpty()) {
-            itemHandler.extractItem(SLOT_INPUT_ITEM, 1, false);
-        }
-        if (!recipe.getIngredientFluid().isEmpty()) {
-            FluidStack required = recipe.getIngredientFluid();
-            fluidHandler.drainFrom(SLOT_INPUT_FLUID, required.getAmount(), FluidAction.EXECUTE);
-        }
-        // 追加
-        if (!recipe.getResultItem(null).isEmpty()) {
-            ItemStack result = recipe.getResultItem(null).copy();
-            itemHandler.insertItem(SLOT_OUTPUT_ITEM, result, false);
-        }
-        if (!recipe.getResultFluid().isEmpty()) {
-            FluidStack resultFluid = recipe.getResultFluid().copy();
-            fluidHandler.fillTo(SLOT_OUTPUT_FLUID, resultFluid, FluidAction.EXECUTE);
-        }
-        this.setChanged();
-    }
 }

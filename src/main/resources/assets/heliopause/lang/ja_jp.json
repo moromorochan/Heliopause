@@ -32,9 +32,12 @@
   "gui.heliopause.lens_barrel_coverage_check.invalid_concentrator": "最下部に\n星明かり収斂器\nが必要です",
 
   "gui.heliopause.lens_barrel_coverage.optic": "可視光",
-  "gui.heliopause.lens_barrel_coverage.infra_red": "赤外光",
-  "gui.heliopause.lens_barrel_coverage.aetheric": "エーテル波長",
-  "gui.heliopause.lens_barrel_coverage.alkahestic": "超溶媒波長",
+  "gui.heliopause.lens_barrel_coverage.infra_red": "赤外線",
+  "gui.heliopause.lens_barrel_coverage.rose_pulse": "ローズ・パルス",
+  "gui.heliopause.lens_barrel_coverage.trail_of_mist": "霧の軌跡",
+  "gui.heliopause.lens_barrel_coverage.aetheric": "エーテル波",
+  "gui.heliopause.lens_barrel_coverage.alcahestic": "万物溶化光",
+  "gui.heliopause.lens_barrel_coverage.gravity_wave": "重力波",
 
   "block.heliopause.wooden_lens_barrel": "木の鏡筒",
   "block.heliopause.stone_lens_barrel": "石の鏡筒",
@@ -46,8 +49,8 @@
   "block.heliopause.graphite_second_mirror": "黒鉛の副鏡",
   "block.heliopause.silver_main_mirror": "銀の主鏡",
   "block.heliopause.silver_second_mirror": "銀の副鏡",
-  "block.heliopause.quince_steel_main_mirror": "クインス鋼の主鏡",
-  "block.heliopause.quince_steel_second_mirror": "クインス鋼の副鏡",
+  "block.heliopause.alchemy_steel_main_mirror": "錬金鋼の主鏡",
+  "block.heliopause.alchemy_steel_second_mirror": "錬金鋼の副鏡",
 
   "block.heliopause.silver_ore": "銀鉱石",
   "block.heliopause.deepslate_silver_ore": "深層銀鉱石",
@@ -78,7 +81,7 @@
   "item.heliopause.silver_ingot": "銀インゴット",
   "item.heliopause.silver_nugget": "銀塊",
 
-  "item.heliopause.quince_steel_ingot": "クインス鋼インゴット",
+  "item.heliopause.alchemy_steel_ingot": "錬金鋼インゴット",
   "item.heliopause.optical_glass": "光学ガラス",
   "item.heliopause.thermoimmobilant": "超断熱材",
   "item.heliopause.gravity_coil": "重力リアクションコイル",
@@ -116,7 +119,7 @@
   "item.heliopause.imitation_core.description_empty": "折り紙風船",
   "item.heliopause.imitation_core.description_satellite": "衛星",
   "item.heliopause.imitation_core.description_crimson_planet": "真紅の惑星",
-  "item.heliopause.imitation_core.description_indigo_marbling": "藍色のマーブリング",
+  "item.heliopause.imitation_core.description_indigo_marble": "藍色マーブル",
   "item.heliopause.imitation_core.description_ancient_star": "古代の恒星",
 
   "fluid_type.heliopause.starry_mixture": "夜空の混合流体",

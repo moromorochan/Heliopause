@@ -178,7 +178,7 @@ public class StellarIngredientEntity extends Entity {
     }
 
     @Override public boolean canBeCollidedWith() {
-        return true;
+        return super.canBeCollidedWith();
     }
 
     @Override public boolean isPickable() { return true; }

@@ -71,8 +71,8 @@ public class HeliopauseBlockStateProvider extends net.minecraftforge.client.mode
         simpleBlockWithItem(BlockRegistry.GRAPHITE_SECOND_MIRROR_BLOCK.get(), models().getExistingFile(modLoc("block/lens_barrel/graphite_mirror/secondary")));
         simpleBlockWithItem(BlockRegistry.SILVER_MAIN_MIRROR_BLOCK.get(), models().getExistingFile(modLoc("block/lens_barrel/silver_mirror/main")));
         simpleBlockWithItem(BlockRegistry.SILVER_SECOND_MIRROR_BLOCK.get(), models().getExistingFile(modLoc("block/lens_barrel/silver_mirror/secondary")));
-        simpleBlockWithItem(BlockRegistry.QUINCE_STEEL_MAIN_MIRROR_BLOCK.get(), models().getExistingFile(modLoc("block/lens_barrel/quince_steel_mirror/main")));
-        simpleBlockWithItem(BlockRegistry.QUINCE_STEEL_SECOND_MIRROR_BLOCK.get(), models().getExistingFile(modLoc("block/lens_barrel/quince_steel_mirror/secondary")));
+        simpleBlockWithItem(BlockRegistry.ALCHEMY_STEEL_MAIN_MIRROR_BLOCK.get(), models().getExistingFile(modLoc("block/lens_barrel/alchemy_steel_mirror/main")));
+        simpleBlockWithItem(BlockRegistry.ALCHEMY_STEEL_SECOND_MIRROR_BLOCK.get(), models().getExistingFile(modLoc("block/lens_barrel/alchemy_steel_mirror/secondary")));
         //lensBarrelBlockWithItem(BlockRegistry.WOODEN_MAIN_MIRROR_BLOCK, "main","wooden");
         //lensBarrelBlockWithItem(BlockRegistry.WOODEN_SECOND_MIRROR_BLOCK, "secondary","wooden");
 

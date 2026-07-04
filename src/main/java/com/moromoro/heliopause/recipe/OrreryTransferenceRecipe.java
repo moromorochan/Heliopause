@@ -67,7 +67,7 @@ public class OrreryTransferenceRecipe implements Recipe<Container> {
                     JsonObject object = jsonElement.getAsJsonObject();
                     float ratio = GsonHelper.getAsFloat(object, "ratio", 1.0f);
                     // アイテムならアイテム・タグ取得
-                    if (object.has("item")) {
+                    if (object.has("item")||object.has("tag")) {
                         Ingredient ingredient = Ingredient.fromJson(object);
                         ingredients.add(new StellarIngredient(ingredient, net.minecraftforge.fluids.FluidStack.EMPTY, ratio));
                     }

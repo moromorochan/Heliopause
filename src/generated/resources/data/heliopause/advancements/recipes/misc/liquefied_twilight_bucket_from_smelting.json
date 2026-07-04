@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_starry_mixture": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "heliopause:starry_mixture_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "heliopause:liquefied_twilight_bucket_from_smelting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_starry_mixture",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "heliopause:liquefied_twilight_bucket_from_smelting"
+    ]
+  },
+  "sends_telemetry_event": false
+}

@@ -1,0 +1,25 @@
+{
+  "type": "heliopause:starlight_concentration",
+  "ingredient": {
+    "fluid":"heliopause:scarlet_starbead",
+    "amount": 600
+  },
+  "result": {
+    "fluid": "heliopause:summer_star_essence",
+    "amount": 500
+  },
+  "time": 1200,
+  "starlight_conditions": {
+    "dimension": "minecraft:the_end",
+    "coverage": [
+      "optic",
+      "infra_red",
+      "trail_of_mist",
+      "gravity_wave"
+    ],
+    "season_range": {
+      "start": 0,
+      "end": 359
+    }
+  }
+}

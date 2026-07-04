@@ -46,8 +46,8 @@ public class RoastingRecipe implements Recipe<CraftingContainer> {
             ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(serializedRecipe,"result"));
 
             JsonArray ingredients = GsonHelper.getAsJsonArray(serializedRecipe,"ingredients");
-            NonNullList<Ingredient> inputs = NonNullList.withSize(INPUT_SLOTS,Ingredient.EMPTY);
-            for (int i = 0; i < inputs.size(); i++) {
+            NonNullList<Ingredient> inputs = NonNullList.withSize(ingredients.size(),Ingredient.EMPTY);
+            for (int i = 0; i < ingredients.size(); i++) {
                 inputs.set(i,Ingredient.fromJson(ingredients.get(i)));
             }
             return new RoastingRecipe(inputs, result, recipeId);

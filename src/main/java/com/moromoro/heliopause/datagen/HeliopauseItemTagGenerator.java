@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.datagen;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.registry.ItemRegistry;
 import com.moromoro.heliopause.registry.TagRegistry;
 import net.minecraft.core.HolderLookup;
@@ -22,7 +23,8 @@ public class HeliopauseItemTagGenerator extends ItemTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         this.tag(Tags.Items.GLASS)
             .add(
-                ItemRegistry.OPTICAL_GLASS.get()
+                ItemRegistry.OPTICAL_GLASS.get(),
+                BlockRegistry.ALCHEMY_BIRON_GLASS.get().asItem()
             );
         this.tag(Tags.Items.GLASS_COLORLESS)
             .add(
@@ -43,6 +45,8 @@ public class HeliopauseItemTagGenerator extends ItemTagsProvider {
             .add(
                 ItemRegistry.SILVER_NUGGET.get()
             );
+        
+        this.copy(TagRegistry.Blocks.ALCHEMY_BIRON_BLOCKS, TagRegistry.Items.ALCHEMY_BIRON_BLOCKS);
         
         /*this.copy(TagRegistry.Blocks.LENS_BARREL, TagRegistry.Items.LENS_BARREL);
         this.copy(TagRegistry.Blocks.MAIN_MIRROR, TagRegistry.Items.MAIN_MIRROR);

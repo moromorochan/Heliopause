@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_optical_glass": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "heliopause:optical_glass"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "heliopause:crafting/graphite_second_mirror_from_main_mirror"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_optical_glass",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "heliopause:crafting/graphite_second_mirror_from_main_mirror"
+    ]
+  },
+  "sends_telemetry_event": false
+}

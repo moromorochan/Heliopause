@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "heliopause:iron_main_mirror"
+    }
+  ],
+  "result": {
+    "item": "heliopause:iron_second_mirror"
+  }
+}

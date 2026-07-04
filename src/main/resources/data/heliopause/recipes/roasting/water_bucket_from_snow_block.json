@@ -1,0 +1,14 @@
+{
+  "type": "heliopause:roasting",
+  "ingredients": [
+    {
+      "item":"minecraft:snow_block"
+    },
+    {
+      "item":"minecraft:bucket"
+    }
+  ],
+  "result": {
+    "item":"minecraft:water_bucket"
+  }
+}

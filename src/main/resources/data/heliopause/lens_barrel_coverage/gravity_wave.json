@@ -1,0 +1,10 @@
+{
+  "name": "gravity_wave",
+  "block": [
+    "heliopause:thermoimmobilant_lens_barrel",
+    "heliopause:alchemy_steel_main_mirror",
+    "heliopause:alchemy_steel_second_mirror"
+  ],
+  "icon": "double_circle",
+  "icon_color": [37,167,172]
+}

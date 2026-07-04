@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +27,13 @@ public class ConcentratorMenu extends AbstractContainerMenu {
     
     private static final int invOffset = 84;
     private static final int hotBarOffset = 142;
+    
+    // アイテム出し入れスロット
+    private final ItemStackHandler fluidIOSlotHandler = new ItemStackHandler(4);
+    public static final int SLOT_FLUID_IN = 2;
+    public static final int SLOT_FLUID_IN_RESULT = 3;
+    public static final int SLOT_FLUID_OUT = 4;
+    public static final int SLOT_FLUID_OUT_RESULT = 5;
 
     public ConcentratorMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
         this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()),
@@ -40,40 +48,25 @@ public class ConcentratorMenu extends AbstractContainerMenu {
         this.level = player.level();
         this.data = data;
 
-        /*this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
-                // バケツ入力x3と出力
-                this.addSlot(new SlotItemHandler(iItemHandler, 0, 103, 102){
-                    //プレイヤーがアイテムを置けないようにする
-                    @Override
-                    public boolean mayPlace(@NotNull ItemStack stack) {
-                        return false;
-                    }
-                });
-
-                this.addSlot(new SlotItemHandler(iItemHandler, 1, 20, 102));
-            this.addSlot(new SlotItemHandler(iItemHandler, 2, 48, 102));
-            this.addSlot(new SlotItemHandler(iItemHandler, 3, 76, 102));
-        });*/
-
         // スロットの位置設定
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
             // 入力スロット
             this.addSlot(new SlotItemHandler(iItemHandler, SLOT_INPUT_ITEM, 50, 17));
-            this.addSlot(new SlotItemHandler(iItemHandler, SLOT_FLUID_IN, 28, 17));
-            this.addSlot(new SlotItemHandler(iItemHandler, SLOT_FLUID_OUT, 132, 17));
             // 出力スロット
             this.addSlot(new SlotItemHandler(iItemHandler, SLOT_OUTPUT_ITEM, 110, 17){
                 @Override
                 public boolean mayPlace(@NotNull ItemStack stack) {return false;}
             });
-            this.addSlot(new SlotItemHandler(iItemHandler, SLOT_FLUID_IN_RESULT, 28, 53){
-                @Override
-                public boolean mayPlace(@NotNull ItemStack stack) {return false;}
-            });
-            this.addSlot(new SlotItemHandler(iItemHandler, SLOT_FLUID_OUT_RESULT, 132, 53){
-                @Override
-                public boolean mayPlace(@NotNull ItemStack stack) {return false;}
-            });
+        });
+        
+        // 液体出し入れ用一時スロット
+        this.addSlot(new SlotItemHandler(fluidIOSlotHandler, 0, 28, 17));
+        this.addSlot(new SlotItemHandler(fluidIOSlotHandler, 1, 28, 53) {
+            @Override public boolean mayPlace(@NotNull ItemStack stack) { return false; }
+        });
+        this.addSlot(new SlotItemHandler(fluidIOSlotHandler, 2, 132, 17));
+        this.addSlot(new SlotItemHandler(fluidIOSlotHandler, 3, 132, 53) {
+            @Override public boolean mayPlace(@NotNull ItemStack stack) { return false; }
         });
         
         //バニラのスロットを表示
@@ -81,6 +74,33 @@ public class ConcentratorMenu extends AbstractContainerMenu {
         addPlayerHotBar(playerInv);//index = 31~39
 
         addDataSlots(data);
+    }
+    
+    @Override
+    public void removed(Player player) {
+        super.removed(player);
+        // GUI 内のアイテムをプレイヤーに戻す
+        if (!player.level().isClientSide) {
+            for (int i = 0; i < fluidIOSlotHandler.getSlots(); i++) {
+                ItemStack stack = fluidIOSlotHandler.getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    ItemStack copy = stack.copy();
+                    if (!player.getInventory().add(copy)) {
+                        player.drop(copy, false);
+                    }
+                    fluidIOSlotHandler.setStackInSlot(i, ItemStack.EMPTY);
+                }
+            }
+        }
+    }
+    
+    // 液体出し入れスロットの処理
+    public ItemStack getGuiStack(int guiIndex) {
+        return fluidIOSlotHandler.getStackInSlot(guiIndex);
+    }
+    
+    public void setGuiStack(int guiIndex, ItemStack stack) {
+        fluidIOSlotHandler.setStackInSlot(guiIndex, stack);
     }
 
     @Override

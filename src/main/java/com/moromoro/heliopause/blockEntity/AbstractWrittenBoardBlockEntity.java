@@ -386,7 +386,7 @@ public abstract class AbstractWrittenBoardBlockEntity extends BlockEntity {
 
     public static void changeCircleBoardBlock(Level level, BlockPos blockPos,@NotNull BlockState resultBlockState) {
         if(!level.isClientSide()){
-            // 魔法陣ブロックなら陣のnbtを継承
+            // 魔方陣ブロックなら陣のnbtを継承
             if(resultBlockState.getBlock() instanceof AbstractWrittenBoardBlock boardBlock){
                 // nbtを保存
                 CompoundTag nbt = new CompoundTag();

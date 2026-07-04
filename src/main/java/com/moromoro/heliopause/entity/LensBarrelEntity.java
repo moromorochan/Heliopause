@@ -238,7 +238,7 @@ public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
                         this.setYRotToward(targetVec.y());
                         this.setXRotToward(targetVec.x());
                         
-                        if(serverLevel.isNight() && !serverLevel.isRaining() && !serverLevel.isThundering()) {
+                        if(!serverLevel.isDay() && !serverLevel.isRaining() && !serverLevel.isThundering()) {
                             this.setSyncedToStar(canSeeSky());
                         }else{
                             this.setSyncedToStar(false);

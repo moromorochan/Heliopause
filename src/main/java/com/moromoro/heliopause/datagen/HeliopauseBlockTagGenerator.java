@@ -6,7 +6,6 @@ import com.moromoro.heliopause.registry.TagRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
@@ -48,8 +47,8 @@ public class HeliopauseBlockTagGenerator extends BlockTagsProvider {
                 BlockRegistry.SILVER_MAIN_MIRROR_BLOCK.get(),
                 BlockRegistry.SILVER_SECOND_MIRROR_BLOCK.get(),
                 BlockRegistry.THERMOIMMOBILANT_LENS_BARREL_BLOCK.get(),
-                BlockRegistry.QUINCE_STEEL_MAIN_MIRROR_BLOCK.get(),
-                BlockRegistry.QUINCE_STEEL_SECOND_MIRROR_BLOCK.get()
+                BlockRegistry.ALCHEMY_STEEL_MAIN_MIRROR_BLOCK.get(),
+                BlockRegistry.ALCHEMY_STEEL_SECOND_MIRROR_BLOCK.get()
             );
 
         this.tag(BlockTags.MINEABLE_WITH_AXE)
@@ -64,8 +63,8 @@ public class HeliopauseBlockTagGenerator extends BlockTagsProvider {
                 BlockRegistry.IRON_MAIN_MIRROR_BLOCK.get(),
                 BlockRegistry.IRON_SECOND_MIRROR_BLOCK.get(),
                 BlockRegistry.THERMOIMMOBILANT_LENS_BARREL_BLOCK.get(),
-                BlockRegistry.QUINCE_STEEL_MAIN_MIRROR_BLOCK.get(),
-                BlockRegistry.QUINCE_STEEL_SECOND_MIRROR_BLOCK.get()
+                BlockRegistry.ALCHEMY_STEEL_MAIN_MIRROR_BLOCK.get(),
+                BlockRegistry.ALCHEMY_STEEL_SECOND_MIRROR_BLOCK.get()
             );
         
         this.tag(BlockTags.NEEDS_IRON_TOOL)
@@ -75,8 +74,8 @@ public class HeliopauseBlockTagGenerator extends BlockTagsProvider {
                 BlockRegistry.RAW_SILVER_BLOCK.get(),
                 BlockRegistry.SILVER_BLOCK.get(),
                 BlockRegistry.THERMOIMMOBILANT_LENS_BARREL_BLOCK.get(),
-                BlockRegistry.QUINCE_STEEL_MAIN_MIRROR_BLOCK.get(),
-                BlockRegistry.QUINCE_STEEL_SECOND_MIRROR_BLOCK.get()
+                BlockRegistry.ALCHEMY_STEEL_MAIN_MIRROR_BLOCK.get(),
+                BlockRegistry.ALCHEMY_STEEL_SECOND_MIRROR_BLOCK.get()
             );
         this.tag(TagRegistry.Blocks.FORGE_ORE_STONE)
             .add(
@@ -98,6 +97,12 @@ public class HeliopauseBlockTagGenerator extends BlockTagsProvider {
         this.tag(TagRegistry.Blocks.FORGE_SILVER_BLOCK)
             .add(
                 BlockRegistry.SILVER_BLOCK.get()
+            );
+        
+        this.tag(TagRegistry.Blocks.ALCHEMY_BIRON_BLOCKS)
+            .add(
+                BlockRegistry.ALCHEMY_BIRON_BLOCK.get(),
+                BlockRegistry.POLISHED_BIRON_BLOCK.get()
             );
 
         /*this.block(BlockTags.CAMPFIRES)
@@ -129,22 +134,22 @@ public class HeliopauseBlockTagGenerator extends BlockTagsProvider {
                 BlockRegistry.SILVER_MAIN_MIRROR_BLOCK.get(),
                 BlockRegistry.SILVER_SECOND_MIRROR_BLOCK.get(),
                 BlockRegistry.THERMOIMMOBILANT_LENS_BARREL_BLOCK.get(),
-                BlockRegistry.QUINCE_STEEL_MAIN_MIRROR_BLOCK.get(),
-                BlockRegistry.QUINCE_STEEL_SECOND_MIRROR_BLOCK.get()
+                BlockRegistry.ALCHEMY_STEEL_MAIN_MIRROR_BLOCK.get(),
+                BlockRegistry.ALCHEMY_STEEL_SECOND_MIRROR_BLOCK.get()
             );
         this.tag(TagRegistry.Blocks.MAIN_MIRROR)
             .add(
                 BlockRegistry.IRON_MAIN_MIRROR_BLOCK.get(),
                 BlockRegistry.GRAPHITE_MAIN_MIRROR_BLOCK.get(),
                 BlockRegistry.SILVER_MAIN_MIRROR_BLOCK.get(),
-                BlockRegistry.QUINCE_STEEL_MAIN_MIRROR_BLOCK.get()
+                BlockRegistry.ALCHEMY_STEEL_MAIN_MIRROR_BLOCK.get()
             );
         this.tag(TagRegistry.Blocks.SECOND_MIRROR)
             .add(
                 BlockRegistry.IRON_SECOND_MIRROR_BLOCK.get(),
                 BlockRegistry.GRAPHITE_SECOND_MIRROR_BLOCK.get(),
                 BlockRegistry.SILVER_SECOND_MIRROR_BLOCK.get(),
-                BlockRegistry.QUINCE_STEEL_SECOND_MIRROR_BLOCK.get()
+                BlockRegistry.ALCHEMY_STEEL_SECOND_MIRROR_BLOCK.get()
             );
 
         this.tag(TagRegistry.Blocks.CREATE_BRITTLE/*AllTags.AllBlockTags.BRITTLE.block*/)

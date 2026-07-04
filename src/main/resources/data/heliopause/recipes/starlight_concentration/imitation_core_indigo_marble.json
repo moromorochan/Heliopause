@@ -1,0 +1,28 @@
+{
+  "type": "heliopause:starlight_concentration",
+  "ingredient": {
+    "item": "heliopause:imitation_core",
+    "fluid": "heliopause:liquefied_twilight",
+    "amount": 200
+  },
+  "result": {
+    "item": "heliopause:imitation_core",
+    "nbt": {
+      "star_id":"indigo_marble"
+    }
+  },
+  "time": 400,
+  "starlight_conditions": {
+    "dimension": "minecraft:overworld",
+    "coverage": [
+      "optic",
+      "aetheric",
+      "rose_pulse",
+      "alcahestic"
+    ],
+    "season_range": {
+      "start": 0,
+      "end": 359
+    }
+  }
+}

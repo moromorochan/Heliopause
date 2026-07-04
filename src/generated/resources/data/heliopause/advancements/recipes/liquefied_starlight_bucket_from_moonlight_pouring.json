@@ -1,0 +1,24 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_starry_mixture": {
+      "items": [
+        {
+          "items": [
+            "heliopause:starry_mixture_bucket"
+          ]
+        }
+      ]
+    }
+  },
+  "requirements": [
+    [
+      "has_starry_mixture"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "heliopause:liquefied_starlight_bucket_from_moonlight_pouring"
+    ]
+  }
+}

@@ -129,8 +129,8 @@ public class StarlightConcentrationCategory implements IRecipeCategory<Starlight
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 // 名前を切り出して描画
                 String coverageNameTranslatable = Component.translatable("gui.heliopause.lens_barrel_coverage." + data.name()).getString();
-                if(font.width(coverageNameTranslatable) >= 55){
-                    while(font.width(coverageNameTranslatable) > 50){
+                if(font.width(coverageNameTranslatable) >= 85){
+                    while(font.width(coverageNameTranslatable) > 80){
                         coverageNameTranslatable = coverageNameTranslatable.substring(0, coverageNameTranslatable.length() - 1);
                     }
                     coverageNameTranslatable = coverageNameTranslatable + "...";

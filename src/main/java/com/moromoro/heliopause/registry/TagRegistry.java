@@ -14,6 +14,8 @@ public class TagRegistry {
         /*public static final TagKey<Item> LENS_BARREL = tagItem("lens_barrel");
         public static final TagKey<Item> MAIN_MIRROR = tagItem("main_mirror");
         public static final TagKey<Item> SECOND_MIRROR = tagItem("secondary_mirror");*/
+        public static final TagKey<Item> ALCHEMY_BIRON_BLOCKS = ItemTags.create(new ResourceLocation("forge", "storage_blocks/alchemy_biron"));
+        // 互換性
         public static final TagKey<Item> FORGE_SILVER_ORE = ItemTags.create(new ResourceLocation("forge","ores/silver"));
         public static final TagKey<Item> FORGE_RAW_SILVER_BLOCK = ItemTags.create(new ResourceLocation("forge","storage_blocks/raw_silver"));
         public static final TagKey<Item> FORGE_RAW_SILVER_ITEM = ItemTags.create(new ResourceLocation("forge", "raw_materials/silver"));
@@ -26,7 +28,8 @@ public class TagRegistry {
 
         public static final TagKey<Block> MAIN_MIRROR = tagBlock("main_mirror");
         public static final TagKey<Block> SECOND_MIRROR = tagBlock("secondary_mirror");
-
+        
+        public static final TagKey<Block> ALCHEMY_BIRON_BLOCKS = BlockTags.create(new ResourceLocation("forge", "storage_blocks/alchemy_biron"));
         // 互換性
         public static final TagKey<Block> FORGE_ORE_STONE = BlockTags.create(new ResourceLocation("forge","ores_in_ground/stone"));
         public static final TagKey<Block> FORGE_ORE_DEEPSLATE = BlockTags.create(new ResourceLocation("forge","ores_in_ground/deepslate"));

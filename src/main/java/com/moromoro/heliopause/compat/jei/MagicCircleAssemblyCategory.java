@@ -1,5 +1,6 @@
 package com.moromoro.heliopause.compat.jei;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.recipe.MagicCircleAssemblyRecipe;
 import com.moromoro.heliopause.registry.BlockRegistry;
@@ -18,6 +19,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Quaternionf;
 import org.joml.Vector2d;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class MagicCircleAssemblyCategory  implements IRecipeCategory<MagicCircle
     private final IDrawable symbol;
     private final IDrawable node;
     private final IDrawable dot;
+    private static final float DOT_SCALE = 4;
 
     private record nodeWithPos(Node node, Vector2d pos){}
    // private List<nodeWithPos> nodeWithPosList = new ArrayList<>();
@@ -117,22 +120,32 @@ public class MagicCircleAssemblyCategory  implements IRecipeCategory<MagicCircle
 
     private Set<nodeWithPos> drawCircle(List<Node> recipeNodes, List<Circle> recipeCircles, List<drawCircleData> drawCircleList, Set<nodeWithPos> checkedWithPosList, GuiGraphics guiGraphics, Vector2d center) {
         Set<nodeWithPos> nodeWithPosList = new HashSet<>();
+        PoseStack poseStack = guiGraphics.pose();
 
         for (drawCircleData drawCircleData : drawCircleList) {
             double radius = drawCircleData.radius();
             List<String> containsKey = drawCircleData.keys();
             // 円周長でドット数を決める
-            double length = radius * Math.PI;
-            double dotAngle = 2/radius;
-            for (double dotId = 0; dotId < length; dotId += dotAngle) {
-                int posX = (int)(center.x() + radius * Math.cos(dotId));
-                int posY = (int)(center.y() + radius * Math.sin(dotId));
-                dot.draw(guiGraphics, posX, posY);
+            float length = (float) ((radius - 0.5) * Math.PI);
+            int circleDiv = (int) (length/DOT_SCALE);
+            float dotScale = length / circleDiv + 0.5f;
+            poseStack.pushPose();
+            poseStack.translate(center.x() + 0.5, center.y() + 0.5, 0);
+            for (double dotId = 0; dotId < circleDiv; dotId++) {
+                poseStack.mulPose(new Quaternionf().rotateZ((float) ((360f/circleDiv) * Math.PI / 180)));
+                poseStack.translate(-dotScale, (radius - 0.5), 0);
+                poseStack.scale(dotScale, 1f, 1f);
+                //int posX = (int)(center.x() + radius * Math.cos(dotId));
+                //int posY = (int)(center.y() + radius * Math.sin(dotId));
+                dot.draw(guiGraphics, 0, 0);
+                poseStack.scale(1f/dotScale, 1f, 1f);
+                poseStack.translate(dotScale, -(radius - 0.5), 0);
             }
+            poseStack.popPose();
             // 円周上のノードを描画
             for (int nodeId = 0; nodeId < containsKey.size(); nodeId++) {
                 double angle = ((float)nodeId/containsKey.size())*2*Math.PI;
-                int posX = (int)(center.x() + radius * Math.cos(angle));
+                int posX = (int)(center.x() + (radius) * Math.cos(angle));
                 int posY = (int)(center.y() + radius * Math.sin(angle));
                 String key = containsKey.get(nodeId);
                 Node posNode = recipeNodes.stream().filter(Node-> Node.key().equals(key)).findFirst().orElse(null);
@@ -169,11 +182,16 @@ public class MagicCircleAssemblyCategory  implements IRecipeCategory<MagicCircle
     }
 
     private void drawLine(GuiGraphics guiGraphics, Vector2d start, Vector2d end) {
-        double length = start.distance(end);
-        for (int dotId = 0; dotId < length; dotId++) {
-            Vector2d pos = new Vector2d(start).lerp(end, dotId/length);
-            dot.draw(guiGraphics, (int)pos.x(), (int)pos.y());
-        }
+        PoseStack poseStack = guiGraphics.pose();
+        float length = (float) start.distance(end) /2;
+        float angle = (float) (Math.atan2(end.y() - start.y(), end.x() - start.x()));
+        poseStack.pushPose();
+        poseStack.translate(start.x() + 0.5, start.y() + 0.5, 0);
+        poseStack.mulPose(new Quaternionf().rotateZ(angle));
+        poseStack.translate(0, -1, 0);
+        poseStack.scale(length, 1f, 1f);
+        dot.draw(guiGraphics, 0, 0);
+        poseStack.popPose();
     }
 
     @Override

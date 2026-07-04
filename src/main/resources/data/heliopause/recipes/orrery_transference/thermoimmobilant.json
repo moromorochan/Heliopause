@@ -1,0 +1,29 @@
+{
+  "type": "heliopause:orrery_transference",
+  "center": "indigo_marble",
+  "result": {
+    "item": "heliopause:thermoimmobilant",
+    "count": 4
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:clay_ball",
+      "ratio": 1.0
+    },
+    {
+      "item": "minecraft:end_stone",
+      "ratio": 1.5
+    },
+    {
+      "fluid": "heliopause:summer_star_essence",
+      "amount": 1000,
+      "ratio": 4.0
+    },
+    {
+      "fluid": "heliopause:winter_star_essence",
+      "amount": 1000,
+      "ratio": 5.0
+    }
+
+  ]
+}

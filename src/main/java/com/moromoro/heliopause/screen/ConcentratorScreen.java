@@ -3,6 +3,7 @@ package com.moromoro.heliopause.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.blockEntity.ConcentratorBlockEntity;
 import com.moromoro.heliopause.generic.Season;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -61,8 +62,8 @@ public class ConcentratorScreen extends AbstractContainerScreen<ConcentratorMenu
         renderDates(graphics, menu.getDate(), menu.getTime(), leftPos + 8, topPos + 73);
         // タンク
         menu.blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(fluidCap -> {
-            renderTank(graphics, fluidCap.getFluidInTank(0), fluidCap.getTankCapacity(0), mouseX, mouseY, leftPos + 50, topPos + 37, 16, 32);
-            renderTank(graphics, fluidCap.getFluidInTank(1), fluidCap.getTankCapacity(1), mouseX, mouseY, leftPos + 110, topPos + 37, 16, 32);
+            renderTank(graphics, fluidCap.getFluidInTank(ConcentratorBlockEntity.SLOT_INPUT_FLUID), fluidCap.getTankCapacity(ConcentratorBlockEntity.SLOT_INPUT_FLUID), mouseX, mouseY, leftPos + 50, topPos + 37, 16, 32);
+            renderTank(graphics, fluidCap.getFluidInTank(ConcentratorBlockEntity.SLOT_OUTPUT_FLUID), fluidCap.getTankCapacity(ConcentratorBlockEntity.SLOT_OUTPUT_FLUID), mouseX, mouseY, leftPos + 110, topPos + 37, 16, 32);
         });
     }
     
@@ -76,15 +77,15 @@ public class ConcentratorScreen extends AbstractContainerScreen<ConcentratorMenu
         ResourceLocation atlasLocation = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getStillTexture(fluidStack);
         Color tint = new Color(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack));
         graphics.setColor(tint.getRed() / 255f, tint.getGreen() / 255f, tint.getBlue() / 255f, tint.getAlpha() / 255f);
-        RenderSystem.enableBlend();
         for (int spriteY = 0; spriteY < screenTop; spriteY+=16) {
             int partialRemainY = Math.min(16, screenTop - spriteY);
             for (int spriteX = 0; spriteX < width; spriteX+=16) {
                 int partialRemainX = Math.min(16, width - spriteX);
+                RenderSystem.enableBlend();
                 blitSprite(atlasLocation, graphics, x + spriteX, y + height - spriteY - partialRemainY, 0, 0, partialRemainX, partialRemainY);
+                RenderSystem.disableBlend();
             }
         }
-        RenderSystem.disableBlend();
         graphics.setColor(1f, 1f, 1f, 1f);
         // ツールチップ表示
         if(mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height){

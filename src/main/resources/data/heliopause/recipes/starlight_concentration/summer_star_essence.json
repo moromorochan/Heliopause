@@ -15,9 +15,7 @@
   "starlight_conditions": {
     "dimension": "minecraft:overworld",
     "coverage": [
-      "infra_red",
-      "aetheric",
-      "alkahestic"
+      "rose_pulse"
     ],
     "season_range": {
       "start": 150,

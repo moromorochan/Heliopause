@@ -73,8 +73,8 @@ public class HeliopauseBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(BlockRegistry.IRON_SECOND_MIRROR_BLOCK.get());
         this.dropSelf(BlockRegistry.SILVER_MAIN_MIRROR_BLOCK.get());
         this.dropSelf(BlockRegistry.SILVER_SECOND_MIRROR_BLOCK.get());
-        this.dropSelf(BlockRegistry.QUINCE_STEEL_MAIN_MIRROR_BLOCK.get());
-        this.dropSelf(BlockRegistry.QUINCE_STEEL_SECOND_MIRROR_BLOCK.get());
+        this.dropSelf(BlockRegistry.ALCHEMY_STEEL_MAIN_MIRROR_BLOCK.get());
+        this.dropSelf(BlockRegistry.ALCHEMY_STEEL_SECOND_MIRROR_BLOCK.get());
 
         this.dropSelf(BlockRegistry.BLACKBOARD.get());
         this.dropOther(BlockRegistry.WRITTEN_BOARD.get(), BlockRegistry.BLACKBOARD.get());

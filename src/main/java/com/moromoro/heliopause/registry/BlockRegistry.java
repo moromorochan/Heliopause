@@ -315,13 +315,13 @@ public class BlockRegistry {
             BlockBehaviour.Properties.copy(ALCHEMY_BIRON_LENS_BARREL_BLOCK.get())
         ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
     
-    // クインス鋼の鏡
-    public static final RegistryObject<LensBarrelBlock> QUINCE_STEEL_MAIN_MIRROR_BLOCK =
-        registerBlock("quince_steel_main_mirror", () -> new LensBarrelBlock(
+    // 錬金鋼の鏡
+    public static final RegistryObject<LensBarrelBlock> ALCHEMY_STEEL_MAIN_MIRROR_BLOCK =
+        registerBlock("alchemy_steel_main_mirror", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.copy(THERMOIMMOBILANT_LENS_BARREL_BLOCK.get())
         ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
-    public static final RegistryObject<LensBarrelBlock> QUINCE_STEEL_SECOND_MIRROR_BLOCK =
-        registerBlock("quince_steel_second_mirror", () -> new LensBarrelBlock(
+    public static final RegistryObject<LensBarrelBlock> ALCHEMY_STEEL_SECOND_MIRROR_BLOCK =
+        registerBlock("alchemy_steel_second_mirror", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.copy(THERMOIMMOBILANT_LENS_BARREL_BLOCK.get())
         ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
 

@@ -14,13 +14,13 @@ public class CreativeTabRegistry {
         DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Heliopause.MODID);
 
     public static final RegistryObject<CreativeModeTab> HELIOPAUSE_TAB_MAIN = CREATIVE_MODE_TABS.register("heliopause_main",
-        () -> CreativeModeTab.builder().icon(() -> new ItemStack(BlockRegistry.ALCHEMY_STOVE.get()))
+        () -> CreativeModeTab.builder().icon(() -> new ItemStack(BlockRegistry.SIDEROSTAT_TOP.get()))
             .title(Component.translatable("creativetab.heliopause_tab"))
             .displayItems((parameters, output) -> {
                 // 機構
                 //output.accept(BlockRegistry.ALCHEMY_CAMPFIRE.get());
                 //output.accept(BlockRegistry.ALCHEMY_STOVE.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-                //output.accept(BlockRegistry.ROASTING_TABLE.get());
+                output.accept(BlockRegistry.ROASTING_TABLE.get());
                 //output.accept(BlockRegistry.FLUID_CAGE.get());
                 //output.accept(BlockRegistry.FLUID_SPREADER_TOWER.get());
                 //output.accept(ItemRegistry.LOW_COPPER_PIPE_ITEM.get());
@@ -50,8 +50,8 @@ public class CreativeTabRegistry {
                 output.accept(BlockRegistry.GRAPHITE_SECOND_MIRROR_BLOCK.get());
                 output.accept(BlockRegistry.SILVER_MAIN_MIRROR_BLOCK.get());
                 output.accept(BlockRegistry.SILVER_SECOND_MIRROR_BLOCK.get());
-                output.accept(BlockRegistry.QUINCE_STEEL_MAIN_MIRROR_BLOCK.get());
-                output.accept(BlockRegistry.QUINCE_STEEL_SECOND_MIRROR_BLOCK.get());
+                output.accept(BlockRegistry.ALCHEMY_STEEL_MAIN_MIRROR_BLOCK.get());
+                output.accept(BlockRegistry.ALCHEMY_STEEL_SECOND_MIRROR_BLOCK.get());
 
                 // 素材
                 output.accept(BlockRegistry.ALCHEMY_BIRON_BLOCK.get());
@@ -67,7 +67,7 @@ public class CreativeTabRegistry {
                 output.accept(ItemRegistry.SILVER_INGOT.get());
                 output.accept(ItemRegistry.SILVER_NUGGET.get());
                 output.accept(ItemRegistry.RAW_SILVER.get());
-                output.accept(ItemRegistry.QUINCE_STEEL_INGOT.get());
+                output.accept(ItemRegistry.ALCHEMY_STEEL_INGOT.get());
                 output.accept(ItemRegistry.CELESTITE.get());
                 output.accept(ItemRegistry.OPTICAL_GLASS.get());
                 output.accept(ItemRegistry.THERMOIMMOBILANT.get());
@@ -97,7 +97,7 @@ public class CreativeTabRegistry {
                 output.accept(ItemRegistry.IMITATION_CORE_ITEM.get());
                 output.accept(ImitationCoreItem.getImitationCoreWithTag("satellite"));/*,"rocky", 0.8f, 255,255,255, 0.5f*/
                 output.accept(ImitationCoreItem.getImitationCoreWithTag("crimson_planet"));
-                output.accept(ImitationCoreItem.getImitationCoreWithTag("indigo_marbling"));
+                output.accept(ImitationCoreItem.getImitationCoreWithTag("indigo_marble"));
                 output.accept(ImitationCoreItem.getImitationCoreWithTag("ancient_star"));
                 
                 // 建材

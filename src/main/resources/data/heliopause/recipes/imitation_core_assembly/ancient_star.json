@@ -6,5 +6,5 @@
   "color":[127,211,255],
   "cent_force": 1.5,
   "fluid": "heliopause:winter_star_essence",
-  "usage_per_sec": 50
+  "usage_per_sec": 30
 }
