@@ -104,6 +104,7 @@ public class OrreryTransferenceRecipe implements Recipe<Container> {
         //サーバー・クライアント間のやりとり
         @Override
         public @Nullable OrreryTransferenceRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            Heliopause.LOGGER.debug("read from network, {}", recipeId);
             // 中心星のid
             String center = buffer.readUtf();
 

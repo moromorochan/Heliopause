@@ -1,5 +1,6 @@
-package com.moromoro.heliopause.recipe;
+package com.moromoro.heliopause.network;
 
+import com.moromoro.Heliopause;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
@@ -28,6 +29,7 @@ public class LensBarrelCoveragePacket {
     }
 
     public static LensBarrelCoveragePacket decode(FriendlyByteBuf buf) {
+        Heliopause.LOGGER.debug("read from network, {}", buf);
         int size = buf.readVarInt();
         Map<ResourceLocation, LensBarrelCoverageListener.BarrelCoverageData> map = new HashMap<>();
 

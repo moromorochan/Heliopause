@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,7 +22,7 @@ import java.util.List;
 public class TooltipEventHandler {
     // オーバーレイレンダリングに追加する
     @SubscribeEvent
-    public void onRenderGuiOverlayPost(RenderGuiOverlayEvent event) {
+    public void onRenderGuiOverlayPost(RenderGuiEvent event) {
         Minecraft instance = Minecraft.getInstance();
         Player player = instance.player;
         if (player == null) {
@@ -72,7 +72,11 @@ public class TooltipEventHandler {
             BlockPos pos = BlockPos.containing(hitResult.getLocation().add(angle));
             Block block = level.getBlockState(pos).getBlock();
             if(block instanceof IHasHoverDrawBlock iBlock){
-                blockDrawn |= iBlock.renderHoverGraphic(event, instance.level, pos);
+                AbstractBlockTooltipRenderer renderer = iBlock.getRendererHoverGraphic();
+                if(renderer != null){
+                    blockDrawn = renderer.renderHoverGraphic(event, pos);
+                }
+                //blockDrawn = iBlock.renderHoverGraphic(event, pos);
             }
 
         }
@@ -108,7 +112,7 @@ public class TooltipEventHandler {
         }
     }
 
-    private boolean drawTextOverlay(RenderGuiOverlayEvent event, ItemStack itemStack, HitResult hitResult){
+    private boolean drawTextOverlay(RenderGuiEvent event, ItemStack itemStack, HitResult hitResult){
         // アイテムのツールチップをオーバーレイに表示
         if(itemStack.getItem() instanceof IHasHoverTexts iItem){
             Minecraft instance = Minecraft.getInstance();
@@ -127,7 +131,7 @@ public class TooltipEventHandler {
     }
 
     // アイテムのホバーGUIをオーバーレイに表示
-    private boolean drawGraphicOverlay(RenderGuiOverlayEvent event, ItemStack itemStack, HitResult hitResult){
+    private boolean drawGraphicOverlay(RenderGuiEvent event, ItemStack itemStack, HitResult hitResult){
         if(itemStack.getItem() instanceof IHasHoverDraw iItem){
             Minecraft instance = Minecraft.getInstance();
             // アイテムの関数にeventを渡してレンダラを回す

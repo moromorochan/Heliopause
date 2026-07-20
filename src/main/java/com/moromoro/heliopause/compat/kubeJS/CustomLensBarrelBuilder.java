@@ -24,7 +24,7 @@ public class CustomLensBarrelBuilder extends BlockBuilder {
     
     @Override
     public Block createObject() {
-        return new LensBarrelBlock(BlockBehaviour.Properties.of().sound(SoundType.WOOD).strength(1.0F));
+        return new LensBarrelBlock(createProperties());
     }
     
     @Override

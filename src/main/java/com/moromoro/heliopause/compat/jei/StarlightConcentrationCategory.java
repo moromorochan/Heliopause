@@ -5,7 +5,7 @@ import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.ConcentratorBlockEntity;
 import com.moromoro.heliopause.registry.enumProperty.LensBarrelCoverageIconValue;
 import com.moromoro.heliopause.generic.Season;
-import com.moromoro.heliopause.recipe.LensBarrelCoverageListener;
+import com.moromoro.heliopause.network.LensBarrelCoverageListener;
 import com.moromoro.heliopause.recipe.StarlightConcentrationRecipe;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import mezz.jei.api.constants.VanillaTypes;
@@ -19,11 +19,9 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.WinScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -33,7 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 public class StarlightConcentrationCategory implements IRecipeCategory<StarlightConcentrationRecipe> {
     public static final RecipeType<StarlightConcentrationRecipe> STARLIGHT_CONCENTRATION_TYPE =
@@ -112,12 +110,12 @@ public class StarlightConcentrationCategory implements IRecipeCategory<Starlight
         // 内訳を表示
         int slotHeight = 96;
         for (String coverageName : conditions.coverage()) {
-            Optional<LensBarrelCoverageListener.BarrelCoverageData> dataOpt =
-                LensBarrelCoverageListener.DATA.values().stream()
-                    .filter(d -> d.name().equals(coverageName))
-                    .findFirst();
-            if(dataOpt.isPresent()){
-                LensBarrelCoverageListener.BarrelCoverageData data = dataOpt.get();
+            Map<ResourceLocation, LensBarrelCoverageListener.BarrelCoverageData> dataOpt = LensBarrelCoverageListener.getMap();
+            LensBarrelCoverageListener.BarrelCoverageData data = dataOpt.get(new ResourceLocation(Heliopause.MODID, coverageName));
+                    //.filter(d -> d.name().equals())
+                    //.findFirst();
+            if(data!=null){
+                //LensBarrelCoverageListener.BarrelCoverageData data = dataOpt;//dataOpt.get();
                 LensBarrelCoverageIconValue icon = LensBarrelCoverageIconValue.fromString(data.icon());
                 if(icon == null){
                     continue;

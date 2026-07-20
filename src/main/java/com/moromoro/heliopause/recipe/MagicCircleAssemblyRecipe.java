@@ -116,6 +116,7 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
 
         @Override
         public @Nullable MagicCircleAssemblyRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            Heliopause.LOGGER.debug("read from network, {}", recipeId);
             String triggerType = buffer.readUtf();
             ResourceLocation triggerResource = buffer.readResourceLocation();
             Boolean resultIsBlock = buffer.readBoolean();

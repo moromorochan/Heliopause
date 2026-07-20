@@ -123,6 +123,7 @@ public class StarlightConcentrationRecipe implements Recipe<Container> {
         //サーバー・クライアント間のやりとり
         @Override
         public @Nullable StarlightConcentrationRecipe fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer){
+            Heliopause.LOGGER.debug("read from network, {}", recipeId);
             Ingredient ingredientItem = Ingredient.fromNetwork(buffer);
             FluidStack ingredientFluid = FluidStack.readFromPacket(buffer);
             

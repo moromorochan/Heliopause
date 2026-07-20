@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -154,13 +154,8 @@ public class CompassItem extends Item implements IHasHoverTexts, IHasHoverDraw {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         // 変更キーを押しているなら書くもの変更
-        if (KeyMapRegistry.CIRCLE_SELECT.isPressed()) {
-            if (!level.isClientSide) {
-                changeSelect(itemStack);
-            }
-            // 選択座標をリセット
-            removePosTag(itemStack.getOrCreateTag(), itemStack);
-            return InteractionResultHolder.consume(itemStack);
+        if (KeyMapRegistry.CIRCLE_SELECT.isActivated(level, player, hand)) {
+            return changeSelect(level, itemStack);
         }
         return super.use(level, player, hand);
     }
@@ -176,8 +171,8 @@ public class CompassItem extends Item implements IHasHoverTexts, IHasHoverDraw {
         //Direction direction = context.getClickedFace();
         ItemStack itemStack = context.getItemInHand();
         // 選択画面ならスキップ
-        if(KeyMapRegistry.CIRCLE_SELECT.isPressed()){
-            this.use(level,player, context.getHand());
+        if(KeyMapRegistry.CIRCLE_SELECT.isActivated(level, player, context.getHand())){
+            changeSelect(level, itemStack);
             return InteractionResult.CONSUME;
         }
         //ブロックを取得
@@ -310,18 +305,26 @@ public class CompassItem extends Item implements IHasHoverTexts, IHasHoverDraw {
         }
     }
 
-    private void changeSelect(ItemStack stack){
-        Minecraft instance = Minecraft.getInstance();
-        if(instance.level == null || !instance.level.isClientSide){
+    private InteractionResultHolder<ItemStack> changeSelect(Level level,ItemStack stack){
+        /*Minecraft instance = Minecraft.getInstance();
+        if(instance.level == null || instance.level.isClientSide){
             return;
+        }*/
+        if (!level.isClientSide) {
+            CompoundTag nbt = stack.getOrCreateTag();
+            this.selectIndex = nbt.getInt(SELECT) + 1;
+            //++this.selectIndex;
+            if(selectIndex >= selectMax){
+                selectIndex -= selectMax;
+            }
+            nbt.putInt(SELECT,selectIndex);
+            stack.setTag(nbt);
         }
-        CompoundTag nbt = stack.getOrCreateTag();
-        this.selectIndex = nbt.getInt(SELECT) + 1;
-        //++this.selectIndex;
-        if(selectIndex >= selectMax){
-            selectIndex -= selectMax;
-        }
-        nbt.putInt(SELECT,selectIndex);
+        
+        // 選択座標をリセット
+        removePosTag(stack.getOrCreateTag(), stack);
+        return InteractionResultHolder.consume(stack);
+        
     }
 
     public int getSelectIndex(ItemStack stack) {
@@ -433,7 +436,7 @@ public class CompassItem extends Item implements IHasHoverTexts, IHasHoverDraw {
 
     // 選択メニュー表示
     @Override
-    public boolean renderHoverGraphic(RenderGuiOverlayEvent event, ClientLevel clientLevel, ItemStack itemStack, HitResult hitResult) {
+    public boolean renderHoverGraphic(RenderGuiEvent event, ClientLevel clientLevel, ItemStack itemStack, HitResult hitResult) {
         //new CircleSelectScreen(itemStack, hitResult);
         Minecraft instance = Minecraft.getInstance();
         LocalPlayer player = instance.player;
