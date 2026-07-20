@@ -6,9 +6,10 @@ import com.moromoro.heliopause.block.LensBarrelBlock;
 import com.moromoro.heliopause.entity.LensBarrelEntity;
 import com.moromoro.heliopause.generic.Season;
 import com.moromoro.heliopause.generic.StackControl;
-import com.moromoro.heliopause.recipe.LensBarrelCoverageListener.BarrelCoverageData;
+import com.moromoro.heliopause.network.LensBarrelCoverageListener.BarrelCoverageData;
 import com.moromoro.heliopause.recipe.StarlightConcentrationRecipe;
 import com.moromoro.heliopause.registry.BlockEntityRegistry;
+import com.moromoro.heliopause.registry.RecipeTypeRegistry;
 import com.moromoro.heliopause.registry.TagRegistry;
 import com.moromoro.heliopause.screen.ConcentratorMenu;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -61,10 +62,12 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
     public static final int MAX_BARREL_LENGTH = ConfigHolder.MAX_BARREL_LENGTH.get();
     
     // メニュー渡し用データ ワールド依存なのでnbtには保存しない
-    private long date;
-    private long dayTime;
     private Set<BarrelCoverageData> barrelCoverage;
     private boolean isSyncedToStar;
+    
+    // 日時表示
+    private long date;
+    private long dayTime;
     
     // 進行中レシピ
     private StarlightConcentrationRecipe currentRecipe = null;
@@ -342,6 +345,9 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
     @Override
     protected void saveAdditional(@NotNull CompoundTag nbt) {
         super.saveAdditional(nbt);
+        // 日時
+        nbt.putLong("Date",date);
+        nbt.putLong("DayTime",dayTime);
         // アイテム
         nbt.put("Items", itemHandler.serializeNBT());
         // 液体タンク
@@ -360,6 +366,9 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
     @Override
     public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
+        // 日時
+        date = nbt.getLong("Date");
+        dayTime = nbt.getLong("DayTime");
         // アイテム
         if (nbt.contains("Items")) {
             itemHandler.deserializeNBT(nbt.getCompound("Items"));
@@ -514,7 +523,7 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         ItemStack itemIn = itemHandler.getStackInSlot(0);
         FluidStack fluidIn = fluidHandler.fluidTanks[0].getFluid();
 
-        for (StarlightConcentrationRecipe recipe : level.getRecipeManager().getAllRecipesFor(StarlightConcentrationRecipe.Type.INSTANCE)) {
+        for (StarlightConcentrationRecipe recipe : level.getRecipeManager().getAllRecipesFor(RecipeTypeRegistry.STARLIGHT_CONCENTRATION.get())) {
 
             // ingredient 判定
             if (!recipe.getIngredientItem().isEmpty()) {

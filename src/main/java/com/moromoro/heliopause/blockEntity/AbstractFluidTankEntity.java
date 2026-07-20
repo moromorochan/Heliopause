@@ -25,39 +25,23 @@ public abstract class AbstractFluidTankEntity extends AbstractFluidConcealBlockE
             protected void onContentsChanged() {
                 super.onContentsChanged();
                 setChanged();
-                if (level != null && !level.isClientSide) {
-                    //Heliopause.LOGGER.debug("contentChanged_abstract");
-                    updateRenderData();
-                }
             }
         };
     }
 
-    protected abstract void updateRenderData();
-    protected abstract void removeRenderData();
-
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (level != null && !level.isClientSide) {
-            removeRenderData();
-        }
     }
 
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        if (level != null && !level.isClientSide) {
-            removeRenderData();
-        }
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        if (level != null && !level.isClientSide) {
-            updateRenderData();
-        }
         smoothedTankAmount = getFluidInTank(0).getAmount();
     }
 
@@ -66,9 +50,6 @@ public abstract class AbstractFluidTankEntity extends AbstractFluidConcealBlockE
     public void load(@NonNull CompoundTag nbt){
         super.load(nbt);
         lastFrameTime = System.nanoTime();
-        if (level != null && !level.isClientSide) {
-            updateRenderData();
-        }
         setSmoothedTankAmount(getFluidInTank(0).getAmount());
     }
 

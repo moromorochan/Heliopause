@@ -52,6 +52,7 @@ public class MoonlightPouringRecipe implements Recipe<Container> {
         //サーバー・クライアント間のやりとり
         @Override
         public @Nullable MoonlightPouringRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            Heliopause.LOGGER.debug("read from network, {}", recipeId);
             int craftTime = buffer.readInt();
             double craftExp = buffer.readDouble();
             Ingredient inputItem = Ingredient.fromNetwork(buffer);
@@ -65,7 +66,7 @@ public class MoonlightPouringRecipe implements Recipe<Container> {
             buffer.writeInt(recipe.getCraftTime());
             buffer.writeDouble(recipe.getCraftExp());
             recipe.getIngredient().toNetwork(buffer);
-            buffer.writeItemStack(recipe.getResultItem(null),false);
+            buffer.writeItem(recipe.result);
         }
     }
 

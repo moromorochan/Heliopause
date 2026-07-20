@@ -1,11 +1,10 @@
-package com.moromoro.heliopause.recipe;
+package com.moromoro.heliopause.network;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.registry.enumProperty.LensBarrelCoverageIconValue;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -15,8 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static net.minecraft.util.datafix.fixes.BlockEntitySignTextStrictJsonFix.GSON;
 
 // 鏡筒の収斂帯域幅を登録する
 public class LensBarrelCoverageListener extends SimpleJsonResourceReloadListener {

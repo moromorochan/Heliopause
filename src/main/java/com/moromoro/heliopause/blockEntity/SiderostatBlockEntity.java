@@ -329,12 +329,12 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
         if(springAmount > 0 && !angleSynced){
             springCharge += 23;
             if(level != null){
-                level.playSound(Minecraft.getInstance().player,worldPosition, SoundRegistry.SIDEROSTAT_WINDING.get(), SoundSource.BLOCKS,1.0f,1.0f);
-                //level.playSound(Minecraft.getInstance().player,worldPosition, SoundEvents.FISHING_BOBBER_RETRIEVE, SoundSource.BLOCKS, 1.0f,0.2f);
+                level.playSound(null,worldPosition, SoundRegistry.SIDEROSTAT_WINDING.get(), SoundSource.BLOCKS,1.0f,1.0f);
+                //level.playSound(null,worldPosition, SoundEvents.FISHING_BOBBER_RETRIEVE, SoundSource.BLOCKS, 1.0f,0.2f);
             }
             /*angleSynced = false;
             springCharge -= 5;
-            level.playSound(Minecraft.getInstance().player,worldPosition, SoundEvents.FISHING_BOBBER_RETRIEVE, SoundSource.BLOCKS, 1.0f,0.2f);
+            level.playSound(null,worldPosition, SoundEvents.FISHING_BOBBER_RETRIEVE, SoundSource.BLOCKS, 1.0f,0.2f);
             setChanged();
             if(level != null){
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
@@ -373,14 +373,14 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
         if (!powered && springAmount <= 0 && topType == SiderostatTopState.FULL && isNight){
             BlockState newState = topState.setValue(SiderostatTopBlock.FACING_SIDEROSTAT,SiderostatTopState.MOVING);
             level.setBlock(topPos, newState, 3);
-            level.playSound(Minecraft.getInstance().player, basePos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
+            level.playSound(null, basePos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
             //angleSynced = true;
         }
         // ゼンマイが巻かれ始めたとき
         else if(springCharge > 0 && topType == SiderostatTopState.EMPTY){
             BlockState newState = topState.setValue(SiderostatTopBlock.FACING_SIDEROSTAT,SiderostatTopState.MOVING);
             level.setBlock(topPos, newState, 3);
-            level.playSound(Minecraft.getInstance().player, basePos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
+            level.playSound(null, basePos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
         }
         // 稼働状態で
         else if(topType == SiderostatTopState.MOVING){
@@ -394,7 +394,7 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
                     if(springAmount >= currentMoonAngle){
                         angleSynced = true;
                     }
-                    //level.playSound(Minecraft.getInstance().player, pos, SoundEvents.DISPENSER_FAIL, SoundSource.BLOCKS, 0.5f,0.5f);
+                    //level.playSound(null, pos, SoundEvents.DISPENSER_FAIL, SoundSource.BLOCKS, 0.5f,0.5f);
                 }
                 else if(springCharge > 0){
                     // チャージ
@@ -411,7 +411,7 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
                         springCharge = 0;
                         BlockState newState = topState.setValue(SiderostatTopBlock.FACING_SIDEROSTAT,SiderostatTopState.FULL);
                         level.setBlock(topPos, newState, 3);
-                        level.playSound(Minecraft.getInstance().player, basePos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
+                        level.playSound(null, basePos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
                     }
                 }
             }
@@ -437,7 +437,7 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
             if(springAmount >= 180 /*&& !isNight*/){
                 BlockState newState = topState.setValue(SiderostatTopBlock.FACING_SIDEROSTAT,SiderostatTopState.EMPTY);
                 level.setBlock(topPos, newState, 3);
-                level.playSound(Minecraft.getInstance().player, basePos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
+                level.playSound(null, basePos, SoundRegistry.SIDEROSTAT_LOCK.get(), SoundSource.BLOCKS, 1.0f,1.0f);
 
                 // 停止状態に
                 springAmount = 180;

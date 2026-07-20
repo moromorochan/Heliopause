@@ -138,12 +138,14 @@ public class WrittenBoardBlock extends AbstractWrittenBoardBlock{
                         blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(),
                         SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1f, 1f);
                     // パーティクルを生成
-                    StarRippleParticles particles = (StarRippleParticles) Minecraft.getInstance().particleEngine.createParticle(
-                        ParticleRegistry.STAR_RIPPLE_PARTICLES.get(),
-                        blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(), 0,0,0
-                    );
-                    if(particles!=null) {
-                        particles.setScale(1.5f);
+                    if(level.isClientSide()){
+                        StarRippleParticles particles = (StarRippleParticles) Minecraft.getInstance().particleEngine.createParticle(
+                            ParticleRegistry.STAR_RIPPLE_PARTICLES.get(),
+                            blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(), 0,0,0
+                        );
+                        if(particles!=null) {
+                            particles.setScale(1.5f);
+                        }
                     }
                 }
                 // デバッグ用

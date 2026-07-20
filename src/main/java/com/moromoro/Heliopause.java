@@ -6,8 +6,8 @@ import com.moromoro.heliopause.compat.kubeJS.HeliopauseKubeJSCompat;
 import com.moromoro.heliopause.event.TooltipEventHandler;
 import com.moromoro.heliopause.item.FluidBottle;
 import com.moromoro.heliopause.network.NetworkChannel;
-import com.moromoro.heliopause.recipe.LensBarrelCoverageListener;
-import com.moromoro.heliopause.recipe.LensBarrelCoveragePacket;
+import com.moromoro.heliopause.network.LensBarrelCoverageListener;
+import com.moromoro.heliopause.network.LensBarrelCoveragePacket;
 import com.moromoro.heliopause.registry.*;
 import com.moromoro.heliopause.screen.ConcentratorScreen;
 import com.moromoro.heliopause.screen.RoastingTableScreen;
@@ -86,9 +86,6 @@ public class Heliopause {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
-        //ブロックへのホバーでツールチップを表示する
-        MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
-
         // ネットワークのパケット登録
         NetworkChannel.register();
     }
@@ -143,6 +140,9 @@ public class Heliopause {
             MenuScreens.register(MenuTypeRegistry.ROASTING_TABLE_MENU.get(), RoastingTableScreen::new);
             MenuScreens.register(MenuTypeRegistry.SIDEROSTAT_MENU.get(), SiderostatScreen::new);
             MenuScreens.register(MenuTypeRegistry.CONCENTRATOR_MENU.get(), ConcentratorScreen::new);
+            
+            //ブロックへのホバーでツールチップを表示する
+            MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
 
             //キーコンフィグの追加
 

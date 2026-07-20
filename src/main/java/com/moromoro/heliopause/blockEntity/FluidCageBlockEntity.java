@@ -55,14 +55,6 @@ public class FluidCageBlockEntity extends AbstractFluidOrbBlockEntity {
         return null;
     }
 
-    protected void updateRenderData() {
-        FluidCageBlockRenderer.updateData(this.getBlockPos(), this.tank.getFluid());
-    }
-
-    protected void removeRenderData() {
-        FluidCageBlockRenderer.removeData(this.getBlockPos());
-    }
-
     @Override
     //レンダリング時のオフセットを設定
     public Vec3 centerOffset() {

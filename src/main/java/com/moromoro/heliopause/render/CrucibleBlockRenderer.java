@@ -32,23 +32,9 @@ public class CrucibleBlockRenderer implements BlockEntityRenderer<CrucibleBlockE
     private static final float FLUID_TOP = 13f;
     private static final float FLUID_BOTTOM = 2f;//(float) (CrucibleBlock.INNER.min(Direction.Axis.Y));
 
-    private static final HashMap<BlockPos,FluidStack> fluidList = new HashMap<>();
-
-    public static void updateData(BlockPos pos, FluidStack updateStack) {
-        if(updateStack.getAmount() == 0){removeData(pos); return;}
-        if (fluidList.containsKey(pos)){
-            fluidList.replace(pos,updateStack);
-        }else{
-            fluidList.put(pos,updateStack);
-        }
-    }
-    public static void removeData(BlockPos pos){
-        fluidList.remove(pos);
-    }
-
     @Override
     public void render(CrucibleBlockEntity entity, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-        FluidStack fluidStack = fluidList.getOrDefault(entity.getBlockPos(), FluidStack.EMPTY);
+        FluidStack fluidStack = entity.getFluidInTank(0);
         //タンクが空なら描画処理を完了
         if (fluidStack.isEmpty())
         {

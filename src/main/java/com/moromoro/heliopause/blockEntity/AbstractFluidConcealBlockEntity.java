@@ -117,8 +117,10 @@ public abstract class AbstractFluidConcealBlockEntity extends FluidHandlerBlockE
     }
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        CompoundTag nbt = packet.getTag();
-        load(nbt == null ? new CompoundTag() : nbt);
+        //CompoundTag nbt = packet.getTag();
+        //load(nbt == null ? new CompoundTag() : nbt);
+        super.onDataPacket(net, packet);
+        handleUpdateTag(packet.getTag());
     }
 
     @Override
@@ -129,7 +131,8 @@ public abstract class AbstractFluidConcealBlockEntity extends FluidHandlerBlockE
     }
     @Override
     public void handleUpdateTag(CompoundTag nbt) {
-        load(nbt);
+        super.handleUpdateTag(nbt);
+        this.load(nbt);
     }
 
     //Capability関連

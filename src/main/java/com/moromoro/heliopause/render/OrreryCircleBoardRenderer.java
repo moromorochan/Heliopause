@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.moromoro.heliopause.block.OrreryCircleBoardBlock;
 import com.moromoro.heliopause.blockEntity.OrreryCircleBoardBlockEntity;
+import com.moromoro.heliopause.generic.Interpolate;
 import com.moromoro.heliopause.generic.PolarCoordinates;
 import com.moromoro.heliopause.ingredient.CircumstellarIngredient;
 import com.moromoro.heliopause.recipe.ImitationCoreAssemblyRecipe;
@@ -34,8 +35,6 @@ import java.util.Optional;
 public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircleBoardBlockEntity> {
     protected static long lastFrameTime;
     protected static double currentRotation;
-
-    public static double FIXED_OFFSET_Y = 1.0;
 
     private final BlockRenderDispatcher blockRenderer;
     private final ItemRenderer itemRenderer;
@@ -98,7 +97,7 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
         float itemShrinkProgress = remapProgress(0f, 0.05f, finishingProgress);
 
         // 工程ごとの高さオフセット
-        double progressOffsetY = getProgressOffsetY(entity, partialTicks);
+        double progressOffsetY = OrreryCircleBoardBlockEntity.getProgressOffsetY(entity, partialTicks);
 
         //衛星の描画
         List<CircumstellarIngredient> ingredients = entity.getCircumstellars();//ingredientsList.getOrDefault(entity.getBlockPos(), new ArrayList<>());//entity.getCircumstellars();
@@ -195,7 +194,7 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
                         float orbitalVisualRad;
                         // 工程オフセット
                         if(finishingProgress > 0.9f){
-                            orbitalVisualRad = (float) (orbitalRadius * sigmoidInterpolate(1 - orbitShrinkProgress, 20, 0.5, 1.0));
+                            orbitalVisualRad = (float) (orbitalRadius * Interpolate.sigmoidInterpolate(1 - orbitShrinkProgress, 20, 0.5, 1.0));
                         }else{
                             orbitalVisualRad = orbitalRadius;
                         }
@@ -305,44 +304,13 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
         return (localRotation / divider) % (2 * java.lang.Math.PI);
     }
 
-    public static double sigmoidInterpolate(double partialValue, double scale, double sigmoidStart, double sigmoidEnd) {
-        // 範囲を反映
-        double localPartialValue = Math.lerp(sigmoidStart, sigmoidEnd, partialValue);
-        // 端のサイズを取得
-        double minSize = 1.0 / (1.0 + Math.exp((0.5 - sigmoidStart) * scale));
-        double maxSize = 1.0 / (1.0 + Math.exp((0.5 - sigmoidEnd) * scale));
-        // シグモイド関数
-        double localSigmoid = 1.0 / (1.0 + Math.exp((0.5 - localPartialValue) * scale));
-        // 範囲を0~1にした補間を返す
-        return (localSigmoid - minSize) / (maxSize - minSize);
-    }
-
-    // 工程ごとの高さオフセットを取得
-    public static double getProgressOffsetY(@NotNull OrreryCircleBoardBlockEntity entity, float partialTicks) {
-        double offset;
-        float timer = entity.getProgressTimer() + partialTicks;
-
-        if(entity.isCraftingInProgress()){
-            //double progress = Math.min(startTick, startTick+timer) / startTick;
-            float startProgress = 1 + Math.min(0,timer / OrreryCircleBoardBlockEntity.STARTING_TICK);
-            offset = sigmoidInterpolate(startProgress, 10, 0, 1);
-        } else if (entity.isCraftingInFinish()) {
-            //double progress = timer / finishTick;
-            float finishProgress = timer / OrreryCircleBoardBlockEntity.FINISHING_TICK;
-            offset = 1;// + finishProgress * 0.3;
-        }else {
-            offset = 0.0d;
-        }
-        return offset + FIXED_OFFSET_Y;
-    }
-
     private double getCenterStarOffsetY(@NotNull OrreryCircleBoardBlockEntity entity, float partialTicks){
         double offset;
         float timer = entity.getProgressTimer() + partialTicks;
 
         if(entity.isCraftingInProgress()){
             float startProgress = 1 + Math.min(0,timer / OrreryCircleBoardBlockEntity.STARTING_TICK);
-            offset = sigmoidInterpolate( startProgress, 10, 0.4,1);
+            offset = Interpolate.sigmoidInterpolate( startProgress, 10, 0.4,1);
         } else if (entity.isCraftingInFinish()) {
             float finishProgress = timer / OrreryCircleBoardBlockEntity.FINISHING_TICK;
             //double start = 0.4;
@@ -351,7 +319,7 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
             offset = 0.0d;
         }
 
-        return offset + FIXED_OFFSET_Y;
+        return offset + OrreryCircleBoardBlockEntity.FIXED_OFFSET_Y;
     }
 
     private double getCenterStarScaleOffset(double baseScale, @NotNull OrreryCircleBoardBlockEntity entity, float partialTicks){
@@ -363,20 +331,20 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
         if(entity.isCraftingInProgress()){
             float startProgress = 1 + Math.min(0,timer / OrreryCircleBoardBlockEntity.STARTING_TICK);
             //double start = 0.0;
-            offset = startSize + sigmoidInterpolate( startProgress, 10, 0, 1) * (1-startSize);
+            offset = startSize + Interpolate.sigmoidInterpolate( startProgress, 10, 0, 1) * (1-startSize);
         } else if (entity.isCraftingInFinish()) {
             //double progress = timer / finishTick;
             float finishProgress = timer / OrreryCircleBoardBlockEntity.FINISHING_TICK;
             if(finishProgress < 0.85){
                 //double end = 0.90;
                 double partProgress = remapProgress(0, 0.85f, finishProgress);//finishProgress / end;
-                offset = 1 + sigmoidInterpolate(partProgress, 4, 0, 0.5) * 0.5;
+                offset = 1 + Interpolate.sigmoidInterpolate(partProgress, 4, 0, 0.5) * 0.5;
             }else if (finishProgress < 0.90){
                 offset = 1.5;
             }else{
                 //double start = 0.95;
                 double partProgress = remapProgress(0.9f,0.95f,finishProgress);//(finishProgress - start) / (1-start);
-                offset = 1.5 + sigmoidInterpolate(partProgress, 20, 0.5, 1) * -1.5/*(1.5 - startSize)*/;
+                offset = 1.5 + Interpolate.sigmoidInterpolate(partProgress, 20, 0.5, 1) * -1.5/*(1.5 - startSize)*/;
             }
         }else {
             offset = 0.0d;
@@ -599,7 +567,7 @@ public class OrreryCircleBoardRenderer extends WrittenBoardRenderer<OrreryCircle
     }
 
     private void renderArc(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource,float angleStart, float angleEnd, float circleRadius, int circleColor){
-        renderArc(poseStack, bufferSource, new Vec3(0,calcOffsetY(1) + FIXED_OFFSET_Y, 0),angleStart, angleEnd, circleRadius, circleColor);
+        renderArc(poseStack, bufferSource, new Vec3(0,calcOffsetY(1) + OrreryCircleBoardBlockEntity.FIXED_OFFSET_Y, 0),angleStart, angleEnd, circleRadius, circleColor);
     }
 
     private void renderCircle(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, Vec3 circlePos, float circleRadius, int circleColor){

@@ -30,9 +30,13 @@ public class BlockRegistry {
         return blockObject;
     }
     
-    private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, Function<RegistryObject<T>, Supplier<? extends Item>> item) {
+    private static <T extends Block> RegistryObject<Item> registerLensBarrelBlockItem(String name, RegistryObject<T> block) {
+        return ItemRegistry.ITEMS.register(name, () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+    }
+    
+    private static <T extends Block> RegistryObject<T> registerLensBarrelBlock(String name, Supplier<T> block) {
         RegistryObject<T> blockObject = BLOCKS.register(name, block);
-        ItemRegistry.ITEMS.register(name, item.apply(blockObject));
+        registerLensBarrelBlockItem(name, blockObject);
         return blockObject;
     }
 
@@ -248,82 +252,82 @@ public class BlockRegistry {
 
     // 鏡筒 木製
     public static final RegistryObject<LensBarrelBlock> WOODEN_LENS_BARREL_BLOCK =
-        registerBlock("wooden_lens_barrel", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("wooden_lens_barrel", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.of()
                 .strength(1.0F)
                 .sound(SoundType.CHERRY_WOOD)
                 .noOcclusion()
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     
     // 鏡筒 石製
     public static final RegistryObject<LensBarrelBlock> STONE_LENS_BARREL_BLOCK =
-        registerBlock("stone_lens_barrel", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("stone_lens_barrel", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.of()
                 .requiresCorrectToolForDrops()
                 .strength(1.0F)
                 .sound(SoundType.STONE)
                 .noOcclusion()
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     
     // 鏡筒 錬金赤銅
     public static final RegistryObject<LensBarrelBlock> ALCHEMY_BIRON_LENS_BARREL_BLOCK =
-        registerBlock("alchemy_biron_lens_barrel", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("alchemy_biron_lens_barrel", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.of()
                 .requiresCorrectToolForDrops()
                 .strength(1.0F)
                 .sound(SoundType.NETHERITE_BLOCK)
                 .noOcclusion()
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     
     // 鏡筒 超断熱材
     public static final RegistryObject<LensBarrelBlock> THERMOIMMOBILANT_LENS_BARREL_BLOCK =
-        registerBlock("thermoimmobilant_lens_barrel", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("thermoimmobilant_lens_barrel", () -> new LensBarrelBlock(
            BlockBehaviour.Properties.of()
                .requiresCorrectToolForDrops()
                .strength(4.5F)
                .sound(SoundType.LODESTONE)
                .noOcclusion()
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     
     // 鉄の鏡
     public static final RegistryObject<LensBarrelBlock> IRON_MAIN_MIRROR_BLOCK =
-        registerBlock("iron_main_mirror", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("iron_main_mirror", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.copy(WOODEN_LENS_BARREL_BLOCK.get())
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     public static final RegistryObject<LensBarrelBlock> IRON_SECOND_MIRROR_BLOCK =
-        registerBlock("iron_second_mirror", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("iron_second_mirror", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.copy(WOODEN_LENS_BARREL_BLOCK.get())
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     
     // 黒鉛の鏡
     public static final RegistryObject<LensBarrelBlock> GRAPHITE_MAIN_MIRROR_BLOCK =
-        registerBlock("graphite_main_mirror", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("graphite_main_mirror", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.copy(STONE_LENS_BARREL_BLOCK.get())
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     public static final RegistryObject<LensBarrelBlock> GRAPHITE_SECOND_MIRROR_BLOCK =
-        registerBlock("graphite_second_mirror", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("graphite_second_mirror", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.copy(STONE_LENS_BARREL_BLOCK.get())
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     
     // 銀の鏡
     public static final RegistryObject<LensBarrelBlock> SILVER_MAIN_MIRROR_BLOCK =
-        registerBlock("silver_main_mirror", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("silver_main_mirror", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.copy(ALCHEMY_BIRON_LENS_BARREL_BLOCK.get())
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     public static final RegistryObject<LensBarrelBlock> SILVER_SECOND_MIRROR_BLOCK =
-        registerBlock("silver_second_mirror", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("silver_second_mirror", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.copy(ALCHEMY_BIRON_LENS_BARREL_BLOCK.get())
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     
     // 錬金鋼の鏡
     public static final RegistryObject<LensBarrelBlock> ALCHEMY_STEEL_MAIN_MIRROR_BLOCK =
-        registerBlock("alchemy_steel_main_mirror", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("alchemy_steel_main_mirror", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.copy(THERMOIMMOBILANT_LENS_BARREL_BLOCK.get())
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
     public static final RegistryObject<LensBarrelBlock> ALCHEMY_STEEL_SECOND_MIRROR_BLOCK =
-        registerBlock("alchemy_steel_second_mirror", () -> new LensBarrelBlock(
+        registerLensBarrelBlock("alchemy_steel_second_mirror", () -> new LensBarrelBlock(
             BlockBehaviour.Properties.copy(THERMOIMMOBILANT_LENS_BARREL_BLOCK.get())
-        ), block -> () -> new LensBarrelBlockItem(block.get(), new Item.Properties()));
+        ));
 
     /*
     //液体注入器

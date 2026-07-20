@@ -1,7 +1,6 @@
 package com.moromoro.heliopause.network;
 
 import com.moromoro.Heliopause;
-import com.moromoro.heliopause.recipe.LensBarrelCoveragePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -26,6 +25,14 @@ public class NetworkChannel {
             LensBarrelCoveragePacket::encode,
             LensBarrelCoveragePacket::decode,
             LensBarrelCoveragePacket::handle
+        );
+        
+        CHANNEL.registerMessage(
+            id++,
+            KeyPacket.class,
+            KeyPacket::encode,
+            KeyPacket::decode,
+            KeyPacket::handle
         );
     }
 
