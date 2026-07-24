@@ -349,10 +349,7 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
         // 月の角度を取り出す
         double currentMoonAngle = getCurrentMoonAngle(level);
         boolean isNight = Math.ceil(currentMoonAngle) > 0 && currentMoonAngle < 180;
-        // 昼や雨天はインジケータを無効化
-        if(!isNight || level.isRaining() || level.isThundering()){
-            canSeeSkies = 0;
-        }
+
         // ブロックステートから稼働状態を取り出す
         BlockPos topPos = basePos.above();
         BlockState topState = level.getBlockState(topPos);
@@ -417,9 +414,15 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
             }
             // 揃っているとき
             else{
-                // 視線方向の視野チェック
-                canSeeSkies = checkCanSeeSkySlice(currentMoonAngle, canSeeSkies);
-                canSeeSkies = checkCanSeeSkySlice(currentMoonAngle + SLICE_ANGLE, canSeeSkies);
+                
+                // 昼や雨天はインジケータを無効化
+                if(!isNight || level.isRaining() || level.isThundering()){
+                    canSeeSkies = 0;
+                }else{
+                    // 視線方向の視野チェック
+                    canSeeSkies = checkCanSeeSkySlice(currentMoonAngle, canSeeSkies);
+                    canSeeSkies = checkCanSeeSkySlice(currentMoonAngle + SLICE_ANGLE, canSeeSkies);
+                }
 
                 // 合わせる
                 springAmount = (int)Math.floor(currentMoonAngle);

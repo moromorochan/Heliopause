@@ -1,6 +1,7 @@
 package com.moromoro.heliopause.compat.jei;
 
 import com.moromoro.Heliopause;
+import com.moromoro.heliopause.generic.DescriptionTooltip;
 import com.moromoro.heliopause.recipe.MoonlightPouringRecipe;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import mezz.jei.api.constants.VanillaTypes;
@@ -66,6 +67,14 @@ public class MoonlightPouringCategory implements IRecipeCategory<MoonlightPourin
         drawMoon(guiGraphics);
         // レシピの処理時間
         drawRecipeTime(recipe, guiGraphics);
+        
+        // 月明かりの説明を表示
+        double indicatorAreaDistance = new Vector2d(mouseX,mouseY).distance(75, 75);
+        if(mouseY < 75 && indicatorAreaDistance > 60 && indicatorAreaDistance < 75){
+            DescriptionTooltip.drawDescriptionTooltip(guiGraphics, this.getWidth(),
+                Component.translatable("recipe.heliopause.moonlight_pouring.moonlight_description"), 200,
+                mouseX, (int) mouseY);
+        }
     }
 
     private void drawMoon(GuiGraphics graphics) {

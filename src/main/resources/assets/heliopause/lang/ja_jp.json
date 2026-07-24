@@ -140,6 +140,7 @@
   "recipe.heliopause.roasting": "焙煎",
   "recipe.heliopause.transmutation": "錬成",
   "recipe.heliopause.moonlight_pouring": "月明かり注入",
+  "recipe.heliopause.moonlight_pouring.moonlight_description": "月明かりは晴れた夜間、ゼンマイで駆動するシデロスタットによって供給されます\n基部をクリックするか、レッドストーン信号を入力することでゼンマイを巻くことができます。",
 
   "recipe.heliopause.starlight_concentration": "星明かり収斂",
   "recipe.heliopause.starlight_concentration.starlight": "使用する星明かり",
