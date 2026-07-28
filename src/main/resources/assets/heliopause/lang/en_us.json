@@ -140,6 +140,7 @@
   "recipe.heliopause.roasting": "Roasting",
   "recipe.heliopause.transmutation": "Transmutation",
   "recipe.heliopause.moonlight_pouring": "Moonlight Pouring",
+  "recipe.heliopause.moonlight_pouring.moonlight_description": "Moonlight is supplied by a spring-driven siderostat on clear nights.\nThe spring is wound by clicking the base or inputting a Redstone signal.",
 
   "recipe.heliopause.starlight_concentration": "Starlight Concentration",
   "recipe.heliopause.starlight_concentration.starlight": "Starlight to use",

@@ -127,7 +127,7 @@ public class BlockRegistry {
            BlockBehaviour.Properties.of()
                .strength(1.5f)
                .sound(SoundType.WOOD)
-               .noLootTable()
+               //.noLootTable()
         ));
     //シデロスタット(オーブ)
     /*public static final RegistryObject<SiderostatTopBlock> SIDEROSTAT_ORB =

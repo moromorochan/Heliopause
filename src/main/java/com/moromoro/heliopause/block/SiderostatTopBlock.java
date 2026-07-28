@@ -70,8 +70,7 @@ public class SiderostatTopBlock extends Block {
 
         boolean canPlaceAbove = level.isEmptyBlock(above);
         boolean canPlaceBelow = level.isEmptyBlock(below);
-
-        // **既存のペアを壊さずに処理を適用**
+        
         if (!canPlaceBelow && belowState.getBlock() instanceof SiderostatBaseBlock) {
             return; // 既存のペアがある場合は設置せずキャンセル
         }
@@ -80,7 +79,7 @@ public class SiderostatTopBlock extends Block {
             return; // 既存のペアがある場合は設置せずキャンセル
         }
 
-        // **通常の設置処理**
+        // 通常の設置処理
         if (canPlaceAbove) {
             level.setBlock(pos, belowNewState, 3);
             level.setBlock(above, aboveNewState, 3);
@@ -107,12 +106,13 @@ public class SiderostatTopBlock extends Block {
         super.onRemove(state, level, pos, newState, isMoving);
 
         if(state.getBlock() != newState.getBlock()){
-            BlockPos otherPos = pos.below();
-            BlockState otherState = level.getBlockState(otherPos);
-
-            // **ペアが適切に存在しているか確認**
-            if (otherState.getBlock() instanceof SiderostatBaseBlock) {
-                level.destroyBlock(otherPos, false);
+            
+            // ペア確認
+            BlockPos below = pos.below();
+            BlockState belowState = level.getBlockState(below);
+            
+            if (belowState.getBlock() instanceof SiderostatBaseBlock) {
+                level.destroyBlock(below, false);
             }
         }
     }

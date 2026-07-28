@@ -98,8 +98,7 @@ public class SiderostatBaseBlock extends BaseEntityBlock {
 
         boolean canPlaceAbove = level.isEmptyBlock(above);
         boolean canPlaceBelow = level.isEmptyBlock(below);
-
-        // **既存のペアを壊さずに処理を適用**
+        
         if (!canPlaceBelow && belowState.getBlock() instanceof SiderostatBaseBlock) {
             return; // 既存のペアがある場合は設置せずキャンセル
         }
@@ -108,7 +107,7 @@ public class SiderostatBaseBlock extends BaseEntityBlock {
             return; // 既存のペアがある場合は設置せずキャンセル
         }
 
-        // **通常の設置処理**
+        // 通常の設置処理
         if (canPlaceAbove) {
             level.setBlock(pos, belowNewState, 3);
             level.setBlock(above, aboveNewState, 3);
@@ -138,13 +137,13 @@ public class SiderostatBaseBlock extends BaseEntityBlock {
                 siderostatBlockEntity.drops();
             }
             super.onRemove(state, level, pos, newState, isMoving);
-
-            BlockPos otherPos = pos.above();
-            BlockState otherState = level.getBlockState(otherPos);
-
-            // **ペアが適切に存在しているか確認**
-            if (otherState.getBlock() instanceof SiderostatTopBlock) {
-                level.destroyBlock(otherPos, true);
+            
+            // ペア確認
+            BlockPos above = pos.above();
+            BlockState aboveState = level.getBlockState(above);
+            
+            if (aboveState.getBlock() instanceof SiderostatTopBlock) {
+                level.destroyBlock(above, false);
             }
         }
     }
@@ -152,11 +151,12 @@ public class SiderostatBaseBlock extends BaseEntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if(!level.isClientSide()){
+            if(player.isSpectator()){
+                return InteractionResult.PASS;
+            }
             BlockEntity entity = level.getBlockEntity(pos);
             if(entity instanceof SiderostatBlockEntity siderostatBlockEntity){
                 siderostatBlockEntity.chargeSpring();
-                //ネットワークフックでのGUI表示は1.20.1まで
-                //NetworkHooks.openScreen(((ServerPlayer)player),(SiderostatBlockEntity)entity,pos);
             }else{
                 throw new IllegalStateException("Container provider is missing! BlockPos:"+pos);
             }
