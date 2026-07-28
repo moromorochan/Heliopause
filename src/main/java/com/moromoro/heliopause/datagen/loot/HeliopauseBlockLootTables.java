@@ -54,7 +54,7 @@ public class HeliopauseBlockLootTables extends BlockLootSubProvider {
             )
         );*/
         this.dropSelf(BlockRegistry.SIDEROSTAT_TOP.get());
-        //this.dropOther(BlockRegistry.SIDEROSTAT_ORB.get(),BlockRegistry.SIDEROSTAT_BASE.get());
+        this.dropOther(BlockRegistry.SIDEROSTAT_BASE.get(),BlockRegistry.SIDEROSTAT_TOP.get());
 
         /*this.dropSelf(BlockRegistry.PENETRATOR.get());
         this.dropSelf(BlockRegistry.DISSOLVER.get());

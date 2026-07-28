@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class MagicCircleAssemblyRecipe implements Recipe<Container> {
 
     // データクラス定義
-    public record Trigger(String type, ResourceLocation blockOrItem) {}
+    public record Trigger(String type, Boolean isBlock, ResourceLocation blockOrItem) {}
     public record Result(Boolean isBlock, ResourceLocation blockOrItem){}
     public record Node(String key, List<String> connects){}
     public record Circle(String key, String center, List<String> contains){}
@@ -71,6 +71,7 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
             JsonObject triggerObject = json.getAsJsonObject("trigger");
             String triggerType = triggerObject.get("type").getAsString();
             // タイプがブロックのときはブロックを、それ以外はアイテムを取得する
+            boolean triggerIsBlock = triggerObject.has("block");
             ResourceLocation triggerResource =
                 new ResourceLocation(triggerObject.has("block") ?
                         triggerObject.get("block").getAsString() :
@@ -111,12 +112,14 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
                     ));*/
             }
 
-            return new MagicCircleAssemblyRecipe(new Trigger(triggerType, triggerResource), new Result(resultIsBlock, resultResource), recipeNodes, recipeCircles, recipeId);
+            return new MagicCircleAssemblyRecipe(new Trigger(triggerType, triggerIsBlock, triggerResource), new Result(resultIsBlock, resultResource), recipeNodes, recipeCircles, recipeId);
         }
 
         @Override
         public @Nullable MagicCircleAssemblyRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            Heliopause.LOGGER.debug("read from network, {}", recipeId);
             String triggerType = buffer.readUtf();
+            Boolean triggerIsBlock = buffer.readBoolean();
             ResourceLocation triggerResource = buffer.readResourceLocation();
             Boolean resultIsBlock = buffer.readBoolean();
             ResourceLocation resultResource = buffer.readResourceLocation();
@@ -145,12 +148,13 @@ public class MagicCircleAssemblyRecipe implements Recipe<Container> {
                 recipeCircles.add(new Circle(key, center, contains));
             }
 
-            return new MagicCircleAssemblyRecipe(new Trigger(triggerType, triggerResource), new Result(resultIsBlock, resultResource), recipeNodes, recipeCircles, recipeId);
+            return new MagicCircleAssemblyRecipe(new Trigger(triggerType, triggerIsBlock, triggerResource), new Result(resultIsBlock, resultResource), recipeNodes, recipeCircles, recipeId);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, MagicCircleAssemblyRecipe recipe) {
             buffer.writeUtf(recipe.getTrigger().type());
+            buffer.writeBoolean(recipe.getTrigger().isBlock());
             buffer.writeResourceLocation(recipe.getTrigger().blockOrItem());
             buffer.writeBoolean(recipe.getResult().isBlock());
             buffer.writeResourceLocation(recipe.getResult().blockOrItem());

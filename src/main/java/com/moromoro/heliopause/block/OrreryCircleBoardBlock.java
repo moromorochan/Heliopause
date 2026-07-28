@@ -114,7 +114,7 @@ public class OrreryCircleBoardBlock extends AbstractWrittenBoardBlock {
                     //if(randomSource.nextFloat() < 1f/2) {
                     float offset;
                     if (entity.isCraftingInProgress())
-                        offset = 0.5f + randomSource.nextFloat() * (float) max(0, OrreryCircleBoardRenderer.getProgressOffsetY(entity, 0) - 1);
+                        offset = 0.5f + randomSource.nextFloat() * (float) max(0, OrreryCircleBoardBlockEntity.getProgressOffsetY(entity, 0) - 1);
                     else {
                         offset = 0.5f;
                     }

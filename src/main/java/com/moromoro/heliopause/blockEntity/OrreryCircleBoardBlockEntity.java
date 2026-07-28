@@ -3,6 +3,7 @@ package com.moromoro.heliopause.blockEntity;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.block.OrreryCircleBoardBlock;
 import com.moromoro.heliopause.entity.StellarIngredientEntity;
+import com.moromoro.heliopause.generic.Interpolate;
 import com.moromoro.heliopause.generic.PolarCoordinates;
 import com.moromoro.heliopause.ingredient.CircumstellarIngredient;
 import com.moromoro.heliopause.item.ImitationCoreItem;
@@ -10,7 +11,7 @@ import com.moromoro.heliopause.particle.StarRippleParticles;
 import com.moromoro.heliopause.recipe.ImitationCoreAssemblyRecipe;
 import com.moromoro.heliopause.recipe.OrreryTransferenceRecipe;
 import com.moromoro.heliopause.registry.*;
-import com.moromoro.heliopause.render.OrreryCircleBoardRenderer;
+//import com.moromoro.heliopause.render.OrreryCircleBoardRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -66,6 +67,8 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
     public static final float DEFAULT_CENT_FORCE = 0.001f;
     //周転する天体の配列
     private final List<CircumstellarIngredient> ingredients = new ArrayList<>();
+    // 周転する天体の固定高さ
+    public static double FIXED_OFFSET_Y = 1.0;
 
     // 動作中のレシピ
     private ResourceLocation[] processingRecipe;
@@ -224,7 +227,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
         double maxPosZ = worldPosition.getCenter().z() + maxCircle;
 
         // 高さの範囲
-        double maxPosY = worldPosition.getY() + (getCircumstellars().isEmpty()? 1 : OrreryCircleBoardRenderer.getProgressOffsetY(this, 0) + 1.5);
+        double maxPosY = worldPosition.getY() + (getCircumstellars().isEmpty()? 1 : getProgressOffsetY(this, 0) + 1.5);
         return new AABB(minPosX, worldPosition.getY(), minPosZ, maxPosX, maxPosY, maxPosZ);
     }
 
@@ -580,12 +583,14 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                 SoundEvents.CONDUIT_ACTIVATE, SoundSource.BLOCKS, 1.0f, 0.7f);
 
             // パーティクルを生成
-            StarRippleParticles particles = (StarRippleParticles)Minecraft.getInstance().particleEngine.createParticle(
-                ParticleRegistry.STAR_RIPPLE_PARTICLES.get(),
-                pos.getX()+0.5,pos.getY()+1.5,pos.getZ()+0.5, 0,0,0
-            );
-            if(particles!=null) {
-                particles.setScale((float) Math.max(1.5,(this.getMaxCircleRadius() - CLICK_SIZE) * 0.5));
+            if(level.isClientSide()){
+                StarRippleParticles particles = (StarRippleParticles)Minecraft.getInstance().particleEngine.createParticle(
+                    ParticleRegistry.STAR_RIPPLE_PARTICLES.get(),
+                    pos.getX()+0.5,pos.getY()+1.5,pos.getZ()+0.5, 0,0,0
+                );
+                if(particles!=null) {
+                    particles.setScale((float) Math.max(1.5,(this.getMaxCircleRadius() - CLICK_SIZE) * 0.5));
+                }
             }
             return true;
         }
@@ -776,7 +781,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                     Vector2d localIngredientPos = PolarCoordinates.getCartesianCoordinates(ingredient.getOrbitalRadius(), ingredient.getRevolutionOffset());
                     Vec3 ingredientPos = worldPosition.getCenter().add(
                         localIngredientPos.x(),
-                        OrreryCircleBoardRenderer.getProgressOffsetY(this, 1),
+                        getProgressOffsetY(this, 1),
                         localIngredientPos.y()
                     );
                     // 隣を取得
@@ -911,7 +916,7 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
             double velX = Math.sin(revOffset) * velocity;
             double velZ = Math.cos(revOffset) * velocity;
             Vec3 vector = new Vec3(-velX,0, velZ);//+((float) Math.PI * 0.5f)
-            double heightOffset = OrreryCircleBoardRenderer.getProgressOffsetY(this, 1) - (StellarIngredientEntity.SIZE * 0.5);
+            double heightOffset = getProgressOffsetY(this, 1) - (StellarIngredientEntity.SIZE * 0.5);
             //その場にエンティティ生成
             StellarIngredientEntity stellarEntity = new StellarIngredientEntity(level, itemPos.add(0,heightOffset,0), vector, ingredient);
             level.addFreshEntity(stellarEntity);
@@ -942,5 +947,24 @@ public class OrreryCircleBoardBlockEntity extends AbstractWrittenBoardBlockEntit
                 .apply(new ResourceLocation("minecraft", "missing_texture"));
         }
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidTexture);
+    }
+    
+    // 工程ごとの高さオフセットを取得
+    public static double getProgressOffsetY(@NotNull OrreryCircleBoardBlockEntity entity, float partialTicks) {
+        double offset;
+        float timer = entity.getProgressTimer() + partialTicks;
+        
+        if(entity.isCraftingInProgress()){
+            //double progress = Math.min(startTick, startTick+timer) / startTick;
+            float startProgress = 1 + Math.min(0,timer / OrreryCircleBoardBlockEntity.STARTING_TICK);
+            offset = Interpolate.sigmoidInterpolate(startProgress, 10, 0, 1);
+        } else if (entity.isCraftingInFinish()) {
+            //double progress = timer / finishTick;
+            float finishProgress = timer / OrreryCircleBoardBlockEntity.FINISHING_TICK;
+            offset = 1;// + finishProgress * 0.3;
+        }else {
+            offset = 0.0d;
+        }
+        return offset + FIXED_OFFSET_Y;
     }
 }

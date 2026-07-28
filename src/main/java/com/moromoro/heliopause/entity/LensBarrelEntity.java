@@ -7,9 +7,10 @@ import com.moromoro.heliopause.block.LensBarrelBlock;
 import com.moromoro.heliopause.blockEntity.ConcentratorBlockEntity;
 import com.moromoro.heliopause.generic.Season;
 import com.moromoro.heliopause.implementable.IHasHoverDrawEntity;
-import com.moromoro.heliopause.recipe.LensBarrelCoverageListener;
+import com.moromoro.heliopause.network.LensBarrelCoverageListener;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.registry.EntityRegistry;
+import com.moromoro.heliopause.render.LensBarrelTooltipRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -42,16 +43,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 
 import java.util.*;
-
-import static com.moromoro.heliopause.block.LensBarrelBlock.getCoverageWindowData;
-import static com.moromoro.heliopause.block.LensBarrelBlock.renderAccuracyGui;
 
 public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
 
@@ -399,7 +397,7 @@ public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
     }
 
     @Override
-    public boolean renderHoverGraphicWithEntity(RenderGuiOverlayEvent event, ClientLevel level) {
+    public boolean renderHoverGraphicWithEntity(RenderGuiEvent event, ClientLevel level) {
         Minecraft instance = Minecraft.getInstance();
         LocalPlayer player = instance.player;
         // プレイヤー確認
@@ -413,7 +411,7 @@ public class LensBarrelEntity extends Entity implements IHasHoverDrawEntity {
         if (!instance.options.renderDebug) {
             List<BlockState> invertBarrels = new ArrayList<>(barrels);
             Collections.reverse(invertBarrels);
-            renderAccuracyGui(event, instance, new LensBarrelBlock.BarrelStateData(invertBarrels, true), getCoverageWindowData(invertBarrels), true);
+            LensBarrelTooltipRenderer.renderAccuracyGui(event, instance, new LensBarrelBlock.BarrelStateData(invertBarrels, true), LensBarrelBlock.getCoverageWindowData(invertBarrels), true);
         } else {
             // デバッグ用
             Window window = event.getWindow();

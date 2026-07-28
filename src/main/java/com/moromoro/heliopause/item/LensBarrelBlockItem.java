@@ -4,17 +4,17 @@ import com.mojang.datafixers.util.Either;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.registry.enumProperty.LensBarrelCoverageIconValue;
 import com.moromoro.heliopause.implementable.IHasTooltipDraw;
-import com.moromoro.heliopause.recipe.LensBarrelCoverageListener;
+import com.moromoro.heliopause.network.LensBarrelCoverageListener;
 import com.moromoro.heliopause.tooltip.IconTooltipComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class LensBarrelBlockItem extends BlockItem implements IHasTooltipDraw {
     }
     
     private static List<LensBarrelCoverageListener.BarrelCoverageData> getBarrelCoverage(Block block){
-        String id = BuiltInRegistries.BLOCK.getKey(block).toString();
+        String id = ForgeRegistries.BLOCKS.getKey(block).toString();
         return LensBarrelCoverageListener.DATA.values().stream().filter(data -> data.block().contains(id)).toList();
     }
     

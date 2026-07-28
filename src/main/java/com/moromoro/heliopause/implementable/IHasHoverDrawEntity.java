@@ -1,9 +1,8 @@
 package com.moromoro.heliopause.implementable;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiEvent;
 
 public interface IHasHoverDrawEntity {
-    boolean renderHoverGraphicWithEntity(RenderGuiOverlayEvent event, ClientLevel level);
-    //void setWheelInput(double scrollDelta);
+    boolean renderHoverGraphicWithEntity(RenderGuiEvent event, ClientLevel level);
 }

@@ -3,9 +3,10 @@ package com.moromoro.heliopause.compat.jei;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.blockEntity.ConcentratorBlockEntity;
+import com.moromoro.heliopause.generic.DescriptionTooltip;
 import com.moromoro.heliopause.registry.enumProperty.LensBarrelCoverageIconValue;
 import com.moromoro.heliopause.generic.Season;
-import com.moromoro.heliopause.recipe.LensBarrelCoverageListener;
+import com.moromoro.heliopause.network.LensBarrelCoverageListener;
 import com.moromoro.heliopause.recipe.StarlightConcentrationRecipe;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import mezz.jei.api.constants.VanillaTypes;
@@ -19,12 +20,11 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.WinScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +33,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 public class StarlightConcentrationCategory implements IRecipeCategory<StarlightConcentrationRecipe> {
     public static final RecipeType<StarlightConcentrationRecipe> STARLIGHT_CONCENTRATION_TYPE =
@@ -112,12 +112,12 @@ public class StarlightConcentrationCategory implements IRecipeCategory<Starlight
         // 内訳を表示
         int slotHeight = 96;
         for (String coverageName : conditions.coverage()) {
-            Optional<LensBarrelCoverageListener.BarrelCoverageData> dataOpt =
-                LensBarrelCoverageListener.DATA.values().stream()
-                    .filter(d -> d.name().equals(coverageName))
-                    .findFirst();
-            if(dataOpt.isPresent()){
-                LensBarrelCoverageListener.BarrelCoverageData data = dataOpt.get();
+            Map<ResourceLocation, LensBarrelCoverageListener.BarrelCoverageData> dataOpt = LensBarrelCoverageListener.getMap();
+            LensBarrelCoverageListener.BarrelCoverageData data = dataOpt.get(new ResourceLocation(Heliopause.MODID, coverageName));
+                    //.filter(d -> d.name().equals())
+                    //.findFirst();
+            if(data!=null){
+                //LensBarrelCoverageListener.BarrelCoverageData data = dataOpt;//dataOpt.get();
                 LensBarrelCoverageIconValue icon = LensBarrelCoverageIconValue.fromString(data.icon());
                 if(icon == null){
                     continue;
@@ -142,26 +142,13 @@ public class StarlightConcentrationCategory implements IRecipeCategory<Starlight
         
         // 星明かりの説明を表示
         if(mouseX >= 2 && mouseX <= background.getWidth() - 4 && mouseY >= 85 && mouseY <= 85 + Minecraft.getInstance().font.lineHeight){
-            int screenWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
-            int screenMouseX = (int) (mouseX + (double) (screenWidth - this.getWidth()) /2);
-            TooltipTransform tooltipTransform = getTooltipTransform(screenWidth, screenMouseX, 10, 200);
-            List<FormattedCharSequence> coverageTooltip = new ArrayList<>();
-            String[] lines = Component.translatable("recipe.heliopause.starlight_concentration.starlight_description").getString().split("\n", -1);
-            int tooltipWidth = 0;
-            for (String line : lines) {
-                coverageTooltip.addAll(font.split(Component.literal(line), tooltipTransform.width()));
-                for (FormattedCharSequence component : coverageTooltip) {
-                    tooltipWidth = Math.max(tooltipWidth, font.width(component));
-                }
-            }
-            
-            if( tooltipTransform.isLeft()) {
-                guiGraphics.renderTooltip(font, coverageTooltip, (int) mouseX - tooltipWidth - 20, (int) mouseY);
-            }else{
-                guiGraphics.renderTooltip(font, coverageTooltip, (int) mouseX, (int) mouseY);
-            }
+            DescriptionTooltip.drawDescriptionTooltip(guiGraphics, this.getWidth(),
+                Component.translatable("recipe.heliopause.starlight_concentration.starlight_description"), 200,
+                mouseX, (int) mouseY);
         }
     }
+    
+
     
     private void drawRecipeTime(StarlightConcentrationRecipe recipe, GuiGraphics guiGraphics) {
         int recipeTimeSec = recipe.getTime() /20;
@@ -171,30 +158,6 @@ public class StarlightConcentrationCategory implements IRecipeCategory<Starlight
             88 + GUI_X, 50,
             0x808080,false
         );
-    }
-    
-    public record TooltipTransform(int width, boolean isLeft) {}
-    private TooltipTransform getTooltipTransform(int screenWidth, int screenMouseX, int padding, int maxWidth) {
-        // 右側に確保できる幅
-        int availableRight = Math.max(0, screenWidth - screenMouseX - padding);
-        // 左側に確保できる幅
-        int availableLeft = Math.max(0, screenMouseX - padding);
-        
-        // 右に収まるか
-        if (availableRight >= maxWidth) {
-            return new TooltipTransform(maxWidth, false);
-        }
-        // 左に収まるか
-        if (availableLeft >= maxWidth) {
-            return new TooltipTransform(maxWidth, true);
-        }
-        
-        // どちらにも収まらない場合
-        if (availableRight >= availableLeft) {
-            return new TooltipTransform(availableRight, false);
-        } else {
-            return new TooltipTransform(availableLeft, true);
-        }
     }
     
     @Override

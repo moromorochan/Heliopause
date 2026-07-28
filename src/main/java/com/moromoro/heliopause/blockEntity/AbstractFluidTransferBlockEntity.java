@@ -34,7 +34,7 @@ public abstract class AbstractFluidTransferBlockEntity extends FluidHandlerBlock
 
     public void setOperationBlockPos(BlockPos operationBlockPos) {
         this.operationBlockPos = operationBlockPos;
-        Heliopause.LOGGER.debug(operationBlockPos.toString());
+        //Heliopause.LOGGER.debug(operationBlockPos.toString());
     }
 
     //タンクへの操作を担う側のブロックエンティティの液体ハンドラを取得

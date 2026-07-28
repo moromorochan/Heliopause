@@ -56,6 +56,7 @@ public class RoastingRecipe implements Recipe<CraftingContainer> {
         //サーバー・クライアント間のやりとり
         @Override
         public @Nullable RoastingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            Heliopause.LOGGER.debug("read from network, {}", recipeId);
             NonNullList<Ingredient> inputs = NonNullList.withSize(buffer.readInt(), Ingredient.EMPTY);
 
             for (int i = 0; i < inputs.size(); i++) {
@@ -74,7 +75,7 @@ public class RoastingRecipe implements Recipe<CraftingContainer> {
                 ingredient.toNetwork(buffer);
             }
 
-            buffer.writeItemStack(recipe.getResultItem(null), false);
+            buffer.writeItem(recipe.result);
         }
     }
     //タグに対応するようにマッチング

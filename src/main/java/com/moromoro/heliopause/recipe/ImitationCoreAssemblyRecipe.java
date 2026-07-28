@@ -77,21 +77,14 @@ public class ImitationCoreAssemblyRecipe implements Recipe<Container> {
 
         @Override
         public @Nullable ImitationCoreAssemblyRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            Heliopause.LOGGER.debug("read from network, {}", recipeId);
             String key = buffer.readUtf();
             String model = buffer.readUtf();
             float scale = buffer.readFloat();
             int[] color = new int[]{buffer.readInt(), buffer.readInt(), buffer.readInt()};
             float cent = buffer.readFloat();
-            String fluidId = buffer.readUtf();
-            Fluid fluid = Fluids.WATER;
-            if (!fluidId.isEmpty()) {
-                Fluid found = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidId));
-                if (found != null) {
-                    fluid = found;
-                }
-            }
-            int usage = buffer.readInt();
-            return new ImitationCoreAssemblyRecipe(new ImitationCoreProperty(key, model, scale, color, cent, fluid, usage), recipeId);
+            FluidStack fluidStack = FluidStack.readFromPacket(buffer);
+            return new ImitationCoreAssemblyRecipe(new ImitationCoreProperty(key, model, scale, color, cent, fluidStack.getFluid(), fluidStack.getAmount()), recipeId);
         }
 
         @Override
@@ -104,7 +97,7 @@ public class ImitationCoreAssemblyRecipe implements Recipe<Container> {
             buffer.writeInt(property.color[1]);
             buffer.writeInt(property.color[2]);
             buffer.writeFloat(property.centForce);
-            buffer.writeUtf(property.fluid.toString());
+            new FluidStack(property.fluid, property.usagePerSec).writeToPacket(buffer);
         }
     }
 

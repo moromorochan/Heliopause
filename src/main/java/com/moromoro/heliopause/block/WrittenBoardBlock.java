@@ -1,7 +1,5 @@
 package com.moromoro.heliopause.block;
 
-import com.moromoro.Heliopause;
-import com.moromoro.heliopause.particle.StarRippleParticles;
 import com.moromoro.heliopause.registry.BlockRegistry;
 import com.moromoro.heliopause.registry.ParticleRegistry;
 import com.moromoro.heliopause.registry.enumProperty.WrittenBoardDrawType;
@@ -10,8 +8,8 @@ import com.moromoro.heliopause.blockEntity.WrittenBoardBlockEntity;
 import com.moromoro.heliopause.item.CompassItem;
 import com.moromoro.heliopause.recipe.MagicCircleAssemblyRecipe;
 import com.moromoro.heliopause.registry.RecipeTypeRegistry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -19,8 +17,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -28,13 +24,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Math;
 
 import java.util.List;
 
@@ -87,35 +83,56 @@ public class WrittenBoardBlock extends AbstractWrittenBoardBlock{
     }
 
     private boolean operateRecipe(Level level, BlockPos blockPos, ItemStack itemStack) {
+        
         // レシピ確認用コンテナを作成
         Container matchContainer = new SimpleContainer(itemStack);
         // 全レシピ確認
         for (MagicCircleAssemblyRecipe recipe : level.getRecipeManager().getAllRecipesFor(RecipeTypeRegistry.MAGIC_CIRCLE_ASSEMBLY.get())) {
             // トリガー確認
-            if (!recipe.matches(matchContainer, level)) {
+            boolean triggerIsBlock = recipe.getTrigger().isBlock();
+            if(triggerIsBlock){
+                if(!level.getBlockState(blockPos.above()).getBlock().asItem().equals(itemStack.getItem())){
+                    continue;
+                }
+            }else if (!recipe.matches(matchContainer, level)) {
                 continue;
             }
+            
             // 陣の構造確認
             List<BlockPos> matchCircles = MagicCircleAssemblyRecipe.matchesAt(level, blockPos, recipe);
             if(matchCircles != null){
-                // トリガー確認
-                boolean triggerIsBlock = recipe.getTrigger().type().equals("place_on");
-                if(triggerIsBlock){
-                    if(!level.getBlockState(blockPos.above()).getBlock().asItem().equals(itemStack.getItem())){
-                        continue;
-                    }
-                }
-                // 結果ブロックを確認
+                
+                // 結果を確認
                 MagicCircleAssemblyRecipe.Result result = recipe.getResult();
                 if(result == null){
                     continue;
                 }
-                if(result.isBlock()){
+                boolean resultIsBlock = result.isBlock();
+                
+                // 結果がブロックのとき
+                if(resultIsBlock){
                     Block resultBlock = ForgeRegistries.BLOCKS.getValue(result.blockOrItem());
                     if(resultBlock==null){
                         continue;
                     }
-                    AbstractWrittenBoardBlockEntity.changeCircleBoardBlock(level, blockPos, resultBlock.defaultBlockState());
+                    // 魔方陣の構築なら中心を置き換え
+                    if(resultBlock instanceof AbstractWrittenBoardBlock) {
+                        AbstractWrittenBoardBlockEntity.changeCircleBoardBlock(level, blockPos, resultBlock.defaultBlockState());
+                    }
+                    // 魔方陣以外なら
+                    else{
+                        // ブロックを設置
+                        level.setBlock(blockPos.above(), resultBlock.defaultBlockState(), 3);
+                        
+                        // 陣全体を消す
+                        for (BlockPos matchPos : matchCircles) {
+                            if(level.getBlockEntity(matchPos) instanceof AbstractWrittenBoardBlockEntity entity){
+                                entity.eraseNetwork();
+                            }
+                        }
+                        // 中心を消す
+                        AbstractWrittenBoardBlockEntity.changeCircleBoardBlock(level, blockPos, BlockRegistry.BLACKBOARD.get().defaultBlockState());
+                    }
                 }
                 else{
                     Item resultItem = ForgeRegistries.ITEMS.getValue(result.blockOrItem());
@@ -124,28 +141,47 @@ public class WrittenBoardBlock extends AbstractWrittenBoardBlock{
                     }
                     // 陣全体を消す
                     for (BlockPos matchPos : matchCircles) {
-                        if(level.getBlockEntity(matchPos) instanceof AbstractWrittenBoardBlockEntity entity){
+                        if (level.getBlockEntity(matchPos) instanceof AbstractWrittenBoardBlockEntity entity) {
                             entity.eraseNetwork();
                         }
                     }
                     // 中心を消す
                     AbstractWrittenBoardBlockEntity.changeCircleBoardBlock(level, blockPos, BlockRegistry.BLACKBOARD.get().defaultBlockState());
-                    itemStack.shrink(1);
+                    
                     // アイテムをドロップ
                     level.addFreshEntity(new ItemEntity(level, blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(),new ItemStack(resultItem)));
-                    // 効果音を再生
-                    level.playSound(null,
-                        blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(),
-                        SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1f, 1f);
-                    // パーティクルを生成
-                    StarRippleParticles particles = (StarRippleParticles) Minecraft.getInstance().particleEngine.createParticle(
-                        ParticleRegistry.STAR_RIPPLE_PARTICLES.get(),
-                        blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(), 0,0,0
-                    );
-                    if(particles!=null) {
-                        particles.setScale(1.5f);
+                }
+                
+                // 消費なら
+                if(recipe.getTrigger().type().equals("consume")){
+                    // 置いたブロックを空気に置き換え
+                    if(triggerIsBlock && !resultIsBlock){
+                        level.setBlock(blockPos.above(), Blocks.AIR.defaultBlockState(), 3);
+                    }
+                    // アイテム消費
+                    else{
+                        itemStack.shrink(1);
                     }
                 }
+                
+                // 効果音を再生
+                level.playSound(null,
+                    blockPos.getCenter().x(), blockPos.getCenter().y() + 1, blockPos.getCenter().z(),
+                    SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1f, 1f);
+                
+                // パーティクル生成
+                if(level instanceof ServerLevel serverLevel){
+                    for (BlockPos matchPos : matchCircles) {
+                        serverLevel.sendParticles(
+                            ParticleTypes.CLOUD,
+                            matchPos.getCenter().x(), matchPos.getCenter().y() + 0.7, matchPos.getCenter().z(),
+                            1,
+                            0,0,0,
+                            0
+                        );
+                    }
+                }
+                
                 // デバッグ用
                 /*if(!level.isClientSide()){
                     Heliopause.LOGGER.debug(recipe.getResult().toString());
@@ -155,7 +191,8 @@ public class WrittenBoardBlock extends AbstractWrittenBoardBlock{
                 return true;
             }
         }
-        return false;
+        
+         return false;
     }
 
 }

@@ -20,7 +20,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 //クライアント側の挙動を登録するところ
 @Mod.EventBusSubscriber(modid = Heliopause.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ModEventBusClientEvents {
+public class EventBusClientEvents {
     //リロード時の処理の登録
     /*@SubscribeEvent
     public static void onResourceReload(AddReloadListenerEvent event){
@@ -60,6 +60,9 @@ public class ModEventBusClientEvents {
         //event.registerEntityRenderer(EntityRegistry.ORRERY_INTERACTION_OPERATOR_E.get(), VoidEntityRenderer::new);
         event.registerEntityRenderer(EntityRegistry.STELLAR_INGREDIENT_E.get(), StellarIngredientEntityRenderer::new);
         event.registerEntityRenderer(EntityRegistry.LENS_BARREL_E.get(), LensBarrelEntityRenderer::new);
+        
+        // カスタム
+        
     }
 
     //パーティクルの登録

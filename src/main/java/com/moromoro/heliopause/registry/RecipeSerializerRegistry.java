@@ -2,9 +2,7 @@ package com.moromoro.heliopause.registry;
 
 import com.moromoro.Heliopause;
 import com.moromoro.heliopause.recipe.*;
-import com.moromoro.heliopause.recipe.orreryWhirling.OrreryWhirlingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -15,13 +13,7 @@ public class RecipeSerializerRegistry {
 
     public static final RegistryObject<RecipeSerializer<RoastingRecipe>> ROASTING_RECIPE_SERIALIZER =
             RECIPE_SERIALIZERS.register("roasting",() -> RoastingRecipe.Serializer.INSTANCE);
-
-    public static final RegistryObject<RecipeSerializer<CampfireAlchemyRecipe>> CAMPFIRE_ALCHEMY_RECIPE_SERIALIZER =
-        RECIPE_SERIALIZERS.register("campfire_alchemy",() -> CampfireAlchemyRecipe.Serializer.INSTANCE);
-
-    public static final RegistryObject<RecipeSerializer<OrreryWhirlingRecipe>> ORRERY_WHIRLING_RECIPE_SERIALIZER =
-        RECIPE_SERIALIZERS.register("orrery_whirling",() -> OrreryWhirlingRecipe.Serializer.INSTANCE);
-
+    
     public static final RegistryObject<RecipeSerializer<MoonlightPouringRecipe>> MOONLIGHT_POURING =
         RECIPE_SERIALIZERS.register(MoonlightPouringRecipe.Type.ID,() -> MoonlightPouringRecipe.Serializer.INSTANCE);
 
