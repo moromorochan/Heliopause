@@ -82,7 +82,7 @@ public class ConcentratorScreen extends AbstractContainerScreen<ConcentratorMenu
             for (int spriteX = 0; spriteX < width; spriteX+=16) {
                 int partialRemainX = Math.min(16, width - spriteX);
                 RenderSystem.enableBlend();
-                blitSprite(atlasLocation, graphics, x + spriteX, y + height - spriteY - partialRemainY, 0, 0, partialRemainX, partialRemainY);
+                blitSprite(atlasLocation, graphics, x + spriteX, y + height - spriteY - partialRemainY, 0, 16 - partialRemainY, partialRemainX, 16);
                 RenderSystem.disableBlend();
             }
         }

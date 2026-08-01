@@ -499,7 +499,7 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         }
         if(level instanceof ServerLevel serverLevel){
             date = Season.getDayInYear(serverLevel);
-            dayTime = serverLevel.getDayTime();
+            dayTime = (long)(serverLevel.getTimeOfDay(1.0F) * 24000 + 6000);
             int seasonAngle = (int)Math.floor(((double) date /Season.YEAR_LENGTH) * 360.0);
 
             LensBarrelEntity lensBarrelEntity = null;
