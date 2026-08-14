@@ -1,6 +1,5 @@
 {
   "type": "heliopause:moonlight_pouring",
-  "experience": 0.1,
   "ingredient": {
     "item": "minecraft:cherry_sapling"
   },
