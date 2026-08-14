@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -119,7 +120,14 @@ public class ConcentratorMenu extends AbstractContainerMenu {
             itemstack = tempItemStack.copy();
 
             //操作スロットが結果スロットなら
-            if (slotId == SLOT_OUTPUT_ITEM || slotId == SLOT_FLUID_IN_RESULT || slotId == SLOT_FLUID_OUT_RESULT) {
+            if (
+                slotId == SLOT_INPUT_ITEM
+             || slotId == SLOT_OUTPUT_ITEM
+             || slotId == SLOT_FLUID_IN
+             || slotId == SLOT_FLUID_OUT
+             || slotId == SLOT_FLUID_IN_RESULT
+             || slotId == SLOT_FLUID_OUT_RESULT
+            ) {
                 tempItemStack.getItem().onCraftedBy(tempItemStack, level, player);
                 //インベントリかホットバーに入れようとする
                 if (!this.moveItemStackTo(tempItemStack, invStart, hotEnd, true)) {
@@ -129,10 +137,15 @@ public class ConcentratorMenu extends AbstractContainerMenu {
             }
             //操作スロットがプレイヤーのスロットなら
             else if (slotId >= invStart && slotId < hotEnd) {
-                //材料スロットに入れようとする
                 boolean moveToInsert = false;
-                for (int insertSlotId = 1; insertSlotId < 4; insertSlotId++) {
-                    moveToInsert |= this.moveItemStackTo(tempItemStack, insertSlotId, invStart, false);
+                // アイテムが液体保持か確認
+                if(FluidUtil.getFluidHandler(tempItemStack).isPresent()){
+                    // 液体取り出し用スロットに入れようとする
+                    moveToInsert |= this.moveItemStackTo(tempItemStack, SLOT_FLUID_IN, invStart, false);
+                    moveToInsert |= this.moveItemStackTo(tempItemStack, SLOT_FLUID_OUT, invStart, false);
+                }else{
+                    //材料スロットに入れようとする
+                    moveToInsert |= this.moveItemStackTo(tempItemStack, SLOT_INPUT_ITEM, invStart, false);
                 }
                 if (!moveToInsert) {
                     //失敗した場合
