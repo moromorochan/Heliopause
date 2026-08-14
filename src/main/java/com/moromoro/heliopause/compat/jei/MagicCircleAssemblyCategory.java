@@ -82,7 +82,9 @@ public class MagicCircleAssemblyCategory  implements IRecipeCategory<MagicCircle
         // ルートの円を取得
         List<Circle> rootCircles = circles.stream().filter(Circle -> Circle.center().equals(ORIGIN_KEY)).toList();
 
+        guiGraphics.pose().translate(0,0,1);
         symbol.draw(guiGraphics, 60,65);
+        guiGraphics.pose().translate(0,0,-1);
 
         Set<nodeWithPos> nodeWithPosList = new HashSet<>();
 
@@ -103,6 +105,10 @@ public class MagicCircleAssemblyCategory  implements IRecipeCategory<MagicCircle
                 Vector2d pos = nodeWithPos.pos();
                 node.draw(guiGraphics, (int)pos.x()-3, (int)pos.y()-3);
                 for (String key : nodeWithPos.node().connects()) {
+                    if(key.equals("ORIGIN")){
+                        drawLine(guiGraphics, pos, new Vector2d(65, 70));
+                        continue;
+                    }
                     Vector2d pairPos = nodeWithPosList.stream()
                         .filter(withPos -> withPos.node().key().equals(key)).map(MagicCircleAssemblyCategory.nodeWithPos::pos).findFirst().orElse(new Vector2d(-1,-1));
                     if(pos.angle(pairPos) >= 0){
@@ -145,8 +151,8 @@ public class MagicCircleAssemblyCategory  implements IRecipeCategory<MagicCircle
             // 円周上のノードを描画
             for (int nodeId = 0; nodeId < containsKey.size(); nodeId++) {
                 double angle = ((float)nodeId/containsKey.size())*2*Math.PI;
-                int posX = (int)(center.x() + (radius) * Math.cos(angle));
-                int posY = (int)(center.y() + radius * Math.sin(angle));
+                int posX = (int)Math.round(center.x() + (radius) * Math.cos(angle));
+                int posY = (int)Math.round(center.y() + radius * Math.sin(angle));
                 String key = containsKey.get(nodeId);
                 Node posNode = recipeNodes.stream().filter(Node-> Node.key().equals(key)).findFirst().orElse(null);
                 if(posNode!=null) {

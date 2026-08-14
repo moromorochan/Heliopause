@@ -16,7 +16,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
@@ -179,7 +178,7 @@ public class HeliopauseRecipeProvider extends net.minecraft.data.recipes.RecipeP
         MoonlightPouringRecipeBuilder.moonlightPouring(
                 Ingredient.of(Tags.Items.SAND),
                 ItemRegistry.CELESTITE.get(),1,
-                600,0.1f
+                600
             ).unlockedBy("has_sand", has(Tags.Items.SAND))
             .save(consumer, new ResourceLocation(Heliopause.MODID,MoonlightPouringRecipe.Type.ID +"/"+ ItemRegistry.CELESTITE.getId().getPath()));
 
@@ -187,7 +186,7 @@ public class HeliopauseRecipeProvider extends net.minecraft.data.recipes.RecipeP
         MoonlightPouringRecipeBuilder.moonlightPouring(
                 Ingredient.of(Tags.Items.INGOTS_COPPER),
                 ItemRegistry.ALCHEMY_BIRON_INGOT.get(),1,
-                600,0.1f
+                600
             ).unlockedBy("has_copper", has(Tags.Items.INGOTS_COPPER))
             .save(consumer, new ResourceLocation(Heliopause.MODID,MoonlightPouringRecipe.Type.ID +"/"+ ItemRegistry.ALCHEMY_BIRON_INGOT.getId().getPath()));
 
@@ -212,7 +211,7 @@ public class HeliopauseRecipeProvider extends net.minecraft.data.recipes.RecipeP
             MoonlightPouringRecipeBuilder.moonlightPouring(
                     Ingredient.of(sapling),
                     leaves, 1,
-                    400, 0.1f
+                    400
                 ).unlockedBy("has_sapling", has(sapling))
                 .save(consumer, new ResourceLocation(Heliopause.MODID, MoonlightPouringRecipe.Type.ID +"/"+ sapling));
         }
@@ -221,8 +220,8 @@ public class HeliopauseRecipeProvider extends net.minecraft.data.recipes.RecipeP
         MoonlightPouringRecipeBuilder.moonlightPouring(
             Ingredient.of(ItemRegistry.CELESTITE.get()),
             Items.CALCITE,1,
-            600,0.1f
-        ).unlockedBy("has_celestite", has(ItemRegistry.CELESTITE.get()))
+            600
+            ).unlockedBy("has_celestite", has(ItemRegistry.CELESTITE.get()))
             .save(consumer, new ResourceLocation(Heliopause.MODID, MoonlightPouringRecipe.Type.ID + "/" + Items.CALCITE));
         
         // 液化星明かり分離
@@ -234,7 +233,7 @@ public class HeliopauseRecipeProvider extends net.minecraft.data.recipes.RecipeP
         MoonlightPouringRecipeBuilder.moonlightPouring(
                 Ingredient.of(FluidRegistry.STARRY_MIXTURE.bucket().get()),
                 FluidRegistry.LIQUEFIED_STARLIGHT.bucket().get(),1,
-                200,0.1f
+                200
             ).unlockedBy("has_starry_mixture", has(FluidRegistry.STARRY_MIXTURE.bucket().get()))
             .save(consumer, new ResourceLocation(Heliopause.MODID, FluidRegistry.LIQUEFIED_STARLIGHT.bucket().getId().getPath()+"_from_moonlight_pouring"));
         
