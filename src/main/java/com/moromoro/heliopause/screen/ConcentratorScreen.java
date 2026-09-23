@@ -62,8 +62,8 @@ public class ConcentratorScreen extends AbstractContainerScreen<ConcentratorMenu
         renderDates(graphics, menu.getDate(), menu.getTime(), leftPos + 8, topPos + 73);
         // タンク
         menu.blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(fluidCap -> {
-            renderTank(graphics, fluidCap.getFluidInTank(ConcentratorBlockEntity.SLOT_INPUT_FLUID), fluidCap.getTankCapacity(ConcentratorBlockEntity.SLOT_INPUT_FLUID), mouseX, mouseY, leftPos + 50, topPos + 37, 16, 32);
             renderTank(graphics, fluidCap.getFluidInTank(ConcentratorBlockEntity.SLOT_OUTPUT_FLUID), fluidCap.getTankCapacity(ConcentratorBlockEntity.SLOT_OUTPUT_FLUID), mouseX, mouseY, leftPos + 110, topPos + 37, 16, 32);
+            renderTank(graphics, fluidCap.getFluidInTank(ConcentratorBlockEntity.SLOT_INPUT_FLUID), fluidCap.getTankCapacity(ConcentratorBlockEntity.SLOT_INPUT_FLUID), mouseX, mouseY, leftPos + 50, topPos + 37, 16, 32);
         });
     }
     
@@ -82,7 +82,7 @@ public class ConcentratorScreen extends AbstractContainerScreen<ConcentratorMenu
             for (int spriteX = 0; spriteX < width; spriteX+=16) {
                 int partialRemainX = Math.min(16, width - spriteX);
                 RenderSystem.enableBlend();
-                blitSprite(atlasLocation, graphics, x + spriteX, y + height - spriteY - partialRemainY, 0, 0, partialRemainX, partialRemainY);
+                blitSprite(atlasLocation, graphics, x + spriteX, y + height - spriteY - partialRemainY, 0, 16 - partialRemainY, partialRemainX, 16);
                 RenderSystem.disableBlend();
             }
         }

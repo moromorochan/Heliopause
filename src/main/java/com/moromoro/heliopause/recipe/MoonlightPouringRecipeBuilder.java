@@ -27,20 +27,18 @@ public class MoonlightPouringRecipeBuilder implements RecipeBuilder {
     private final Item result;
     private final int resultCount;
     private final int time;
-    private final float experience;
     private String group;
     private final Map<String, CriterionTriggerInstance> criteria = new LinkedHashMap<>();
 
-    private MoonlightPouringRecipeBuilder(Ingredient ingredient, Item result, int count, int time, float experience) {
+    private MoonlightPouringRecipeBuilder(Ingredient ingredient, Item result, int count, int time) {
         this.ingredient = ingredient;
         this.result = result;
         this.resultCount = count;
         this.time = time;
-        this.experience = experience;
     }
 
-    public static MoonlightPouringRecipeBuilder moonlightPouring(Ingredient ingredient, Item result, int count, int time, float experience) {
-        return new MoonlightPouringRecipeBuilder(ingredient, result, count, time, experience);
+    public static MoonlightPouringRecipeBuilder moonlightPouring(Ingredient ingredient, Item result, int count, int time) {
+        return new MoonlightPouringRecipeBuilder(ingredient, result, count, time);
     }
 
     @Override
@@ -75,7 +73,6 @@ public class MoonlightPouringRecipeBuilder implements RecipeBuilder {
                 json.addProperty("type", TYPE.toString());
                 // time & experience
                 json.addProperty("time", time);
-                json.addProperty("experience", experience);
 
                 // 材料
                 json.add("ingredient", ingredient.toJson());

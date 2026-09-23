@@ -270,7 +270,7 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
         if (level == null) {
             return;
         }
-        if(!angleSynced || level.isRaining() || level.isThundering()){
+        if(!angleSynced || level.isRainingAt(getBlockPos())){
             return;
         }
 
@@ -416,7 +416,7 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
             else{
                 
                 // 昼や雨天はインジケータを無効化
-                if(!isNight || level.isRaining() || level.isThundering()){
+                if(!isNight || level.isRainingAt(basePos)){
                     canSeeSkies = 0;
                 }else{
                     // 視線方向の視野チェック
@@ -455,7 +455,7 @@ public class SiderostatBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private void operateRecipe(Level level, double currentMoonAngle) {
-        if ((!isAngleVisible(currentMoonAngle, canSeeSkies))|| level.isRaining() || level.isThundering()) {
+        if ((!isAngleVisible(currentMoonAngle, canSeeSkies))|| level.isRainingAt(getBlockPos())) {
             return;
         }
         SimpleContainer inventory =new SimpleContainer(itemHandler.getSlots());

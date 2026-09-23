@@ -47,6 +47,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -499,7 +500,7 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         }
         if(level instanceof ServerLevel serverLevel){
             date = Season.getDayInYear(serverLevel);
-            dayTime = serverLevel.getDayTime();
+            dayTime = (long)(serverLevel.getTimeOfDay(1.0F) * 24000 + 6000);
             int seasonAngle = (int)Math.floor(((double) date /Season.YEAR_LENGTH) * 360.0);
 
             LensBarrelEntity lensBarrelEntity = null;
@@ -546,7 +547,11 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
             // season 判定
             boolean seasonMatch = false;
             StarlightConcentrationRecipe.SeasonRange range = recipe.getConditions().seasonRange();
-            if (seasonAngle >= range.start() && seasonAngle <= range.end()) {
+            boolean amongYears = range.start() > range.end();
+            if (!amongYears && (seasonAngle >= range.start() && seasonAngle <= range.end())) {
+                seasonMatch = true;
+            }
+            if(amongYears && (seasonAngle >= range.start() || seasonAngle <= range.end())){
                 seasonMatch = true;
             }
             if (!seasonMatch) continue;
@@ -563,15 +568,21 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
                 progress = 0;
             }
             
+            // 処理が完了したら
+            if (progress >= recipe.getTime()) {
+                // 出力可能かチェック
+                if (finishRecipe(recipe, true)){
+                    finishRecipe(recipe, false);
+                    progress = 0;
+                    currentRecipe = null;
+                }else{
+                    return;
+                }
+            }
+            
             // 観測状況が有効ならレシピ進行
             if(isSyncedToStar) {
                 progress++;
-            }
-
-            if (progress >= recipe.getTime()) {
-                finishRecipe(recipe);
-                progress = 0;
-                currentRecipe = null;
             }
 
             return;
@@ -581,32 +592,42 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
         progress = 0;
     }
     
-    private void finishRecipe(StarlightConcentrationRecipe recipe){
+    private boolean finishRecipe(StarlightConcentrationRecipe recipe, boolean simulated){
+        boolean isRecipeValid = true;
         // 消費
         if (!recipe.getIngredientItem().isEmpty()) {
-            itemHandler.extractItem(SLOT_INPUT_ITEM, 1, false);
+            ItemStack IngredientItem = itemHandler.extractItem(SLOT_INPUT_ITEM, 1, simulated);
+            
+            isRecipeValid = !IngredientItem.isEmpty();
         }
         if (!recipe.getIngredientFluid().isEmpty()) {
-            FluidStack required = recipe.getIngredientFluid();
-            fluidHandler.drainFrom(SLOT_INPUT_FLUID, required.getAmount(), FluidAction.EXECUTE);
+            int recipeFluidAmount = recipe.getIngredientFluid().getAmount();
+            FluidStack IngredientFluid = fluidHandler.drainFrom(SLOT_INPUT_FLUID, recipeFluidAmount, simulated? FluidAction.SIMULATE : FluidAction.EXECUTE);
+            
+            isRecipeValid &= IngredientFluid.getAmount() == recipeFluidAmount;
         }
         // 追加
         if (!recipe.getResultItem(null).isEmpty()) {
-            ItemStack result = recipe.getResultItem(null).copy();
-            itemHandler.insertItem(SLOT_OUTPUT_ITEM, result, false);
+            ItemStack recipeItem = recipe.getResultItem(null).copy();
+            ItemStack resultItem = itemHandler.insertItem(SLOT_OUTPUT_ITEM, recipeItem, simulated);
+            
+            isRecipeValid &= resultItem.isEmpty();
         }
         if (!recipe.getResultFluid().isEmpty()) {
-            FluidStack resultFluid = recipe.getResultFluid().copy();
-            fluidHandler.fillTo(SLOT_OUTPUT_FLUID, resultFluid, FluidAction.EXECUTE);
+            FluidStack recipeFluid = recipe.getResultFluid().copy();
+            int resultFluidAmount = fluidHandler.fillTo(SLOT_OUTPUT_FLUID, recipeFluid, simulated? FluidAction.SIMULATE : FluidAction.EXECUTE);
+            
+            isRecipeValid &= resultFluidAmount == recipeFluid.getAmount();
         }
         this.setChanged();
+        
+        return isRecipeValid;
     }
     
     private void operateTankInOut(){
         // プレイヤーごとに操作を見る
         for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
-            if (player.containerMenu instanceof ConcentratorMenu) {
-                ConcentratorMenu menu = (ConcentratorMenu) player.containerMenu;
+            if (player.containerMenu instanceof ConcentratorMenu menu) {
                 if (menu.blockEntity.getBlockPos().equals(this.getBlockPos())) {
                     handleTankIO(menu, SLOT_INPUT_FLUID, 0, 1, true);
                     handleTankIO(menu, SLOT_OUTPUT_FLUID, 2, 3, false);
@@ -617,58 +638,96 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
     }
     
     public void handleTankIO(ConcentratorMenu menu, int tankId, int slotIn, int slotOut, boolean allowFill) {
-        ItemStack container = menu.getGuiStack(slotIn);
-        if (container.isEmpty()) {
-            return;
-        }
-        // 出力スロットが埋まっている場合は処理しない
-        if (!menu.getGuiStack(slotOut).isEmpty()) {
+        ItemStack containerSim = menu.getGuiStack(slotIn).copyWithCount(1);
+        if (containerSim.isEmpty()) {
             return;
         }
         
-        FluidUtil.getFluidHandler(container).ifPresent(handler -> {
-            FluidStack tankFluid = fluidHandler.getFluidInTank(tankId);
+        FluidUtil.getFluidHandler(containerSim).ifPresent(simHandler -> {
+            FluidStack tankFluidSim = fluidHandler.getFluidInTank(tankId).copy();
             
             // 方向判定
-            boolean containerHasFluid = allowFill && !handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE).isEmpty();
+            boolean containerHasFluid = allowFill && !simHandler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE).isEmpty();
             
+            // 出力スロットの既存アイテムを確認
+            ItemStack lastItem = menu.getGuiStack(slotOut);
+            
+            // 結果を確認
+            ItemStack resultItemSim;
+            int fillSim;
             // アイテムからタンク
-            if (containerHasFluid) {
-                FluidStack drainedSim = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+            if(containerHasFluid){
+                FluidStack drainedSim = simHandler.drain(Integer.MAX_VALUE, FluidAction.EXECUTE);
                 if (drainedSim.isEmpty()) {
                     return;
                 }
                 
-                int fillSim = fluidHandler.fillTo(tankId, drainedSim, FluidAction.SIMULATE);
+                fillSim = fluidHandler.fillTo(tankId, drainedSim, FluidAction.SIMULATE);
                 if (fillSim <= 0) {
                     return;
                 }
                 
-                // 実行
-                FluidStack drained = handler.drain(fillSim, FluidAction.EXECUTE);
-                fluidHandler.fillTo(tankId, drained, FluidAction.EXECUTE);
-                
-                ItemStack empty = handler.getContainer().copy();
-                ItemStack remaining = container.copy();
-                remaining.shrink(1);
-                menu.setGuiStack(slotIn, remaining.isEmpty() ? ItemStack.EMPTY : remaining);
-                menu.setGuiStack(slotOut, empty);
-                return;
+                simHandler.drain(fillSim, FluidAction.EXECUTE);
             }
             // タンクから取り出し
-            int fillSim = handler.fill(tankFluid, FluidAction.SIMULATE);
-            if (fillSim <= 0) {
+            else{
+                if (tankFluidSim.isEmpty()) {
+                    return;
+                }
+                
+                fillSim = simHandler.fill(tankFluidSim, FluidAction.EXECUTE);
+                if (fillSim <= 0) {
+                    return;
+                }
+            }
+            resultItemSim = simHandler.getContainer().copy();
+            
+            // 出力を追加できるか確認
+            if (!lastItem.isEmpty() && !ItemHandlerHelper.canItemStacksStack(resultItemSim, lastItem)) {
                 return;
             }
             
-            FluidStack drained = fluidHandler.drainFrom(tankId, fillSim, FluidAction.EXECUTE);
-            handler.fill(drained, FluidAction.EXECUTE);
-            ItemStack filled = handler.getContainer().copy();
-            ItemStack remaining = container.copy();
-            remaining.shrink(1);
-            menu.setGuiStack(slotIn, remaining.isEmpty() ? ItemStack.EMPTY : remaining);
-            menu.setGuiStack(slotOut, filled);
+            // 結果を適用
+            ItemStack container = menu.getGuiStack(slotIn).copyWithCount(1);
+            if (containerSim.isEmpty()) {
+                return;
+            }
+            
+            FluidUtil.getFluidHandler(container).ifPresent(handler -> {
+                ItemStack resultItemStack;
+                FluidStack drained;
+                
+                if (containerHasFluid) {
+                    drained = handler.drain(fillSim, FluidAction.EXECUTE);
+                    if (drained.isEmpty()) {
+                        return;
+                    }
+                    fluidHandler.fillTo(tankId, drained, FluidAction.EXECUTE);
+                } else {
+                    drained = fluidHandler.drainFrom(tankId, fillSim, FluidAction.EXECUTE);
+                    if (drained.isEmpty()) {
+                        return;
+                    }
+                    handler.fill(drained, FluidAction.EXECUTE);
+                }
+                resultItemStack = handler.getContainer().copy();
+                
+                // 入力スロットから消費
+                ItemStack remaining = menu.getGuiStack(slotIn).copy();
+                remaining.shrink(1);
+                menu.setGuiStack(slotIn, remaining.isEmpty() ? ItemStack.EMPTY : remaining);
+                
+                // 出力スロットへ追加
+                if (lastItem.isEmpty()) {
+                    menu.setGuiStack(slotOut, resultItemStack);
+                } else {
+                    ItemStack newOut = lastItem.copy();
+                    newOut.grow(resultItemStack.getCount());
+                    menu.setGuiStack(slotOut, newOut);
+                }
+                
+                this.setChanged();
+            });
         });
     }
-    
 }
