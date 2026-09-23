@@ -547,7 +547,11 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
             // season 判定
             boolean seasonMatch = false;
             StarlightConcentrationRecipe.SeasonRange range = recipe.getConditions().seasonRange();
-            if (seasonAngle >= range.start() && seasonAngle <= range.end()) {
+            boolean amongYears = range.start() > range.end();
+            if (!amongYears && (seasonAngle >= range.start() && seasonAngle <= range.end())) {
+                seasonMatch = true;
+            }
+            if(amongYears && (seasonAngle >= range.start() || seasonAngle <= range.end())){
                 seasonMatch = true;
             }
             if (!seasonMatch) continue;
@@ -607,7 +611,7 @@ public class ConcentratorBlockEntity extends BlockEntity implements MenuProvider
             ItemStack recipeItem = recipe.getResultItem(null).copy();
             ItemStack resultItem = itemHandler.insertItem(SLOT_OUTPUT_ITEM, recipeItem, simulated);
             
-            isRecipeValid &= resultItem.getCount() == recipeItem.getCount();
+            isRecipeValid &= resultItem.isEmpty();
         }
         if (!recipe.getResultFluid().isEmpty()) {
             FluidStack recipeFluid = recipe.getResultFluid().copy();
